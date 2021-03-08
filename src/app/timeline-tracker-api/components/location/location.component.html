@@ -1,0 +1,32 @@
+<div>
+  <b>Id: </b><code>{{id}}</code>
+</div>
+<div>
+  <b>Name: </b>{{name}}
+</div>
+<div>
+  <b>Description: </b><br>
+  {{description}}
+</div>
+<div>
+  <b>Span:</b>
+  <ul>
+    <li>Latitude: <code>{{span.latitude.low}}</code> to <code>{{span.latitude.high}}</code></li>
+    <li>Longitude: <code>{{span.longitude.low}}</code> to <code>{{span.longitude.high}}</code></li>
+    <li>Altitude: <code>{{span.altitude.low}}</code> to <code>{{span.altitude.high}}</code></li>
+    <li>Continuum: <code>{{span.continuum.low}}</code> to <code>{{span.continuum.high}}</code></li>
+    <li>Reality: <code>{{span.reality.low}}</code> to <code>{{span.reality.high}}</code></li>
+  </ul>
+</div>
+<div>
+  <b>Tags: </b>
+  <ul>
+    <li *ngFor="let tag of tags">{{tag}}</li>
+  </ul>
+</div>
+<div>
+  <b>Metadata: </b>
+  <ul>
+    <li *ngFor="let pair of metadata | keyvalue">{{pair.key}}: {{pair.value}}</li>
+  </ul>
+</div>
