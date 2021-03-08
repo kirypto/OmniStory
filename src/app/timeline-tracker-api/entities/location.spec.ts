@@ -1,4 +1,13 @@
-import {Location} from "./location";
+import {Location, LocationData} from "./location";
+
+export function expectLocationToMatch(actual: Location, locationData: LocationData): void {
+    expect(actual.id).toEqual(locationData.id);
+    expect(actual.name).toEqual(locationData.name);
+    expect(actual.description).toEqual(locationData.description);
+    expect(actual.span).toEqual(locationData.span);
+    expect(actual.tags).toEqual(locationData.tags);
+    expect(actual.metadata).toEqual(locationData.metadata);
+}
 
 describe("Location", () => {
     const locationData = {
@@ -33,12 +42,7 @@ describe("Location", () => {
             const actual = new Location(locationData);
 
             // Assert
-            expect(actual.id).toEqual(locationData.id);
-            expect(actual.name).toEqual(locationData.name);
-            expect(actual.description).toEqual(locationData.description);
-            expect(actual.span).toEqual(locationData.span);
-            expect(actual.tags).toEqual(locationData.tags);
-            expect(actual.metadata).toEqual(locationData.metadata);
+            expectLocationToMatch(actual, locationData);
         });
     });
 });

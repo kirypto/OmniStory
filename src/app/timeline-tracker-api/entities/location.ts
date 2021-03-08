@@ -1,3 +1,5 @@
+import {isNullOrUndefined} from "util";
+
 export interface Metadata {
     [key: string]: string;
 }
@@ -15,13 +17,30 @@ export interface Span {
     reality: Range;
 }
 
-interface LocationData {
+export interface LocationData {
     id: string;
     name: string;
     description: string;
     span: Span;
     tags: string[];
     metadata: Metadata;
+}
+
+function validateNeitherNullNorUndefined<T>(name: string, obj: T): T {
+    if (obj === null || obj === undefined) {
+        throw new Error(`'${name}' was cannot be null or undefined`);
+    }
+    return obj;
+}
+
+const locationIdRegExp = new RegExp("^location-\d{8}-\d{4}-\d{4}-\d{4}-\d{12}$").compile();
+
+function validateLocationId(name: string, locationId: string): string {
+    validateNeitherNullNorUndefined(name, locationId);
+    if (!locationIdRegExp.test(locationId)) {
+        throw new Error(`'${name}' must be a string starting with 'location-' with a uuid following`);
+    }
+    return locationId;
 }
 
 export class Location {
@@ -33,12 +52,12 @@ export class Location {
     _metadata: Metadata;
 
     constructor(locationData: LocationData) {
-        this._id = locationData.id;
-        this._name = locationData.name;
-        this._description = locationData.description;
-        this._span = locationData.span;
-        this._tags = locationData.tags;
-        this._metadata = locationData.metadata;
+        this._id = validateNeitherNullNorUndefined("id", locationData.id);
+        this._name = validateNeitherNullNorUndefined("name", locationData.name);
+        this._description = validateNeitherNullNorUndefined("description", locationData.description);
+        this._span = validateNeitherNullNorUndefined("span", locationData.span);
+        this._tags = validateNeitherNullNorUndefined("tags", locationData.tags);
+        this._metadata = validateNeitherNullNorUndefined("metadata", locationData.metadata);
     }
 
     get id(): string {
