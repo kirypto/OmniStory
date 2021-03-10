@@ -2,7 +2,7 @@ import {TestBed} from "@angular/core/testing";
 
 import {LocationGatewayService} from "./location-gateway.service";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
-import {Location} from "../entities/location";
+import {Location, LocationData} from "../entities/location";
 import {expectLocationToMatch} from "../entities/location.spec";
 
 describe("LocationGatewayService", () => {
@@ -24,7 +24,7 @@ describe("LocationGatewayService", () => {
 
     describe("getLocation", () => {
         const locationId = "location-00000000-0000-4000-8000-000000000000";
-        const locationData = {
+        const locationData: LocationData = {
             id: locationId,
             name: "a name",
             description: "a description",
@@ -36,7 +36,7 @@ describe("LocationGatewayService", () => {
                 reality: {low: 0, high: 0},
             },
             tags: ["tag1"],
-            metadata: {meta_key: "meta_val"}
+            metadata: new Map(Object.entries({meta_key: "meta_val"}))
         };
 
         it("should return Location when api returns OK and location data", () => {

@@ -10,7 +10,7 @@ export function expectLocationToMatch(actual: Location, locationData: LocationDa
 }
 
 describe("Location", () => {
-    const locationData = {
+    const locationData: LocationData = {
         id: "location-00000000-0000-4000-8000-000000000000",
         name: "a name",
         description: "a description",

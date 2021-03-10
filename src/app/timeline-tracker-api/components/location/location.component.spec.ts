@@ -2,12 +2,12 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 
 import {LocationComponent} from "./location.component";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {Location} from "../../entities/location";
+import {Location, LocationData} from "../../entities/location";
 
 describe("LocationComponent", () => {
     let component: LocationComponent;
     let fixture: ComponentFixture<LocationComponent>;
-    const sampleLocation: Location = new Location({
+    const locationData: LocationData = {
         id: "location-00000000-0000-4000-8000-000000000000",
         name: "a name",
         description: "a description",
@@ -20,7 +20,8 @@ describe("LocationComponent", () => {
         },
         tags: ["tag1"],
         metadata: new Map(Object.entries({meta_key: "meta_val"}))
-    });
+    };
+    const sampleLocation: Location = new Location(locationData);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
