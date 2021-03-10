@@ -18,7 +18,7 @@ describe("LocationComponent", () => {
             continuum: {low: -9383.0, high: Infinity},
             reality: {low: 0, high: 0},
         },
-        tags: ["tag1"],
+        tags: new Set(["tag1", "tag2"]),
         metadata: new Map(Object.entries({meta_key: "meta_val"}))
     };
     const sampleLocation: Location = new Location(locationData);

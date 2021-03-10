@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {Location, Metadata, Span} from "../../entities/location";
+import {Location, Metadata, Span, Tags} from "../../entities/location";
 
 @Component({
     selector: "app-location",
@@ -28,7 +28,7 @@ export class LocationComponent {
         return this._location.span;
     }
 
-    get tags(): string[] {
+    get tags(): Tags {
         return this._location.tags;
     }
 

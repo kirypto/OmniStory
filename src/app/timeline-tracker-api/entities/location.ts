@@ -1,5 +1,7 @@
-export interface Metadata extends Map<string, string> {
-}
+export interface Metadata extends Map<string, string> {}
+
+export interface Tags extends Set<string> {}
+
 
 export interface Range {
     "low": number;
@@ -19,7 +21,7 @@ export interface LocationData {
     name: string;
     description: string;
     span: Span;
-    tags: string[];
+    tags: Tags;
     metadata: Metadata;
 }
 
@@ -45,7 +47,7 @@ export class Location {
     _name: string;
     _description: string;
     _span: Span;
-    _tags: string[];
+    _tags: Tags;
     _metadata: Metadata;
 
     constructor(locationData: LocationData) {
@@ -73,7 +75,7 @@ export class Location {
         return this._span;
     }
 
-    get tags(): string[] {
+    get tags(): Tags {
         return this._tags;
     }
 
