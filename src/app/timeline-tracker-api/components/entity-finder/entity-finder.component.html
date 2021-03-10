@@ -1,0 +1,7 @@
+<hr>
+<ul>
+  <li *ngFor="let idNamePair of locationNamesById | keyvalue">
+    <code> {{idNamePair.key}} </code><i> ({{idNamePair.value}}) </i>
+  </li>
+</ul>
+<hr>
