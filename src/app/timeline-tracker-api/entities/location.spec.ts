@@ -22,7 +22,7 @@ describe("Location", () => {
             reality: {low: 0, high: 0},
         },
         tags: ["tag1"],
-        metadata: {meta_key: "meta_val"}
+        metadata: new Map(Object.entries({meta_key: "meta_val"}))
     };
 
     describe("constructor", () => {

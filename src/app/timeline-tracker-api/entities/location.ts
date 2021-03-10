@@ -1,7 +1,4 @@
-import {isNullOrUndefined} from "util";
-
-export interface Metadata {
-    [key: string]: string;
+export interface Metadata extends Map<string, string> {
 }
 
 export interface Range {
@@ -52,7 +49,7 @@ export class Location {
     _metadata: Metadata;
 
     constructor(locationData: LocationData) {
-        this._id = validateNeitherNullNorUndefined("id", locationData.id);
+        this._id = validateLocationId("id", locationData.id);
         this._name = validateNeitherNullNorUndefined("name", locationData.name);
         this._description = validateNeitherNullNorUndefined("description", locationData.description);
         this._span = validateNeitherNullNorUndefined("span", locationData.span);
