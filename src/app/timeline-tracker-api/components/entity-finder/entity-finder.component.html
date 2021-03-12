@@ -1,7 +1,12 @@
+<div>
+  <button (click)="findEntities('location')">Find Locations</button>
+  <button (click)="findEntities('traveler')">Find Travelers</button>
+  <button (click)="findEntities('event')">Find Events</button>
+</div>
 <hr>
 <ul>
-  <li *ngFor="let idNamePair of locationNamesById | keyvalue">
+  <li *ngFor="let idNamePair of entityIdsAndNames | keyvalue">
     <code> {{idNamePair.key}} </code><i> ({{idNamePair.value}}) </i>
+    <button (click)="selectEntity(idNamePair.key)">Show Details</button>
   </li>
 </ul>
-<hr>

@@ -1,3 +1,5 @@
+import {IdentifiedEntity} from "./IdentifiedEntity";
+
 export interface Metadata extends Map<string, string> {}
 
 export interface Tags extends Set<string> {}
@@ -42,7 +44,7 @@ function validateLocationId(name: string, locationId: string): string {
     return locationId;
 }
 
-export class Location {
+export class Location implements IdentifiedEntity {
     _id: string;
     _name: string;
     _description: string;

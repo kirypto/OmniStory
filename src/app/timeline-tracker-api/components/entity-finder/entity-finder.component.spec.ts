@@ -12,11 +12,27 @@ describe("EntityFinderComponent", () => {
     let fixture: ComponentFixture<EntityFinderComponent>;
     let locationGatewayServiceMock: SpyObj<LocationGatewayService>;
 
+    const locationData: LocationData = {
+        id: "location-00000000-0000-4000-8000-000000000000",
+        name: "a name",
+        description: "a description",
+        span: {
+            latitude: {low: 11034.738, high: 11066.318},
+            longitude: {low: 5457.91, high: 5483.174},
+            altitude: {low: 0.972, high: 1.034},
+            continuum: {low: -9383.0, high: Infinity},
+            reality: {low: 0, high: 0},
+        },
+        tags: new Set(["tag1", "tag2"]),
+        metadata: new Map(Object.entries({meta_key: "meta_val"}))
+    };
+    const location = new Location(locationData);
+
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [EntityFinderComponent],
             providers: [{
-                    provide: LocationGatewayService, useValue: jasmine.createSpyObj("LocationGatewayService", ["getLocation"])
+                provide: LocationGatewayService, useValue: jasmine.createSpyObj("LocationGatewayService", ["getLocation"])
             }],
         }).compileComponents();
         locationGatewayServiceMock = TestBed.inject(LocationGatewayService) as SpyObj<LocationGatewayService>;
@@ -35,30 +51,12 @@ describe("EntityFinderComponent", () => {
     });
 
     describe("locationNamesById", () => {
-        const locationData: LocationData = {
-            id: "location-00000000-0000-4000-8000-000000000000",
-            name: "a name",
-            description: "a description",
-            span: {
-                latitude: {low: 11034.738, high: 11066.318},
-                longitude: {low: 5457.91, high: 5483.174},
-                altitude: {low: 0.972, high: 1.034},
-                continuum: {low: -9383.0, high: Infinity},
-                reality: {low: 0, high: 0},
-            },
-            tags: new Set(["tag1", "tag2"]),
-            metadata: new Map(Object.entries({meta_key: "meta_val"}))
-        };
-        const location = new Location(locationData);
-
-        it("should return the id and name of each retrieved location", () => {
+        it("should return the id and name of each stored entity", () => {
             // Arrange
-            (component as any)._locationIds = new Set<string>([locationData.id]);
-            locationGatewayServiceMock.getLocation.and.returnValue(of(location));
-            fixture.detectChanges();
+            (component as any)._entitiesById.set(location.id, location);
 
             // Act
-            const actual = component.locationNamesById;
+            const actual = component.entityIdsAndNames;
 
             // Assert
             expect(actual.get(location.id)).toEqual(location.name);
@@ -66,17 +64,41 @@ describe("EntityFinderComponent", () => {
 
         it("should return in form supporting ReadonlyMap iteration", () => {
             // Arrange
-            (component as any)._locationIds = new Set<string>([locationData.id]);
-            locationGatewayServiceMock.getLocation.and.returnValue(of(location));
-            fixture.detectChanges();
+            (component as any)._entitiesById.set(location.id, location);
 
             // Act
-            const actual = (component.locationNamesById as ReadonlyMap<string, string>);
+            const actual = (component.entityIdsAndNames as ReadonlyMap<string, string>);
 
             // Assert
             console.dir(actual);
             expect(actual).toHaveSize(1);
             expect(actual.get(location.id)).toEqual(location.name);
+        });
+    });
+
+    describe("findEntities", () => {
+        it("should retrieve locations from gateway and persist when given 'location'", () => {
+            // Arrange
+            locationGatewayServiceMock.getLocation.and.returnValue(of(location));
+
+            // Act
+            component.findEntities("location");
+            const actual = (component as any)._entitiesById;
+
+            // Assert
+            expect(actual).toHaveSize(1);
+        });
+
+        it("should clear persisted entities and alert failure when given invalid type", () => {
+            // Arrange
+            locationGatewayServiceMock.getLocation.and.returnValue(of(location));
+
+            // Act
+            component.findEntities("invalid");
+            const actual = (component as any)._entitiesById;
+
+            // Assert
+            expect(actual).toHaveSize(0);
         });
     });
 });
