@@ -13,6 +13,7 @@ import {IdentifiedEntity} from "../../entities/IdentifiedEntity";
 @Injectable({providedIn: "root"})
 export class EntityFinderComponent {
     private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
+    private _selectedEntity: IdentifiedEntity;
 
     constructor(
         private _locationGateway: LocationGatewayService
@@ -30,8 +31,14 @@ export class EntityFinderComponent {
         return namesById;
     }
 
+    get selectedLocation(): Location | undefined {
+        return this._selectedEntity instanceof Location ? this._selectedEntity : undefined;
+    }
+
     findEntities(entityType: string): void {
         this._entitiesById.clear();
+        this._selectedEntity = undefined;
+
         let entityObservable: Observable<IdentifiedEntity>;
         if (entityType === "location") {
             entityObservable = this.findLocations();
@@ -46,7 +53,8 @@ export class EntityFinderComponent {
     }
 
     selectEntity(entityId: string): void {
-        alert(`You selected ${entityId}`);
+        this._selectedEntity = this._entitiesById.get(entityId);
+        this._entitiesById.clear();
     }
 
     private findLocations(): Observable<Location> {
