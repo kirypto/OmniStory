@@ -58,10 +58,8 @@ export class EntityFinderComponent {
     }
 
     private findLocations(): Observable<Location> {
-        return from([
-            "location-c86da392-86e7-4405-911c-799642a62eb7", // Uxphon, no Infinity
-            // "location-a84afc0d-aaab-466c-9ae3-b5b74a5588e6", // Jinersa, has Infinity
-        ]).pipe(
+        return this._locationGateway.getLocationIds().pipe(
+            mergeMap((locationIdsArr) => from(locationIdsArr)),
             map((locationId) => this._locationGateway.getLocation(locationId)),
             mergeMap((locationObservable) => locationObservable),
         );
