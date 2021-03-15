@@ -9,7 +9,8 @@ import {handleError} from "./util";
     providedIn: "root"
 })
 export class LocationGatewayService {
-    private _timelineTrackerApiUrl = "/api";
+    // noinspection HttpUrlsUsage
+    private _timelineTrackerApiUrl = "http://172.16.1.101:1337/api";
 
     constructor(
         private _httpClient: HttpClient,
