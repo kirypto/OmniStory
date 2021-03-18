@@ -3,7 +3,7 @@ import {BrowserModule} from "@angular/platform-browser";
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 
-import {ttapiHttpInterceptorProviders} from "./timeline-tracker-api/http-interceptors";
+import {httpInterceptorProviders} from "./common/http-interceptors/interceptor-providers";
 import {AppComponent} from "./app.component";
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
 import {EntityFinderComponent} from "./timeline-tracker-api/components/entity-finder/entity-finder.component";
@@ -20,7 +20,7 @@ import {EntityFinderComponent} from "./timeline-tracker-api/components/entity-fi
         FormsModule,
     ],
     providers: [
-        ttapiHttpInterceptorProviders
+        httpInterceptorProviders
     ],
     bootstrap: [AppComponent]
 })
