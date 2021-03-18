@@ -1,8 +1,8 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 
 import {LocationComponent} from "./location.component";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {Location, LocationData} from "../../domain-types/location";
+import {applicationDeclarations, applicationImports} from "../../../app.module";
 
 describe("LocationComponent", () => {
     let component: LocationComponent;
@@ -25,8 +25,8 @@ describe("LocationComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-            declarations: [LocationComponent]
+            imports: applicationImports,
+            declarations: applicationDeclarations
         }).compileComponents();
     });
 

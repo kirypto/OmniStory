@@ -12,7 +12,7 @@ button {
     margin: 0.5ch 0.25ch;
 }
 
-span.filter {
+div.filter span {
     display: inline-block;
     min-width: 13ch;
 }

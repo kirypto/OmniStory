@@ -8,17 +8,22 @@ import {AppComponent} from "./app.component";
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
 import {EntityFinderComponent} from "./timeline-tracker-api/components/entity-finder/entity-finder.component";
 
+
+export const applicationDeclarations = [
+    AppComponent,
+    LocationComponent,
+    EntityFinderComponent,
+];
+
+export const applicationImports = [
+    BrowserModule,
+    HttpClientModule,
+    FormsModule,
+];
+
 @NgModule({
-    declarations: [
-        AppComponent,
-        LocationComponent,
-        EntityFinderComponent,
-    ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        FormsModule,
-    ],
+    declarations: applicationDeclarations,
+    imports: applicationImports,
     providers: [
         httpInterceptorProviders
     ],
