@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {Location, Metadata, Span, Tags} from "../../entities/location";
+import {Location, Metadata, Span, Tags} from "../../domain-types/location";
 
 @Component({
     selector: "app-location",

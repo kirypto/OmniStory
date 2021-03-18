@@ -1,4 +1,4 @@
-import {IdentifiedEntity} from "./IdentifiedEntity";
+import {IdentifiedEntity} from "./identified-entity";
 
 export interface Metadata extends Map<string, string> {}
 

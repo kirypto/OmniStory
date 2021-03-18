@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 
 import {EntityFinderComponent} from "./entity-finder.component";
 import {LocationGatewayService} from "../../gateways/location-gateway.service";
-import {Location, LocationData} from "../../entities/location";
+import {Location, LocationData} from "../../domain-types/location";
 import {of} from "rxjs";
 import SpyObj = jasmine.SpyObj;
 

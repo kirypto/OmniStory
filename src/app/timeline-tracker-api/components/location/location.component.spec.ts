@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 
 import {LocationComponent} from "./location.component";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {Location, LocationData} from "../../entities/location";
+import {Location, LocationData} from "../../domain-types/location";
 
 describe("LocationComponent", () => {
     let component: LocationComponent;
