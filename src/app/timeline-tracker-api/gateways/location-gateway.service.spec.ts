@@ -8,6 +8,8 @@ import {expectLocationToMatch} from "../entities/location.spec";
 describe("LocationGatewayService", () => {
     let service: LocationGatewayService;
     let httpMock: HttpTestingController;
+    // noinspection HttpUrlsUsage
+    const ttapiUrl = "http://172.16.1.101:1337";
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -48,7 +50,7 @@ describe("LocationGatewayService", () => {
             service.getLocation(locationId).subscribe(location => actualLocation = location);
 
             // Assert
-            const req = httpMock.expectOne(`/api/location/${locationId}`);
+            const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
             expect(req.request.method).toBe("GET");
             req.flush(body, {status: 200, statusText: "OK"});
             // noinspection JSUnusedAssignment
@@ -62,7 +64,7 @@ describe("LocationGatewayService", () => {
             service.getLocation(locationId).subscribe(location => actualLocation = location);
 
             // Assert
-            const req = httpMock.expectOne(`/api/location/${locationId}`);
+            const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
             expect(req.request.method).toBe("GET");
             req.flush(null, {status: 404, statusText: "Not Found"});
             // noinspection JSUnusedAssignment
@@ -84,7 +86,7 @@ describe("LocationGatewayService", () => {
             service.getLocationIds().subscribe(locationIds => actualLocationIds = locationIds);
 
             // Assert
-            const req = httpMock.expectOne(`/api/locations`);
+            const req = httpMock.expectOne(`${ttapiUrl}/api/locations`);
             expect(req.request.method).toBe("GET");
             req.flush(expectedLocations);
             expect(actualLocationIds).toEqual(expectedLocations);

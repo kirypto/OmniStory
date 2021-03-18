@@ -29,10 +29,13 @@ describe("EntityFinderComponent", () => {
     const location = new Location(locationData);
 
     beforeEach(async () => {
+        const locationGatewaySpy = jasmine.createSpyObj("LocationGatewayService", [
+            "getLocation", "getLocationIds"
+        ]);
         await TestBed.configureTestingModule({
             declarations: [EntityFinderComponent],
             providers: [{
-                provide: LocationGatewayService, useValue: jasmine.createSpyObj("LocationGatewayService", ["getLocation"])
+                provide: LocationGatewayService, useValue: locationGatewaySpy
             }],
         }).compileComponents();
         locationGatewayServiceMock = TestBed.inject(LocationGatewayService) as SpyObj<LocationGatewayService>;
@@ -70,7 +73,6 @@ describe("EntityFinderComponent", () => {
             const actual = (component.entityIdsAndNames as ReadonlyMap<string, string>);
 
             // Assert
-            console.dir(actual);
             expect(actual).toHaveSize(1);
             expect(actual.get(location.id)).toEqual(location.name);
         });
@@ -80,6 +82,7 @@ describe("EntityFinderComponent", () => {
         it("should retrieve locations from gateway and persist when given 'location'", () => {
             // Arrange
             locationGatewayServiceMock.getLocation.and.returnValue(of(location));
+            locationGatewayServiceMock.getLocationIds.and.returnValue(of([location.id]));
 
             // Act
             component.findEntities("location");
