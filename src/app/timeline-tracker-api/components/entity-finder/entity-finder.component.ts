@@ -62,7 +62,7 @@ export class EntityFinderComponent {
 
     }
 
-    public showEntitiy(entityId: string): void {
+    public showEntity(entityId: string): void {
         this._selectedEntity = this._entitiesById.get(entityId);
         this._entitiesById.clear();
         this._areFiltersVisible = false;

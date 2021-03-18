@@ -21,7 +21,7 @@
 <ul>
   <li *ngFor="let idNamePair of entityIdsAndNames | keyvalue">
     <code> {{idNamePair.key}} </code><i> ({{idNamePair.value}}) </i>
-    <button (click)="showEntitiy(idNamePair.key)">Show Details</button>
+    <button (click)="showEntity(idNamePair.key)">Show Details</button>
   </li>
 </ul>
 <div *ngIf="selectedLocation !== undefined">
