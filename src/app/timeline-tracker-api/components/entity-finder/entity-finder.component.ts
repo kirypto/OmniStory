@@ -4,6 +4,7 @@ import {from, Observable} from "rxjs";
 import {filter, map, mergeMap} from "rxjs/operators";
 import {Location} from "../../entities/location";
 import {IdentifiedEntity} from "../../entities/IdentifiedEntity";
+import {LocationFilters} from "../../gateways/filters";
 
 @Component({
     selector: "app-entity-finder",
@@ -15,27 +16,36 @@ export class EntityFinderComponent {
     private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
     private _selectedEntity: IdentifiedEntity;
 
-    constructor(
+    private _areFiltersVisible = false;
+    public filterNameIs = "";
+    public filterNameHas = "";
+    public filterTaggedAll = "";
+    public filterTaggedAny = "";
+    public filterTaggedOnly = "";
+    public filterTaggedNone = "";
+    public filterSpanIncludes = "";
+    public filterSpanIntersects = "";
+
+    public constructor(
         private _locationGateway: LocationGatewayService
     ) {
     }
 
-    get entityIdsAndNames(): Map<string, string> {
+    public get entityIdsAndNames(): Map<string, string> {
         const namesById = new Map<string, string>();
         for (const entity of this._entitiesById.values()) {
             if (entity instanceof Location) {
                 namesById.set(entity.id, entity.name);
             }
         }
-        console.dir(namesById);
         return namesById;
     }
 
-    get selectedLocation(): Location | undefined {
+    public get selectedLocation(): Location | undefined {
         return this._selectedEntity instanceof Location ? this._selectedEntity : undefined;
     }
 
-    findEntities(entityType: string): void {
+    public findEntities(entityType: string): void {
         this._entitiesById.clear();
         this._selectedEntity = undefined;
 
@@ -52,13 +62,32 @@ export class EntityFinderComponent {
 
     }
 
-    selectEntity(entityId: string): void {
+    public showEntitiy(entityId: string): void {
         this._selectedEntity = this._entitiesById.get(entityId);
         this._entitiesById.clear();
+        this._areFiltersVisible = false;
+    }
+
+    public get areFiltersVisible(): boolean {
+        return this._areFiltersVisible;
+    }
+
+    public toggleFilterVisibility(): void {
+        this._areFiltersVisible = !this._areFiltersVisible;
     }
 
     private findLocations(): Observable<Location> {
-        return this._locationGateway.getLocationIds().pipe(
+        const filters: LocationFilters = {};
+        if (this.filterNameIs) { filters.nameIs = this.filterNameIs; }
+        if (this.filterNameHas) { filters.nameHas = this.filterNameHas; }
+        if (this.filterTaggedAll) { filters.taggedAll = this.filterTaggedAll; }
+        if (this.filterTaggedAny) { filters.taggedAny = this.filterTaggedAny; }
+        if (this.filterTaggedNone) { filters.taggedNone = this.filterTaggedNone; }
+        if (this.filterTaggedOnly) { filters.taggedOnly = this.filterTaggedOnly; }
+        if (this.filterSpanIntersects) { filters.spanIntersects = this.filterSpanIntersects; }
+        if (this.filterSpanIncludes) { filters.spanIncludes = this.filterSpanIncludes; }
+
+        return this._locationGateway.getLocationIds(filters).pipe(
             mergeMap((locationIdsArr) => from(locationIdsArr)),
             map((locationId) => this._locationGateway.getLocation(locationId)),
             mergeMap((locationObservable) => locationObservable),

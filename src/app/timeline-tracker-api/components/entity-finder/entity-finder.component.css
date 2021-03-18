@@ -7,3 +7,21 @@
     min-height: 50vh;
     max-height: calc(100vh - 150px);
 }
+
+button {
+    margin: 0.5ch 0.25ch;
+}
+
+span.filter {
+    display: inline-block;
+    min-width: 13ch;
+}
+
+span.spacer {
+    display: inline-block;
+    width: 12ch;
+}
+
+input {
+    width: 50ch;
+}

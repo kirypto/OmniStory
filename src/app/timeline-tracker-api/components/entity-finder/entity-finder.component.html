@@ -2,12 +2,28 @@
   <button (click)="findEntities('location')">Find Locations</button>
   <button (click)="findEntities('traveler')">Find Travelers</button>
   <button (click)="findEntities('event')">Find Events</button>
+  <span class="spacer"></span>
+  <button (click)="toggleFilterVisibility()"> {{areFiltersVisible ? "Hide" : "Show"}} Filters</button>
 </div>
+
+<div *ngIf="areFiltersVisible">
+  <div><span class="filter"> Name Is:         </span> <input [(ngModel)]="filterNameIs" placeholder="exact name"></div>
+  <div><span class="filter"> Name Has:        </span> <input [(ngModel)]="filterNameHas" placeholder="occurs within name"></div>
+  <div><span class="filter"> Tagged All:      </span> <input [(ngModel)]="filterTaggedAll" placeholder="comma-delimited tags"></div>
+  <div><span class="filter"> Tagged Any:      </span> <input [(ngModel)]="filterTaggedAny" placeholder="comma-delimited tags"></div>
+  <div><span class="filter"> Tagged Only:     </span> <input [(ngModel)]="filterTaggedOnly" placeholder="comma-delimited tags"></div>
+  <div><span class="filter"> Tagged None:     </span> <input [(ngModel)]="filterTaggedNone" placeholder="comma-delimited tags"></div>
+  <div><span class="filter"> Span Includes:   </span> <input [(ngModel)]="filterSpanIncludes" placeholder="comma-delimited tags"></div>
+  <div><span class="filter"> Span Intersects: </span> <input [(ngModel)]="filterSpanIntersects" placeholder="comma-delimited tags"></div>
+</div>
+
 <hr>
 <ul>
   <li *ngFor="let idNamePair of entityIdsAndNames | keyvalue">
     <code> {{idNamePair.key}} </code><i> ({{idNamePair.value}}) </i>
-    <button (click)="selectEntity(idNamePair.key)">Show Details</button>
+    <button (click)="showEntitiy(idNamePair.key)">Show Details</button>
   </li>
 </ul>
-<div *ngIf="selectedLocation !== undefined"><app-location [_location]="selectedLocation"></app-location></div>
+<div *ngIf="selectedLocation !== undefined">
+  <app-location [_location]="selectedLocation"></app-location>
+</div>
