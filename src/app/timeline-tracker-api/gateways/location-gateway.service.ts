@@ -1,9 +1,11 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Location, LocationData} from "../entities/location";
 import {catchError, map, tap} from "rxjs/operators";
-import {handleError} from "./util";
+
+import {Location, LocationData} from "../entities/location";
+import {constructEncodedQueryParams, handleError} from "./util";
+import {LocationFilters} from "./filters";
 
 @Injectable({
     providedIn: "root"
@@ -26,8 +28,9 @@ export class LocationGatewayService {
             );
     }
 
-    getLocationIds(): Observable<string[]> {
-        return this._httpClient.get<string[]>(`${this._timelineTrackerApiUrl}/locations`)
+    getLocationIds(filters?: LocationFilters): Observable<string[]> {
+        const url = `${this._timelineTrackerApiUrl}/locations${constructEncodedQueryParams(filters)}`;
+        return this._httpClient.get<string[]>(url)
             .pipe(
                 tap(locationDataArr => console.log(`Fetched ${locationDataArr.length} Location Ids`)),
                 catchError(handleError<string[]>("getLocationIds()", [])),
