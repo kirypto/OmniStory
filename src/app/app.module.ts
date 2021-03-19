@@ -11,24 +11,24 @@ import {NotFoundComponent} from "./common/components/not-found/not-found.compone
 import {MainComponent} from "./common/components/main/main.component";
 
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
-import {EntityFinderComponent} from "./timeline-tracker-api/components/entity-finder/entity-finder.component";
+import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 
 
 export enum RoutePaths {
     main = "",
-    entityFinder = "entity-finder",
+    entitySearch = "entity-search",
 }
 
 const routes: Routes = [
     {path: RoutePaths.main, component: MainComponent},
-    {path: RoutePaths.entityFinder, component: EntityFinderComponent},
+    {path: RoutePaths.entitySearch, component: EntitySearchComponent},
     {path: "**", component: NotFoundComponent},
 ];
 
 export const applicationDeclarations = [
     AppComponent,
     LocationComponent,
-    EntityFinderComponent,
+    EntitySearchComponent,
 ];
 
 export const applicationImports = [

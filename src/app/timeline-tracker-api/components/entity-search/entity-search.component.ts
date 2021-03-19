@@ -8,11 +8,11 @@ import {LocationFilters} from "../../gateways/filters";
 
 @Component({
     selector: "app-entity-finder",
-    templateUrl: "./entity-finder.component.html",
-    styleUrls: ["./entity-finder.component.css"]
+    templateUrl: "./entity-search.component.html",
+    styleUrls: ["./entity-search.component.css"]
 })
 @Injectable({providedIn: "root"})
-export class EntityFinderComponent {
+export class EntitySearchComponent {
     private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
     private _selectedEntity: IdentifiedEntity;
 

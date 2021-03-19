@@ -3,7 +3,7 @@ import {By} from "@angular/platform-browser";
 
 import {of} from "rxjs";
 
-import {EntityFinderComponent} from "./entity-finder.component";
+import {EntitySearchComponent} from "./entity-search.component";
 import {LocationGatewayService} from "../../gateways/location-gateway.service";
 import {Location, LocationData} from "../../domain-types/location";
 import {applicationDeclarations, applicationImports} from "../../../app.module";
@@ -11,8 +11,8 @@ import SpyObj = jasmine.SpyObj;
 
 
 describe("EntityFinderComponent", () => {
-    let component: EntityFinderComponent;
-    let fixture: ComponentFixture<EntityFinderComponent>;
+    let component: EntitySearchComponent;
+    let fixture: ComponentFixture<EntitySearchComponent>;
     let locationGatewayServiceMock: SpyObj<LocationGatewayService>;
 
     const locationData: LocationData = {
@@ -46,7 +46,7 @@ describe("EntityFinderComponent", () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(EntityFinderComponent);
+        fixture = TestBed.createComponent(EntitySearchComponent);
         component = fixture.componentInstance;
     });
 
