@@ -22,11 +22,4 @@ describe("AppComponent", () => {
         const app = fixture.componentInstance;
         expect(app.title).toEqual("Timeline Tracker UI");
     });
-
-    it("should render greeting", () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        const compiled = fixture.nativeElement;
-        expect(compiled.querySelector("#hello").textContent).toContain("Hello, Timeline Tracker UI!");
-    });
 });
