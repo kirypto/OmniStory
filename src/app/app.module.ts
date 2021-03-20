@@ -6,7 +6,7 @@ import {RouterModule, Routes} from "@angular/router";
 
 import {AppComponent} from "./app.component";
 
-import {httpInterceptorProviders} from "./common/http-interceptors/interceptor-providers";
+import {httpInterceptorProviders} from "./common/services/interceptor-providers";
 import {NotFoundComponent} from "./common/components/not-found/not-found.component";
 import {MainComponent} from "./common/components/main/main.component";
 
