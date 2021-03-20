@@ -9,15 +9,11 @@ import {AppComponent} from "./app.component";
 import {httpInterceptorProviders} from "./common/services/interceptor-providers";
 import {NotFoundComponent} from "./common/components/not-found/not-found.component";
 import {MainComponent} from "./common/components/main/main.component";
+import {RoutePaths} from "./common/types/route-paths";
 
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 
-
-enum RoutePaths {
-    main = "",
-    entitySearch = "entity-search",
-}
 
 const routes: Routes = [
     {path: RoutePaths.main, component: MainComponent},

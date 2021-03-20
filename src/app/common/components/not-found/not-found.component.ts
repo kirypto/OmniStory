@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {RoutePaths} from "../../types/route-paths";
 
 @Component({
     selector: "app-page-not-found-component",
@@ -16,9 +17,4 @@ export class NotFoundComponent implements OnInit {
     public get RoutePaths(): typeof RoutePaths {
         return RoutePaths;
     }
-}
-
-enum RoutePaths {
-    main = "",
-    entitySearch = "entity-search",
 }
