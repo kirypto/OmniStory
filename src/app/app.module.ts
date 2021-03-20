@@ -14,7 +14,7 @@ import {LocationComponent} from "./timeline-tracker-api/components/location/loca
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 
 
-export enum RoutePaths {
+enum RoutePaths {
     main = "",
     entitySearch = "entity-search",
 }
@@ -27,6 +27,8 @@ const routes: Routes = [
 
 export const applicationDeclarations = [
     AppComponent,
+    MainComponent,
+    NotFoundComponent,
     LocationComponent,
     EntitySearchComponent,
 ];
