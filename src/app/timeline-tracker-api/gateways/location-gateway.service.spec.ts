@@ -2,8 +2,8 @@ import {TestBed} from "@angular/core/testing";
 
 import {LocationGatewayService} from "./location-gateway.service";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
-import {Location, LocationData} from "../domain-types/location";
-import {expectLocationToMatch} from "../domain-types/location.spec";
+import {Location, LocationData} from "../types/location";
+import {expectLocationToMatch} from "../types/location.spec";
 
 describe("LocationGatewayService", () => {
     let service: LocationGatewayService;

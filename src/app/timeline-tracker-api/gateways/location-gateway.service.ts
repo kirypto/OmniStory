@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {catchError, map, tap} from "rxjs/operators";
 
-import {Location, LocationData} from "../domain-types/location";
+import {Location, LocationData} from "../types/location";
 import {constructEncodedQueryParams, handleError} from "./util";
 import {LocationFilters} from "./filters";
 

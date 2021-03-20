@@ -5,7 +5,7 @@ import {of} from "rxjs";
 
 import {EntitySearchComponent} from "./entity-search.component";
 import {LocationGatewayService} from "../../gateways/location-gateway.service";
-import {Location, LocationData} from "../../domain-types/location";
+import {Location, LocationData} from "../../types/location";
 import {applicationDeclarations, applicationImports} from "../../../app.module";
 import SpyObj = jasmine.SpyObj;
 

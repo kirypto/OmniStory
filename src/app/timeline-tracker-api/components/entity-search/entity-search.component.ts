@@ -2,8 +2,8 @@ import {Component, Injectable} from "@angular/core";
 import {LocationGatewayService} from "../../gateways/location-gateway.service";
 import {from, Observable} from "rxjs";
 import {filter, map, mergeMap} from "rxjs/operators";
-import {Location} from "../../domain-types/location";
-import {IdentifiedEntity} from "../../domain-types/identified-entity";
+import {Location} from "../../types/location";
+import {IdentifiedEntity} from "../../types/identified-entity";
 import {LocationFilters} from "../../gateways/filters";
 
 @Component({
