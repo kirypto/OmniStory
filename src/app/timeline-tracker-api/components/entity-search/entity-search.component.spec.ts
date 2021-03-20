@@ -6,8 +6,8 @@ import {of} from "rxjs";
 import {EntitySearchComponent} from "./entity-search.component";
 import {LocationGatewayService} from "../../services/location-gateway.service";
 import {Location, LocationData} from "../../types/location";
-import {applicationDeclarations, applicationImports} from "../../../app.module";
 import SpyObj = jasmine.SpyObj;
+import {applicationDeclarations, applicationImports} from "../../../app-index";
 
 
 describe("EntityFinderComponent", () => {

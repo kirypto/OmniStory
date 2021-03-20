@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 
 import {LocationComponent} from "./location.component";
 import {Location, LocationData} from "../../types/location";
-import {applicationDeclarations, applicationImports} from "../../../app.module";
+import {applicationDeclarations, applicationImports} from "../../../app-index";
 
 describe("LocationComponent", () => {
     let component: LocationComponent;
