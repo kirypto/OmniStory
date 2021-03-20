@@ -9,6 +9,9 @@ import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule} from "@angular/forms";
 import {RouterModule, Routes} from "@angular/router";
 import {RoutePaths} from "./common/types/route-paths";
+import {MatButtonModule} from "@angular/material/button";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 /**
  * All http interceptor providers in outside-in order
@@ -40,6 +43,9 @@ export const applicationImports = [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    MatButtonModule,
+    MatSlideToggleModule,
+    FlexLayoutModule,
     RouterModule.forRoot(routes),
 ];
 
