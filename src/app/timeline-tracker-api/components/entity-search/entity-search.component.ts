@@ -1,10 +1,10 @@
 import {Component, Injectable} from "@angular/core";
-import {LocationGatewayService} from "../../gateways/location-gateway.service";
+import {LocationGatewayService} from "../../services/location-gateway.service";
 import {from, Observable} from "rxjs";
 import {filter, map, mergeMap} from "rxjs/operators";
 import {Location} from "../../types/location";
 import {IdentifiedEntity} from "../../types/identified-entity";
-import {LocationFilters} from "../../gateways/filters";
+import {LocationFilters} from "../../services/filters";
 
 @Component({
     selector: "app-entity-finder",
