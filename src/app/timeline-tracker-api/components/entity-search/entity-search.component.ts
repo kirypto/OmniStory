@@ -16,7 +16,7 @@ export class EntitySearchComponent {
     private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
     private _selectedEntity: IdentifiedEntity;
 
-    public advancedSearch = false;
+    public advancedSearch = true; // TODO: make this false by default once normal search is implemented
     public filterNameIs = "";
     public filterNameHas = "";
     public filterTaggedAll = "";

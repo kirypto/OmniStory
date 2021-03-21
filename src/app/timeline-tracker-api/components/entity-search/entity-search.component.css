@@ -13,7 +13,7 @@ button {
 
 div.filter span {
     display: inline-block;
-    min-width: 13ch;
+    min-width: 20ch;
 }
 
 span.spacer {

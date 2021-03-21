@@ -6,7 +6,7 @@
 
 
 <div *ngIf="!advancedSearch">
-  Search bar!
+<!--  <i><b>TODO:</b> Add a search bar </i>-->
 </div>
 <div *ngIf="advancedSearch">
   <span>
@@ -14,14 +14,14 @@
     <button (click)="findEntities('traveler')">Find Travelers</button>
     <button (click)="findEntities('event')">Find Events</button>
   </span>
-  <div class="filter"><span> Name Is:         </span> <input [(ngModel)]="filterNameIs" placeholder="exact name"></div>
-  <div class="filter"><span> Name Has:        </span> <input [(ngModel)]="filterNameHas" placeholder="occurs within name"></div>
-  <div class="filter"><span> Tagged All:      </span> <input [(ngModel)]="filterTaggedAll" placeholder="comma-delimited tags"></div>
-  <div class="filter"><span> Tagged Any:      </span> <input [(ngModel)]="filterTaggedAny" placeholder="comma-delimited tags"></div>
-  <div class="filter"><span> Tagged Only:     </span> <input [(ngModel)]="filterTaggedOnly" placeholder="comma-delimited tags"></div>
-  <div class="filter"><span> Tagged None:     </span> <input [(ngModel)]="filterTaggedNone" placeholder="comma-delimited tags"></div>
-  <div class="filter"><span> Span Includes:   </span> <input [(ngModel)]="filterSpanIncludes" placeholder="comma-delimited tags"></div>
-  <div class="filter"><span> Span Intersects: </span> <input [(ngModel)]="filterSpanIntersects" placeholder="comma-delimited tags"></div>
+  <div class="filter"><span> Name Is Exactly:     </span> <input [(ngModel)]="filterNameIs" placeholder="exact name text"></div>
+  <div class="filter"><span> Name Contains:       </span> <input [(ngModel)]="filterNameHas" placeholder="text found within name"></div>
+  <div class="filter"><span> Tagged With All Of:  </span> <input [(ngModel)]="filterTaggedAll" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Tagged With Any Of:  </span> <input [(ngModel)]="filterTaggedAny" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Tagged With Only Of: </span> <input [(ngModel)]="filterTaggedOnly" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Tagged With None Of: </span> <input [(ngModel)]="filterTaggedNone" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Span Includes:       </span> <input [(ngModel)]="filterSpanIncludes" placeholder="position object"></div>
+  <div class="filter"><span> Span Intersects:     </span> <input [(ngModel)]="filterSpanIntersects" placeholder="range object"></div>
 </div>
 
 
