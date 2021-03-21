@@ -16,7 +16,7 @@ export class EntitySearchComponent {
     private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
     private _selectedEntity: IdentifiedEntity;
 
-    private _areFiltersVisible = false;
+    public advancedSearch = false;
     public filterNameIs = "";
     public filterNameHas = "";
     public filterTaggedAll = "";
@@ -65,15 +65,7 @@ export class EntitySearchComponent {
     public showEntity(entityId: string): void {
         this._selectedEntity = this._entitiesById.get(entityId);
         this._entitiesById.clear();
-        this._areFiltersVisible = false;
-    }
-
-    public get areFiltersVisible(): boolean {
-        return this._areFiltersVisible;
-    }
-
-    public toggleFilterVisibility(): void {
-        this._areFiltersVisible = !this._areFiltersVisible;
+        this.advancedSearch = false;
     }
 
     private findLocations(): Observable<Location> {
