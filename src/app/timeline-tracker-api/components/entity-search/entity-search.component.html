@@ -30,10 +30,6 @@
 
 <ul>
   <li *ngFor="let idNamePair of entityIdsAndNames | keyvalue">
-    <code> {{idNamePair.key}} </code><i> ({{idNamePair.value}}) </i>
-    <button (click)="showEntity(idNamePair.key)">Show Details</button>
+    <a routerLink="/location/{{idNamePair.key}}"><button mat-raised-button color="primary">{{idNamePair.value}}</button></a>
   </li>
 </ul>
-<div *ngIf="selectedLocation !== undefined">
-  <app-location [_location]="selectedLocation"></app-location>
-</div>

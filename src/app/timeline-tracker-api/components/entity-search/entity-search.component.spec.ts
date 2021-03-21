@@ -118,7 +118,7 @@ describe("EntityFinderComponent", () => {
                 // Arrange
                 const expectedFilterValue = "Foobar";
                 // Set 'name is' because it is the first input field in the DOM hierarchy and thus found first
-                if (!component.areFiltersVisible) { component.toggleFilterVisibility(); }
+                component.advancedSearch = true;
 
                 // Act
                 component.filterNameIs = expectedFilterValue;
@@ -130,7 +130,7 @@ describe("EntityFinderComponent", () => {
 
             it("should update field in class when text entered in ui", fakeAsync(() => {
                 // Arrange
-                if (!component.areFiltersVisible) { component.toggleFilterVisibility(); }
+                component.advancedSearch = true;
                 const expectedFilterValue = "Foobar";
 
                 // Act

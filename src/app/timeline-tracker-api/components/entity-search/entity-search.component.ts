@@ -14,7 +14,6 @@ import {LocationFilters} from "../../services/filters";
 @Injectable({providedIn: "root"})
 export class EntitySearchComponent {
     private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
-    private _selectedEntity: IdentifiedEntity;
 
     public advancedSearch = true; // TODO: make this false by default once normal search is implemented
     public filterNameIs = "";
@@ -41,13 +40,8 @@ export class EntitySearchComponent {
         return namesById;
     }
 
-    public get selectedLocation(): Location | undefined {
-        return this._selectedEntity instanceof Location ? this._selectedEntity : undefined;
-    }
-
     public findEntities(entityType: string): void {
         this._entitiesById.clear();
-        this._selectedEntity = undefined;
 
         let entityObservable: Observable<IdentifiedEntity>;
         if (entityType === "location") {
@@ -60,12 +54,6 @@ export class EntitySearchComponent {
             filter((value) => value !== undefined),
         ).subscribe((location) => this._entitiesById.set(location.id, location));
 
-    }
-
-    public showEntity(entityId: string): void {
-        this._selectedEntity = this._entitiesById.get(entityId);
-        this._entitiesById.clear();
-        this.advancedSearch = false;
     }
 
     private findLocations(): Observable<Location> {
