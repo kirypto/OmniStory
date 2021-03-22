@@ -33,6 +33,7 @@ export const applicationProviders = [
 const routes: Routes = [
     {path: RoutePaths.main, component: MainComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
+    {path: RoutePaths.location_locationId, component: LocationComponent},
     {path: "**", component: NotFoundComponent},
 ];
 
