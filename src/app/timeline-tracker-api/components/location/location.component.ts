@@ -15,19 +15,21 @@ import {handleError} from "../../services/util";
     styleUrls: ["./location.component.css"]
 })
 export class LocationComponent implements OnInit, OnDestroy {
-    private _routeSubscription: Subscription;
+    private _isDataReady = false;
+    private _locationRetrievalSubscription: Subscription;
+
     private _location: Location;
 
-    constructor(
+    public constructor(
         private _locationGateway: LocationGatewayService,
         private _route: ActivatedRoute,
         private _router: Router,
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         let locationIdParam = "";
-        this._routeSubscription = this._route.params
+        this._locationRetrievalSubscription = this._route.params
             .pipe(
                 map((params) => params.locationId),
                 tap((locationId: string) => locationIdParam = locationId),
@@ -40,34 +42,39 @@ export class LocationComponent implements OnInit, OnDestroy {
                     this._router.navigateByUrl(`/not-found/${locationIdParam}`).then();
                 }
                 this._location = location;
+                this._isDataReady = true;
             });
     }
 
-    ngOnDestroy(): void {
-        this._routeSubscription.unsubscribe();
+    public ngOnDestroy(): void {
+        this._locationRetrievalSubscription.unsubscribe();
     }
 
-    get id(): string {
+    public get isDataReady(): boolean {
+        return this._isDataReady;
+    }
+
+    public get id(): string {
         return this._location.id;
     }
 
-    get name(): string {
+    public get name(): string {
         return this._location.name;
     }
 
-    get description(): string {
+    public get description(): string {
         return this._location.description;
     }
 
-    get span(): Span {
+    public get span(): Span {
         return this._location.span;
     }
 
-    get tags(): Tags {
+    public get tags(): Tags {
         return this._location.tags;
     }
 
-    get metadata(): Metadata {
+    public get metadata(): Metadata {
         return this._location.metadata;
     }
 }
