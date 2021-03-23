@@ -19,6 +19,8 @@ export class LocationComponent implements OnInit, OnDestroy {
     private _locationRetrievalSubscription: Subscription;
 
     private _location: Location;
+    private _name: string;
+    private _description: string;
 
     public constructor(
         private _locationGateway: LocationGatewayService,
@@ -40,6 +42,7 @@ export class LocationComponent implements OnInit, OnDestroy {
             .subscribe((location) => {
                 if (location === undefined) {
                     this._router.navigateByUrl(`/not-found/${locationIdParam}`).then();
+                    return;
                 }
                 this.initialize(location);
             });
@@ -47,7 +50,10 @@ export class LocationComponent implements OnInit, OnDestroy {
 
     private initialize(location: Location): void {
         this._location = location;
+        this._name = location.name;
+        this._description = location.description;
         this._isDataReady = true;
+
     }
 
     public ngOnDestroy(): void {
@@ -63,11 +69,19 @@ export class LocationComponent implements OnInit, OnDestroy {
     }
 
     public get name(): string {
-        return this._location.name;
+        return this._name;
+    }
+
+    public set name(value: string) {
+        this._name = value;
     }
 
     public get description(): string {
         return this._location.description;
+    }
+
+    public set description(value: string) {
+        this._description = value;
     }
 
     public get span(): Span {
@@ -80,5 +94,10 @@ export class LocationComponent implements OnInit, OnDestroy {
 
     public get metadata(): Metadata {
         return this._location.metadata;
+    }
+
+    public get isDifferentFromData(): boolean {
+        return this._location.name !== this._name.trim()
+            || this._location.description !== this._description.trim();
     }
 }

@@ -12,6 +12,8 @@ import {RoutePaths} from "./common/types/route-paths";
 import {MatButtonModule} from "@angular/material/button";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatInputModule} from "@angular/material/input";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 /**
  * All http interceptor providers in outside-in order
@@ -47,6 +49,8 @@ export const applicationImports = [
     MatButtonModule,
     MatSlideToggleModule,
     FlexLayoutModule,
+    MatInputModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(routes),
 ];
 

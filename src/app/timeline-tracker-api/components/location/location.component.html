@@ -1,15 +1,20 @@
 <div *ngIf="!isDataReady"> Loading... </div>
 <div *ngIf="isDataReady">
-  <div>
-    <b>Id: </b><code>{{id}}</code>
+  <div fxLayout="column" fxLayoutAlign="space-evenly stretch">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" [(ngModel)]="name" name="name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Description" [(ngModel)]="description" name="description"></textarea>
+    </mat-form-field>
+    <div fxLayout="row" fxLayoutAlign="end stretch">
+      <button mat-raised-button color="accent" [disabled]="!isDifferentFromData"> Save </button>
+    </div>
   </div>
-  <div>
-    <b>Name: </b>{{name}}
-  </div>
-  <div>
-    <b>Description: </b><br>
-    <pre>{{description}}</pre>
-  </div>
+
   <div>
     <b>Span:</b>
     <ul>
