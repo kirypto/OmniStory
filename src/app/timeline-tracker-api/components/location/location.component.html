@@ -3,13 +3,13 @@
   <div fxLayout="column" fxLayoutAlign="space-evenly stretch">
 
 
-    <mat-form-field>
+    <mat-form-field color="accent">
       <mat-label>Name</mat-label>
       <input matInput placeholder="Name" [(ngModel)]="name" name="name">
     </mat-form-field>
 
 
-    <mat-form-field>
+    <mat-form-field color="accent">
       <mat-label>Description</mat-label>
       <textarea matInput cdkTextareaAutosize placeholder="Description" [(ngModel)]="description" name="description"></textarea>
     </mat-form-field>
@@ -75,7 +75,7 @@
     <div class="mat-headline">Other Data</div>
     <div fxLayout="row" fxLayoutAlign="center">
       <div fxFlex="95">
-        <div fxLayout="row" fxLayoutAlign="space-between" *ngFor="let item of metadataList; index as i">
+        <div fxLayout="row" fxLayoutAlign="space-between" *ngFor="let metadataPair of metadataList; index as i">
           <mat-form-field fxFlex="25">
             <mat-label>Key</mat-label>
             <input matInput placeholder="Key" [(ngModel)]="metadataList[i][0]" (focusout)="sortMetadata()">
@@ -84,7 +84,7 @@
             <mat-label>Value</mat-label>
             <input matInput placeholder="Val" [(ngModel)]="metadataList[i][1]" (focusout)="sortMetadata()">
           </mat-form-field>
-          <button mat-fab color="warn" aria-label="Example icon button with a delete icon" (click)="deleteMetadata(i)">
+          <button mat-fab color="warn" class="delete-button-small" (click)="deleteMetadata(metadataPair)">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
@@ -94,15 +94,36 @@
       </div>
     </div>
 
+
+    <div class="mat-headline">Tags</div>
+    <div fxLayout="row" fxLayoutAlign="center">
+      <div fxFlex="95">
+        <div fxLayout="row wrap">
+          <span fxLayout="row" fxLayoutAlign="center center" fxFlex.md="30" fxFlex.gt-md="20" fxFlex.lt-md="45"
+                *ngFor="let tag of tagList; index as i; trackBy:identifyTag">
+            <mat-icon svgIcon="tag" color="accent"></mat-icon>
+            <span fxFlex="1"></span>
+            <mat-form-field fxFlex="60">
+              <input matInput [(ngModel)]="tagList[i]" (focusout)="sortTags()">
+            </mat-form-field>
+            <span fxFlex="1"></span>
+            <button mat-fab color="warn" class="delete-button-tiny" (click)="deleteTag(tag)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </span>
+          <span fxLayout="row" fxLayoutAlign="center center" fxFlex.md="30" fxFlex.gt-md="20" fxFlex.lt-md="45">
+            <span fxFlex="10"></span>
+            <span fxLayout="column" fxFlex="80">
+              <button fxFlex="50" mat-raised-button color="primary" (click)="insertNewTag()">Add New</button>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+
     <div fxLayout="row" fxLayoutAlign="end stretch">
       <button mat-raised-button color="accent" [disabled]="!isDifferentFromPersistedLocation"> Save</button>
     </div>
-  </div>
-
-  <div>
-    <b>Tags: </b>
-    <ul>
-      <li *ngFor="let tag of tags">{{tag}}</li>
-    </ul>
   </div>
 </div>

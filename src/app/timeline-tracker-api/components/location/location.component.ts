@@ -5,7 +5,7 @@ import {Subscription} from "rxjs";
 import {catchError, map, mergeMap, tap} from "rxjs/operators";
 
 import {RoutePaths} from "../../../common/types/route-paths";
-import {Location, Span, Tags} from "../../types/location";
+import {Location} from "../../types/location";
 import {LocationGatewayService} from "../../services/location-gateway.service";
 import {handleError} from "../../services/util";
 
@@ -32,6 +32,7 @@ export class LocationComponent implements OnInit, OnDestroy {
     public spanRealityLow: string;
     public spanRealityHigh: string;
     public metadataList: [string, string][];
+    public tagList: string[];
 
     public constructor(
         private _locationGateway: LocationGatewayService,
@@ -79,6 +80,11 @@ export class LocationComponent implements OnInit, OnDestroy {
             this.metadataList.push([key, val]);
         }
         this.sortMetadata();
+        this.tagList = [];
+        for (const tag of location.tags) {
+            this.tagList.push(tag);
+        }
+        this.sortTags();
 
         this._isDataReady = true;
     }
@@ -91,19 +97,12 @@ export class LocationComponent implements OnInit, OnDestroy {
         return this._isDataReady;
     }
 
-    public get span(): Span {
-        return this._location.span;
-    }
-
-    public get tags(): Tags {
-        return this._location.tags;
-    }
-
     public insertNewMetadata(): void {
         this.metadataList.push(["key", "value"]);
     }
 
-    public deleteMetadata(index: number): void {
+    public deleteMetadata(metadataPair: [string, string]): void {
+        const index = this.metadataList.indexOf(metadataPair);
         this.metadataList.splice(index, 1);
     }
 
@@ -111,6 +110,29 @@ export class LocationComponent implements OnInit, OnDestroy {
         this.metadataList.sort(([aKey]: [string, string], [bKey]: [string, string]) => {
             return aKey.localeCompare(bKey);
         });
+    }
+
+    public sortTags(): void {
+        console.log("Sorting Tags");
+        this.tagList.sort((tagA: string, tagB: string) => {
+            return tagA.localeCompare(tagB);
+        });
+        console.dir(this.tagList);
+    }
+
+    public insertNewTag(): void {
+        this.tagList.push("tag");
+    }
+
+    public deleteTag(tag: string): void {
+        console.log(`Deleting ${tag}`);
+        const index = this.tagList.indexOf(tag);
+        this.tagList.splice(index, 1);
+    }
+
+    public identifyTag(index: number, _tag: string): number {
+        // Identify using the index so that Angular does not re-render mid typing causing focus loss after each character change
+        return index;
     }
 
     public get isDifferentFromPersistedLocation(): boolean {

@@ -42,8 +42,6 @@ describe("LocationComponent", () => {
             // Assert
             expect(component.name).toBe(sampleLocation.name);
             expect(component.description).toBe(sampleLocation.description);
-            expect(component.span).toBe(sampleLocation.span);
-            expect(component.tags).toBe(sampleLocation.tags);
         });
     });
 });

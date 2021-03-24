@@ -14,3 +14,11 @@ pre {
     white-space: -o-pre-wrap;
     word-wrap: break-word;
 }
+
+button.delete-button-small {
+    transform: scale(0.85);
+}
+
+button.delete-button-tiny {
+    transform: scale(0.7);
+}
