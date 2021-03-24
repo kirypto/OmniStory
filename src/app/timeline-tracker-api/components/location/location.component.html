@@ -68,8 +68,27 @@
     </div>
 
 
+    <div class="mat-headline">Other Data</div>
+    <div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let item of metadataList; index as i">
+      <mat-form-field fxFlex="22">
+        <mat-label>Key</mat-label>
+        <input matInput placeholder="Key" [(ngModel)]="metadataList[i][0]" (focusout)="sortMetadata()">
+      </mat-form-field>
+      <mat-form-field fxFlex="60">
+        <mat-label>Value</mat-label>
+        <input matInput placeholder="Val" [(ngModel)]="metadataList[i][1]" (focusout)="sortMetadata()">
+      </mat-form-field>
+      <button mat-fab color="warn" aria-label="Example icon button with a delete icon" (click)="deleteMetadata(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-evenly">
+      <button fxFlex="22" mat-raised-button color="primary" (click)="insertNewMetadata()"> Add New </button>
+      <span fxFlex="68"></span>
+    </div>
+
     <div fxLayout="row" fxLayoutAlign="end stretch">
-      <button mat-raised-button color="accent" [disabled]="!isDifferentFromData"> Save</button>
+      <button mat-raised-button color="accent" [disabled]="!isDifferentFromPersistedLocation"> Save</button>
     </div>
   </div>
 
@@ -77,12 +96,6 @@
     <b>Tags: </b>
     <ul>
       <li *ngFor="let tag of tags">{{tag}}</li>
-    </ul>
-  </div>
-  <div>
-    <b>Metadata: </b>
-    <ul>
-      <li *ngFor="let pair of metadata | keyvalue">{{pair.key}}: {{pair.value}}</li>
     </ul>
   </div>
 </div>

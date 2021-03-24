@@ -5,7 +5,7 @@ import {Subscription} from "rxjs";
 import {catchError, map, mergeMap, tap} from "rxjs/operators";
 
 import {RoutePaths} from "../../../common/types/route-paths";
-import {Location, Metadata, Span, Tags} from "../../types/location";
+import {Location, Span, Tags} from "../../types/location";
 import {LocationGatewayService} from "../../services/location-gateway.service";
 import {handleError} from "../../services/util";
 
@@ -31,6 +31,7 @@ export class LocationComponent implements OnInit, OnDestroy {
     public spanContinuumHigh: string;
     public spanRealityLow: string;
     public spanRealityHigh: string;
+    public metadataList: [string, string][];
 
     public constructor(
         private _locationGateway: LocationGatewayService,
@@ -54,6 +55,7 @@ export class LocationComponent implements OnInit, OnDestroy {
                     this._router.navigateByUrl(`/not-found/${locationIdParam}`).then();
                     return;
                 }
+
                 this.initialize(location);
             });
     }
@@ -72,6 +74,11 @@ export class LocationComponent implements OnInit, OnDestroy {
         this.spanContinuumHigh = location.span.continuum.high.toString();
         this.spanRealityLow = location.span.reality.low.toString();
         this.spanRealityHigh = location.span.reality.high.toString();
+        this.metadataList = [];
+        for (const [key, val] of location.metadata.entries()) {
+            this.metadataList.push([key, val]);
+        }
+        this.sortMetadata();
 
         this._isDataReady = true;
     }
@@ -92,38 +99,44 @@ export class LocationComponent implements OnInit, OnDestroy {
         return this._location.tags;
     }
 
-    public get metadata(): Metadata {
-        return this._location.metadata;
+    public insertNewMetadata(): void {
+        this.metadataList.push(["key", "value"]);
     }
 
-    public get isDifferentFromData(): boolean {
-        const spanLatitudeLowInt = parseInt(this.spanLatitudeLow, 10);
-        const spanLatitudeHighInt = parseInt(this.spanLatitudeHigh, 10);
-        const spanLongitudeLowInt = parseInt(this.spanLongitudeLow, 10);
-        const spanLongitudeHighInt = parseInt(this.spanLongitudeHigh, 10);
-        const spanAltitudeLowInt = parseInt(this.spanAltitudeLow, 10);
-        const spanAltitudeHighInt = parseInt(this.spanAltitudeHigh, 10);
-        const spanContinuumLowInt = parseInt(this.spanContinuumLow, 10);
-        const spanContinuumHighInt = parseInt(this.spanContinuumHigh, 10);
-        const spanRealityLowInt = parseInt(this.spanRealityLow, 10);
-        const spanRealityHighInt = parseInt(this.spanRealityHigh, 10);
+    public deleteMetadata(index: number): void {
+        this.metadataList.splice(index, 1);
+    }
+
+    public sortMetadata(): void {
+        this.metadataList.sort(([aKey]: [string, string], [bKey]: [string, string]) => {
+            return aKey.localeCompare(bKey);
+        });
+    }
+
+    public get isDifferentFromPersistedLocation(): boolean {
+        const metadataObj: { [key: string]: string } = {};
+        for (const [key, value] of this.metadataList) {
+            metadataObj[key] = value;
+        }
+        const locationData = {
+            id: this._location.id,
+            name: this.name,
+            description: this.description,
+            span: {
+                latitude: {low: parseFloat(this.spanLatitudeLow), high: parseFloat(this.spanLatitudeHigh)},
+                longitude: {low: parseFloat(this.spanLongitudeLow), high: parseFloat(this.spanLongitudeHigh)},
+                altitude: {low: parseFloat(this.spanAltitudeLow), high: parseFloat(this.spanAltitudeHigh)},
+                continuum: {low: parseFloat(this.spanContinuumLow), high: parseFloat(this.spanContinuumHigh)},
+                reality: {low: parseFloat(this.spanRealityLow), high: parseFloat(this.spanRealityHigh)},
+            },
+            tags: [...this._location.tags],
+            metadata: metadataObj,
+        };
 
         // TODO add better validation: non-empty, NaN, etc
         const isValid = true;
 
-        const isIdentical = this._location.name === this.name
-            && this._location.description === this.description
-            && this._location.span.latitude.low === spanLatitudeLowInt
-            && this._location.span.latitude.high === spanLatitudeHighInt
-            && this._location.span.longitude.low === spanLongitudeLowInt
-            && this._location.span.longitude.high === spanLongitudeHighInt
-            && this._location.span.altitude.low === spanAltitudeLowInt
-            && this._location.span.altitude.high === spanAltitudeHighInt
-            && this._location.span.continuum.low === spanContinuumLowInt
-            && this._location.span.continuum.high === spanContinuumHighInt
-            && this._location.span.reality.low === spanRealityLowInt
-            && this._location.span.reality.high === spanRealityHighInt
-        ;
+        const isIdentical = this._location.equals(new Location(locationData));
         return isValid && !isIdentical;
     }
 }
