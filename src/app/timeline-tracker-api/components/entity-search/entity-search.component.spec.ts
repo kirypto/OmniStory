@@ -5,31 +5,18 @@ import {of} from "rxjs";
 
 import {EntitySearchComponent} from "./entity-search.component";
 import {LocationGatewayService} from "../../services/location-gateway.service";
-import {Location, LocationData} from "../../types/location";
-import SpyObj = jasmine.SpyObj;
+import {Location} from "../../types/location";
 import {applicationDeclarations, applicationImports} from "../../../app-index";
+import {sampleLocationData} from "../../types/location.spec";
+
+import SpyObj = jasmine.SpyObj;
 
 
 describe("EntityFinderComponent", () => {
     let component: EntitySearchComponent;
     let fixture: ComponentFixture<EntitySearchComponent>;
     let locationGatewayServiceMock: SpyObj<LocationGatewayService>;
-
-    const locationData: LocationData = {
-        id: "location-00000000-0000-4000-8000-000000000000",
-        name: "a name",
-        description: "a description",
-        span: {
-            latitude: {low: 11034.738, high: 11066.318},
-            longitude: {low: 5457.91, high: 5483.174},
-            altitude: {low: 0.972, high: 1.034},
-            continuum: {low: -9383.0, high: Infinity},
-            reality: {low: 0, high: 0},
-        },
-        tags: new Set(["tag1", "tag2"]),
-        metadata: new Map(Object.entries({meta_key: "meta_val"}))
-    };
-    const location = new Location(locationData);
+    const location = new Location(sampleLocationData);
 
     beforeEach(async () => {
         const locationGatewaySpy = jasmine.createSpyObj("LocationGatewayService", [

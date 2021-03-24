@@ -6,8 +6,8 @@ export interface Tags extends Set<string> {}
 
 
 export interface Range {
-    "low": number;
-    "high": number;
+    low: number;
+    high: number;
 }
 
 export interface Span {
@@ -23,8 +23,8 @@ export interface LocationData {
     name: string;
     description: string;
     span: Span;
-    tags: Tags;
-    metadata: Metadata;
+    tags: string[];
+    metadata: { [key: string]: string };
 }
 
 function validateNeitherNullNorUndefined<T>(name: string, obj: T): T {
@@ -57,8 +57,8 @@ export class Location implements IdentifiedEntity {
         this._name = validateNeitherNullNorUndefined("name", locationData.name);
         this._description = validateNeitherNullNorUndefined("description", locationData.description);
         this._span = validateNeitherNullNorUndefined("span", locationData.span);
-        this._tags = validateNeitherNullNorUndefined("tags", locationData.tags);
-        this._metadata = validateNeitherNullNorUndefined("metadata", locationData.metadata);
+        this._tags = new Set<string>(validateNeitherNullNorUndefined("tags", locationData.tags));
+        this._metadata = new Map<string, string>(Object.entries(validateNeitherNullNorUndefined("metadata", locationData.metadata)));
     }
 
     get id(): string {
@@ -83,5 +83,28 @@ export class Location implements IdentifiedEntity {
 
     get metadata(): Metadata {
         return this._metadata;
+    }
+
+    public equals(other: any): boolean {
+        return other instanceof Location
+            && this._id === other._id
+            && this._name === other._name
+            && this._description === other._description
+            && this._span.latitude.low === other._span.latitude.low
+            && this._span.latitude.high === other._span.latitude.high
+            && this._span.longitude.low === other._span.longitude.low
+            && this._span.longitude.high === other._span.longitude.high
+            && this._span.altitude.low === other._span.altitude.low
+            && this._span.altitude.high === other._span.altitude.high
+            && this._span.continuum.low === other._span.continuum.low
+            && this._span.continuum.high === other._span.continuum.high
+            && this._span.reality.low === other._span.reality.low
+            && this._span.reality.high === other._span.reality.high
+            && this._tags.size === other._tags.size
+            && [...this._tags].every(tag => other._tags.has(tag))
+            && this._metadata.size === other._metadata.size
+            && [...this._metadata.keys()].every(metadataKey => other._metadata.has(metadataKey))
+            && [...this._metadata.keys()].every(metadataKey => this._metadata.get(metadataKey) === other._metadata.get(metadataKey))
+            ;
     }
 }

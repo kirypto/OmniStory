@@ -1,9 +1,9 @@
 import {TestBed} from "@angular/core/testing";
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 
 import {LocationGatewayService} from "./location-gateway.service";
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
-import {Location, LocationData} from "../types/location";
-import {expectLocationToMatch} from "../types/location.spec";
+import {Location} from "../types/location";
+import {sampleLocationData} from "../types/location.spec";
 
 describe("LocationGatewayService", () => {
     let service: LocationGatewayService;
@@ -25,25 +25,12 @@ describe("LocationGatewayService", () => {
 
 
     describe("getLocation", () => {
-        const locationId = "location-00000000-0000-4000-8000-000000000000";
-        const locationData: LocationData = {
-            id: locationId,
-            name: "a name",
-            description: "a description",
-            span: {
-                latitude: {low: 11034.738, high: 11066.318},
-                longitude: {low: 5457.91, high: 5483.174},
-                altitude: {low: 0.972, high: 1.034},
-                continuum: {low: -9383.0, high: Infinity},
-                reality: {low: 0, high: 0},
-            },
-            tags: new Set(["tag1", "tag2"]),
-            metadata: new Map(Object.entries({meta_key: "meta_val"}))
-        };
+        const expectedLocation = new Location(sampleLocationData);
+        const locationId = expectedLocation.id;
 
         it("should return Location when api returns OK and location data", () => {
             // Arrange
-            const body = locationData;
+            const body = sampleLocationData;
 
             // Act
             let actualLocation: Location;
@@ -53,8 +40,7 @@ describe("LocationGatewayService", () => {
             const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
             expect(req.request.method).toBe("GET");
             req.flush(body, {status: 200, statusText: "OK"});
-            // noinspection JSUnusedAssignment
-            expectLocationToMatch(actualLocation, locationData);
+            expect(actualLocation.equals(expectedLocation)).toBeTrue();
         });
 
         it("should return undefined when api returns 404", () => {
@@ -67,7 +53,6 @@ describe("LocationGatewayService", () => {
             const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
             expect(req.request.method).toBe("GET");
             req.flush(null, {status: 404, statusText: "Not Found"});
-            // noinspection JSUnusedAssignment
             expect(actualLocation).toBeUndefined();
         });
     });

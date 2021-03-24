@@ -41,9 +41,13 @@ export class LocationComponent implements OnInit, OnDestroy {
                 if (location === undefined) {
                     this._router.navigateByUrl(`/not-found/${locationIdParam}`).then();
                 }
-                this._location = location;
-                this._isDataReady = true;
+                this.initialize(location);
             });
+    }
+
+    private initialize(location: Location): void {
+        this._location = location;
+        this._isDataReady = true;
     }
 
     public ngOnDestroy(): void {
