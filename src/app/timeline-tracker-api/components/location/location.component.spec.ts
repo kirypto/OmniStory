@@ -40,7 +40,6 @@ describe("LocationComponent", () => {
 
             // Act
             // Assert
-            expect(component.id).toBe(sampleLocation.id);
             expect(component.name).toBe(sampleLocation.name);
             expect(component.description).toBe(sampleLocation.description);
             expect(component.span).toBe(sampleLocation.span);
