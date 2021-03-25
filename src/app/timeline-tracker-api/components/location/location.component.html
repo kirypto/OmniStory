@@ -16,75 +16,82 @@
 
 
     <div class="mat-headline">Span</div>
-    <div fxLayout="row" fxLayoutAlign="space-evenly">
-      <mat-form-field fxFlex="45">
-        <mat-label>Latitude Low</mat-label>
-        <input matInput placeholder="Latitude Low" [(ngModel)]="spanLatitudeLow" name="spanLatitudeLow">
-      </mat-form-field>
-      <mat-form-field fxFlex="45">
-        <mat-label>Latitude High</mat-label>
-        <input matInput placeholder="Latitude High" [(ngModel)]="spanLatitudeHigh" name="spanLatitudeHigh">
-      </mat-form-field>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="space-evenly">
-      <mat-form-field fxFlex="45">
-        <mat-label>Longitude Low</mat-label>
-        <input matInput placeholder="Longitude Low" [(ngModel)]="spanLongitudeLow" name="spanLongitudeLow">
-      </mat-form-field>
-      <mat-form-field fxFlex="45">
-        <mat-label>Longitude High</mat-label>
-        <input matInput placeholder="Longitude High" [(ngModel)]="spanLongitudeHigh" name="spanLongitudeHigh">
-      </mat-form-field>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="space-evenly">
-      <mat-form-field fxFlex="45">
-        <mat-label>Altitude Low</mat-label>
-        <input matInput placeholder="Altitude Low" [(ngModel)]="spanAltitudeLow" name="spanAltitudeLow">
-      </mat-form-field>
-      <mat-form-field fxFlex="45">
-        <mat-label>Altitude High</mat-label>
-        <input matInput placeholder="Altitude High" [(ngModel)]="spanAltitudeHigh" name="spanAltitudeHigh">
-      </mat-form-field>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="space-evenly">
-      <mat-form-field fxFlex="45">
-        <mat-label>Continuum Low</mat-label>
-        <input matInput placeholder="Continuum Low" [(ngModel)]="spanContinuumLow" name="spanContinuumLow">
-      </mat-form-field>
-      <mat-form-field fxFlex="45">
-        <mat-label>Continuum High</mat-label>
-        <input matInput placeholder="Continuum High" [(ngModel)]="spanContinuumHigh" name="spanContinuumHigh">
-      </mat-form-field>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="space-evenly">
-      <mat-form-field fxFlex="45">
-        <mat-label>Reality Low</mat-label>
-        <input matInput placeholder="Reality Low" [(ngModel)]="spanRealityLow" name="spanRealityLow">
-      </mat-form-field>
-      <mat-form-field fxFlex="45">
-        <mat-label>Reality High</mat-label>
-        <input matInput placeholder="Reality High" [(ngModel)]="spanRealityHigh" name="spanRealityHigh">
-      </mat-form-field>
+    <div fxLayout="row" fxLayoutAlign="center">
+      <div fxFlex="95">
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="48">
+            <mat-label>Latitude Low</mat-label>
+            <input matInput placeholder="Latitude Low" [(ngModel)]="spanLatitudeLow" name="spanLatitudeLow">
+          </mat-form-field>
+          <mat-form-field fxFlex="48">
+            <mat-label>Latitude High</mat-label>
+            <input matInput placeholder="Latitude High" [(ngModel)]="spanLatitudeHigh" name="spanLatitudeHigh">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="48">
+            <mat-label>Longitude Low</mat-label>
+            <input matInput placeholder="Longitude Low" [(ngModel)]="spanLongitudeLow" name="spanLongitudeLow">
+          </mat-form-field>
+          <mat-form-field fxFlex="48">
+            <mat-label>Longitude High</mat-label>
+            <input matInput placeholder="Longitude High" [(ngModel)]="spanLongitudeHigh" name="spanLongitudeHigh">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="48">
+            <mat-label>Altitude Low</mat-label>
+            <input matInput placeholder="Altitude Low" [(ngModel)]="spanAltitudeLow" name="spanAltitudeLow">
+          </mat-form-field>
+          <mat-form-field fxFlex="48">
+            <mat-label>Altitude High</mat-label>
+            <input matInput placeholder="Altitude High" [(ngModel)]="spanAltitudeHigh" name="spanAltitudeHigh">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="48">
+            <mat-label>Continuum Low</mat-label>
+            <input matInput placeholder="Continuum Low" [(ngModel)]="spanContinuumLow" name="spanContinuumLow">
+          </mat-form-field>
+          <mat-form-field fxFlex="48">
+            <mat-label>Continuum High</mat-label>
+            <input matInput placeholder="Continuum High" [(ngModel)]="spanContinuumHigh" name="spanContinuumHigh">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="48">
+            <mat-label>Reality Low</mat-label>
+            <input matInput placeholder="Reality Low" [(ngModel)]="spanRealityLow" name="spanRealityLow">
+          </mat-form-field>
+          <mat-form-field fxFlex="48">
+            <mat-label>Reality High</mat-label>
+            <input matInput placeholder="Reality High" [(ngModel)]="spanRealityHigh" name="spanRealityHigh">
+          </mat-form-field>
+        </div>
+      </div>
     </div>
 
 
     <div class="mat-headline">Other Data</div>
-    <div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let item of metadataList; index as i">
-      <mat-form-field fxFlex="22">
-        <mat-label>Key</mat-label>
-        <input matInput placeholder="Key" [(ngModel)]="metadataList[i][0]" (focusout)="sortMetadata()">
-      </mat-form-field>
-      <mat-form-field fxFlex="60">
-        <mat-label>Value</mat-label>
-        <input matInput placeholder="Val" [(ngModel)]="metadataList[i][1]" (focusout)="sortMetadata()">
-      </mat-form-field>
-      <button mat-fab color="warn" aria-label="Example icon button with a delete icon" (click)="deleteMetadata(i)">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="space-evenly">
-      <button fxFlex="22" mat-raised-button color="primary" (click)="insertNewMetadata()"> Add New </button>
-      <span fxFlex="68"></span>
+    <div fxLayout="row" fxLayoutAlign="center">
+      <div fxFlex="95">
+        <div fxLayout="row" fxLayoutAlign="space-between" *ngFor="let item of metadataList; index as i">
+          <mat-form-field fxFlex="25">
+            <mat-label>Key</mat-label>
+            <input matInput placeholder="Key" [(ngModel)]="metadataList[i][0]" (focusout)="sortMetadata()">
+          </mat-form-field>
+          <mat-form-field fxFlex="65">
+            <mat-label>Value</mat-label>
+            <input matInput placeholder="Val" [(ngModel)]="metadataList[i][1]" (focusout)="sortMetadata()">
+          </mat-form-field>
+          <button mat-fab color="warn" aria-label="Example icon button with a delete icon" (click)="deleteMetadata(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start">
+          <button fxFlex="25" mat-raised-button color="primary" (click)="insertNewMetadata()"> Add New</button>
+        </div>
+      </div>
     </div>
 
     <div fxLayout="row" fxLayoutAlign="end stretch">
