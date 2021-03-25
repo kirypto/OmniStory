@@ -1,5 +1,6 @@
 import {Component, Injectable, OnInit} from "@angular/core";
-import {Title} from "@angular/platform-browser";
+import {DomSanitizer, Title} from "@angular/platform-browser";
+import {MatIconRegistry} from "@angular/material/icon";
 
 @Component({
     selector: "app-root",
@@ -12,7 +13,10 @@ export class AppComponent implements OnInit {
 
     constructor(
         private _titleService: Title,
+        private _matIconRegistry: MatIconRegistry,
+        private domSanitizer: DomSanitizer,
     ) {
+        this._matIconRegistry.addSvgIcon("tag", domSanitizer.bypassSecurityTrustResourceUrl("assets/svg/tag.svg"));
     }
 
     ngOnInit(): void {
