@@ -1,4 +1,4 @@
-<div *ngIf="!isDataReady"> Loading...</div>
+<div *ngIf="!isDataReady">Loading...</div>
 <div *ngIf="isDataReady">
   <div fxLayout="column" fxLayoutAlign="space-evenly stretch">
 
@@ -70,7 +70,7 @@
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between">
           <div fxFlex="48" fxFlex.lt-md="100"
-            fxLayout="row" fxLayoutAlign="space-between">
+               fxLayout="row" fxLayoutAlign="space-between">
             <mat-form-field color="accent" fxFlex="48">
               <mat-label>Reality Low</mat-label>
               <input matInput placeholder="Reality Low" [(ngModel)]="spanRealityLow" name="spanRealityLow">
@@ -102,7 +102,7 @@
           </button>
         </div>
         <div fxLayout="row" fxLayoutAlign="start">
-          <button fxFlex="25" mat-raised-button color="primary" (click)="insertNewMetadata()"> Add New</button>
+          <button fxFlex="25" mat-raised-button color="primary" (click)="insertNewMetadata()">Add New</button>
         </div>
       </div>
     </div>
@@ -136,7 +136,7 @@
 
 
     <div fxLayout="row" fxLayoutAlign="end stretch">
-      <button mat-raised-button color="accent" [disabled]="!isDifferentFromPersistedLocation"> Save</button>
+      <button mat-raised-button color="accent" [disabled]="!isDifferentFromPersistedLocation">Save</button>
     </div>
   </div>
 </div>

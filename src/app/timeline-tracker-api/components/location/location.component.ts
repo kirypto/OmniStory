@@ -12,7 +12,7 @@ import {handleError} from "../../services/util";
 @Component({
     selector: "app-location",
     templateUrl: "./location.component.html",
-    styleUrls: ["./location.component.css"]
+    styleUrls: ["./location.component.scss"]
 })
 export class LocationComponent implements OnInit, OnDestroy {
     private _isDataReady = false;
