@@ -16,6 +16,9 @@ import {handleError} from "../../services/util";
 })
 export class LocationComponent implements OnInit, OnDestroy {
     private _isDataReady = false;
+    private _allowedToDeleteTag = true;
+    private _allowedToDeleteMetadata = true;
+
     private _locationRetrievalSubscription: Subscription;
 
     private _location: Location;
@@ -106,18 +109,16 @@ export class LocationComponent implements OnInit, OnDestroy {
         this.metadataList.splice(index, 1);
     }
 
+    public get isAllowedToDeleteMetadata(): boolean {
+        return this._allowedToDeleteMetadata;
+    }
+
     public sortMetadata(): void {
+        this._allowedToDeleteMetadata = false;
         this.metadataList.sort(([aKey]: [string, string], [bKey]: [string, string]) => {
             return aKey.localeCompare(bKey);
         });
-    }
-
-    public sortTags(): void {
-        console.log("Sorting Tags");
-        this.tagList.sort((tagA: string, tagB: string) => {
-            return tagA.localeCompare(tagB);
-        });
-        console.dir(this.tagList);
+        setTimeout(() => this._allowedToDeleteMetadata = true, 25);
     }
 
     public insertNewTag(): void {
@@ -125,9 +126,20 @@ export class LocationComponent implements OnInit, OnDestroy {
     }
 
     public deleteTag(tag: string): void {
-        console.log(`Deleting ${tag}`);
         const index = this.tagList.indexOf(tag);
         this.tagList.splice(index, 1);
+    }
+
+    public get isAllowedToDeleteTag(): boolean {
+        return this._allowedToDeleteTag;
+    }
+
+    public sortTags(): void {
+        this._allowedToDeleteTag = false;
+        this.tagList.sort((tagA: string, tagB: string) => {
+            return tagA.localeCompare(tagB);
+        });
+        setTimeout(() => this._allowedToDeleteTag = true, 25);
     }
 
     public identifyTag(index: number, _tag: string): number {

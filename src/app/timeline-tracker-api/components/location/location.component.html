@@ -84,7 +84,7 @@
             <mat-label>Value</mat-label>
             <input matInput placeholder="Val" [(ngModel)]="metadataList[i][1]" (focusout)="sortMetadata()">
           </mat-form-field>
-          <button mat-fab color="warn" class="delete-button-small" (click)="deleteMetadata(metadataPair)">
+          <button mat-fab color="warn" class="delete-button-small" (click)="deleteMetadata(metadataPair)" [disabled]="!isAllowedToDeleteMetadata">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
@@ -107,7 +107,7 @@
               <input matInput [(ngModel)]="tagList[i]" (focusout)="sortTags()">
             </mat-form-field>
             <span fxFlex="1"></span>
-            <button mat-fab color="warn" class="delete-button-tiny" (click)="deleteTag(tag)">
+            <button mat-fab color="warn" class="delete-button-tiny" (click)="deleteTag(tag)" [disabled]="!isAllowedToDeleteTag">
               <mat-icon>delete</mat-icon>
             </button>
           </span>
