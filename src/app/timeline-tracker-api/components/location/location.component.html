@@ -15,58 +15,71 @@
     </mat-form-field>
 
 
-    <div class="mat-headline">Span</div>
+    <div class="mat-headline">Dimensions</div>
     <div fxLayout="row" fxLayoutAlign="center">
       <div fxFlex="95">
-        <div fxLayout="row" fxLayoutAlign="space-between">
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Latitude Low</mat-label>
-            <input matInput placeholder="Latitude Low" [(ngModel)]="spanLatitudeLow" name="spanLatitudeLow">
-          </mat-form-field>
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Latitude High</mat-label>
-            <input matInput placeholder="Latitude High" [(ngModel)]="spanLatitudeHigh" name="spanLatitudeHigh">
-          </mat-form-field>
+        <div fxLayout="row" fxLayout.lt-md="column">
+          <div fxFlex="48" fxFlex.lt-md="50"
+               fxLayout="row" fxLayoutAlign="space-between">
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Latitude Low</mat-label>
+              <input matInput placeholder="Latitude Low" [(ngModel)]="spanLatitudeLow" name="spanLatitudeLow">
+            </mat-form-field>
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Latitude High</mat-label>
+              <input matInput placeholder="Latitude High" [(ngModel)]="spanLatitudeHigh" name="spanLatitudeHigh">
+            </mat-form-field>
+          </div>
+          <div fxFlex="4" fxFlex.lt-md="0"></div>
+          <div fxFlex="48" fxFlex.lt-md="50"
+               fxLayout="row" fxLayoutAlign="space-between">
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Longitude Low</mat-label>
+              <input matInput placeholder="Longitude Low" [(ngModel)]="spanLongitudeLow" name="spanLongitudeLow">
+            </mat-form-field>
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Longitude High</mat-label>
+              <input matInput placeholder="Longitude High" [(ngModel)]="spanLongitudeHigh" name="spanLongitudeHigh">
+            </mat-form-field>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayout.lt-md="column">
+          <div fxFlex="48" fxFlex.lt-md="50"
+               fxLayout="row" fxLayoutAlign="space-between">
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Altitude Low</mat-label>
+              <input matInput placeholder="Altitude Low" [(ngModel)]="spanAltitudeLow" name="spanAltitudeLow">
+            </mat-form-field>
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Altitude High</mat-label>
+              <input matInput placeholder="Altitude High" [(ngModel)]="spanAltitudeHigh" name="spanAltitudeHigh">
+            </mat-form-field>
+          </div>
+          <div fxFlex="4" fxFlex.lt-md="0"></div>
+          <div fxFlex="48" fxFlex.lt-md="50"
+               fxLayout="row" fxLayoutAlign="space-between">
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Continuum Low</mat-label>
+              <input matInput placeholder="Continuum Low" [(ngModel)]="spanContinuumLow" name="spanContinuumLow">
+            </mat-form-field>
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Continuum High</mat-label>
+              <input matInput placeholder="Continuum High" [(ngModel)]="spanContinuumHigh" name="spanContinuumHigh">
+            </mat-form-field>
+          </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between">
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Longitude Low</mat-label>
-            <input matInput placeholder="Longitude Low" [(ngModel)]="spanLongitudeLow" name="spanLongitudeLow">
-          </mat-form-field>
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Longitude High</mat-label>
-            <input matInput placeholder="Longitude High" [(ngModel)]="spanLongitudeHigh" name="spanLongitudeHigh">
-          </mat-form-field>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="space-between">
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Altitude Low</mat-label>
-            <input matInput placeholder="Altitude Low" [(ngModel)]="spanAltitudeLow" name="spanAltitudeLow">
-          </mat-form-field>
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Altitude High</mat-label>
-            <input matInput placeholder="Altitude High" [(ngModel)]="spanAltitudeHigh" name="spanAltitudeHigh">
-          </mat-form-field>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="space-between">
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Continuum Low</mat-label>
-            <input matInput placeholder="Continuum Low" [(ngModel)]="spanContinuumLow" name="spanContinuumLow">
-          </mat-form-field>
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Continuum High</mat-label>
-            <input matInput placeholder="Continuum High" [(ngModel)]="spanContinuumHigh" name="spanContinuumHigh">
-          </mat-form-field>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="space-between">
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Reality Low</mat-label>
-            <input matInput placeholder="Reality Low" [(ngModel)]="spanRealityLow" name="spanRealityLow">
-          </mat-form-field>
-          <mat-form-field color="accent" fxFlex="48">
-            <mat-label>Reality High</mat-label>
-            <input matInput placeholder="Reality High" [(ngModel)]="spanRealityHigh" name="spanRealityHigh">
-          </mat-form-field>
+          <div fxFlex="48" fxFlex.lt-md="100"
+            fxLayout="row" fxLayoutAlign="space-between">
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Reality Low</mat-label>
+              <input matInput placeholder="Reality Low" [(ngModel)]="spanRealityLow" name="spanRealityLow">
+            </mat-form-field>
+            <mat-form-field color="accent" fxFlex="48">
+              <mat-label>Reality High</mat-label>
+              <input matInput placeholder="Reality High" [(ngModel)]="spanRealityHigh" name="spanRealityHigh">
+            </mat-form-field>
+          </div>
         </div>
       </div>
     </div>
