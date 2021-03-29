@@ -24,7 +24,7 @@ describe("LocationGatewayService", () => {
     });
 
 
-    describe("getLocation", () => {
+    describe("retrieveLocation", () => {
         const expectedLocation = new Location(sampleLocationData);
         const locationId = expectedLocation.id;
 
@@ -34,7 +34,7 @@ describe("LocationGatewayService", () => {
 
             // Act
             let actualLocation: Location;
-            service.getLocation(locationId).subscribe(location => actualLocation = location);
+            service.retrieveLocation(locationId).subscribe(location => actualLocation = location);
 
             // Assert
             const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
@@ -47,7 +47,7 @@ describe("LocationGatewayService", () => {
             // Arrange
             // Act
             let actualLocation: Location;
-            service.getLocation(locationId).subscribe(location => actualLocation = location);
+            service.retrieveLocation(locationId).subscribe(location => actualLocation = location);
 
             // Assert
             const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
@@ -58,7 +58,7 @@ describe("LocationGatewayService", () => {
     });
 
 
-    describe("getLocationIds", () => {
+    describe("retrieveLocationIds", () => {
         it("should return all existing locations", () => {
             // Arrange
             const expectedLocations: string[] = [
@@ -68,7 +68,7 @@ describe("LocationGatewayService", () => {
 
             // Act
             let actualLocationIds: string[] = [];
-            service.getLocationIds().subscribe(locationIds => actualLocationIds = locationIds);
+            service.retrieveLocationIds().subscribe(locationIds => actualLocationIds = locationIds);
 
             // Assert
             const req = httpMock.expectOne(`${ttapiUrl}/api/locations`);

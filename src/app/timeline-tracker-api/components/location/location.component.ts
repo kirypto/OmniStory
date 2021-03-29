@@ -51,7 +51,7 @@ export class LocationComponent implements OnInit, OnDestroy {
             .pipe(
                 map((params) => params.locationId),
                 tap((locationId: string) => locationIdParam = locationId),
-                map((locationId: string) => this._locationGateway.getLocation(locationId)),
+                map((locationId: string) => this._locationGateway.retrieveLocation(locationId)),
                 mergeMap((locationObservable) => locationObservable),
                 catchError(handleError<Location>(`404 during navigation to ${RoutePaths.location_locationId}`, undefined)),
             )

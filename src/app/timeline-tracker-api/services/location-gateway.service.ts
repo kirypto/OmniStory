@@ -19,21 +19,21 @@ export class LocationGatewayService {
     ) {
     }
 
-    getLocation(locationId: string): Observable<Location | undefined> {
+    retrieveLocation(locationId: string): Observable<Location | undefined> {
         return this._httpClient.get<LocationData>(`${this._timelineTrackerApiUrl}/location/${locationId}`)
             .pipe(
                 tap(locationData => console.log(`Fetched ${locationData.id} Location`)),
                 map((locationData: LocationData) => new Location(locationData as LocationData)),
-                catchError(handleError<Location>(`getLocation(${locationId})`, undefined)),
+                catchError(handleError<Location>(`retrieveLocation(${locationId})`, undefined)),
             );
     }
 
-    getLocationIds(filters?: LocationFilters): Observable<string[]> {
+    retrieveLocationIds(filters?: LocationFilters): Observable<string[]> {
         const url = `${this._timelineTrackerApiUrl}/locations${constructEncodedQueryParams(filters)}`;
         return this._httpClient.get<string[]>(url)
             .pipe(
                 tap(locationDataArr => console.log(`Fetched ${locationDataArr.length} Location Ids`)),
-                catchError(handleError<string[]>("getLocationIds()", [])),
+                catchError(handleError<string[]>("retrieveLocationIds()", [])),
             );
     }
 }

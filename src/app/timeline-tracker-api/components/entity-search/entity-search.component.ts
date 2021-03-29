@@ -67,9 +67,9 @@ export class EntitySearchComponent {
         if (this.filterSpanIntersects) { filters.spanIntersects = this.filterSpanIntersects; }
         if (this.filterSpanIncludes) { filters.spanIncludes = this.filterSpanIncludes; }
 
-        return this._locationGateway.getLocationIds(filters).pipe(
+        return this._locationGateway.retrieveLocationIds(filters).pipe(
             mergeMap((locationIdsArr) => from(locationIdsArr)),
-            map((locationId) => this._locationGateway.getLocation(locationId)),
+            map((locationId) => this._locationGateway.retrieveLocation(locationId)),
             mergeMap((locationObservable) => locationObservable),
         );
     }

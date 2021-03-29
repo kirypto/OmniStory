@@ -20,7 +20,7 @@ describe("EntityFinderComponent", () => {
 
     beforeEach(async () => {
         const locationGatewaySpy = jasmine.createSpyObj("LocationGatewayService", [
-            "getLocation", "getLocationIds"
+            "retrieveLocation", "retrieveLocationIds"
         ]);
         await TestBed.configureTestingModule({
             imports: applicationImports,
@@ -74,8 +74,8 @@ describe("EntityFinderComponent", () => {
         describe("findEntities", () => {
             it("should retrieve locations from gateway and persist when given 'location'", () => {
                 // Arrange
-                locationGatewayServiceMock.getLocation.and.returnValue(of(location));
-                locationGatewayServiceMock.getLocationIds.and.returnValue(of([location.id]));
+                locationGatewayServiceMock.retrieveLocation.and.returnValue(of(location));
+                locationGatewayServiceMock.retrieveLocationIds.and.returnValue(of([location.id]));
 
                 // Act
                 component.findEntities("location");
@@ -87,7 +87,7 @@ describe("EntityFinderComponent", () => {
 
             it("should clear persisted entities and alert failure when given invalid type", () => {
                 // Arrange
-                locationGatewayServiceMock.getLocation.and.returnValue(of(location));
+                locationGatewayServiceMock.retrieveLocation.and.returnValue(of(location));
 
                 // Act
                 component.findEntities("invalid");
