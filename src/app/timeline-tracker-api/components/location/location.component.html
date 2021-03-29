@@ -93,7 +93,7 @@
             <mat-label>Key</mat-label>
             <input matInput placeholder="Key" [(ngModel)]="metadataList[i][0]" (focusout)="sortMetadata()">
           </mat-form-field>
-          <mat-form-field color="accent" fxFlex="65">
+          <mat-form-field color="accent" fxFlex="65" fxFlex.lt-sm="50">
             <mat-label>Value</mat-label>
             <input matInput placeholder="Val" [(ngModel)]="metadataList[i][1]" (focusout)="sortMetadata()">
           </mat-form-field>
@@ -112,7 +112,7 @@
     <div fxLayout="row" fxLayoutAlign="center">
       <div fxFlex="95">
         <div fxLayout="row wrap">
-          <span fxLayout="row" fxLayoutAlign="center center" fxFlex.md="30" fxFlex.gt-md="20" fxFlex.lt-md="45"
+          <span fxLayout="row" fxLayoutAlign="center center" fxFlex.md="30" fxFlex.gt-md="20" fxFlex.lt-md="45" fxFlex.lt-sm="75"
                 *ngFor="let tag of tagList; index as i; trackBy:identifyTag">
             <mat-icon svgIcon="tag" color="accent"></mat-icon>
             <span fxFlex="1"></span>
