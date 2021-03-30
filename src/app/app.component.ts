@@ -19,11 +19,11 @@ export class AppComponent implements OnInit {
         this._matIconRegistry.addSvgIcon("tag", domSanitizer.bypassSecurityTrustResourceUrl("assets/svg/tag.svg"));
     }
 
-    ngOnInit(): void {
-        this._titleService.setTitle(this._title);
-    }
-
     get title(): string {
         return this._title;
+    }
+
+    ngOnInit(): void {
+        this._titleService.setTitle(this._title);
     }
 }

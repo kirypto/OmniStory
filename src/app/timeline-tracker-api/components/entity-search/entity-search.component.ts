@@ -13,8 +13,6 @@ import {LocationFilters} from "../../services/filters";
 })
 @Injectable({providedIn: "root"})
 export class EntitySearchComponent {
-    private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
-
     public advancedSearch = true; // TODO: make this false by default once normal search is implemented
     public filterNameIs = "";
     public filterNameHas = "";
@@ -24,6 +22,8 @@ export class EntitySearchComponent {
     public filterTaggedNone = "";
     public filterSpanIncludes = "";
     public filterSpanIntersects = "";
+
+    private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
 
     public constructor(
         private _locationGateway: LocationGatewayService

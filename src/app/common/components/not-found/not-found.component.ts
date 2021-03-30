@@ -8,13 +8,13 @@ import {RoutePaths} from "../../types/route-paths";
 })
 export class NotFoundComponent implements OnInit {
 
-    constructor() {
-    }
-
-    ngOnInit(): void {
+    public constructor() {
     }
 
     public get RoutePaths(): typeof RoutePaths {
         return RoutePaths;
+    }
+
+    public ngOnInit(): void {
     }
 }

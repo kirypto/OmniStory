@@ -17,12 +17,6 @@ import {handleError} from "../../services/util";
 export class LocationComponent implements OnInit, OnDestroy {
     private static _DELETION_DELAY_MS = 750;
 
-    private _locationRetrievalSubscription: Subscription;
-    private _isDataReady = false;
-    private _lastDataChange = new Date();
-
-
-    private _location: Location;
     public name: string;
     public description: string;
     public spanLatitudeLow: string;
@@ -38,11 +32,30 @@ export class LocationComponent implements OnInit, OnDestroy {
     public metadataList: [string, string][];
     public tagList: string[];
 
+    private _location: Location;
+    private _locationRetrievalSubscription: Subscription;
+    private _isDataReady = false;
+    private _lastDataChange = new Date();
+
     public constructor(
         private _locationGateway: LocationGatewayService,
         private _route: ActivatedRoute,
         private _router: Router,
     ) {
+    }
+
+    public get isDataReady(): boolean {
+        return this._isDataReady;
+    }
+
+    public get isDifferentFromPersistedLocation(): boolean {
+        const locationData = this.constructLocationData();
+
+        // TODO add better validation: non-empty, NaN, etc
+        const isValid = true;
+
+        const isIdentical = this._location.equals(new Location(locationData));
+        return isValid && !isIdentical;
     }
 
     public ngOnInit(): void {
@@ -65,41 +78,8 @@ export class LocationComponent implements OnInit, OnDestroy {
             });
     }
 
-    private initialize(location: Location): void {
-        this._location = location;
-        this.name = location.name;
-        this.description = location.description;
-        this.spanLatitudeLow = location.span.latitude.low.toString();
-        this.spanLatitudeHigh = location.span.latitude.high.toString();
-        this.spanLongitudeLow = location.span.longitude.low.toString();
-        this.spanLongitudeHigh = location.span.longitude.high.toString();
-        this.spanAltitudeLow = location.span.altitude.low.toString();
-        this.spanAltitudeHigh = location.span.altitude.high.toString();
-        this.spanContinuumLow = location.span.continuum.low.toString();
-        this.spanContinuumHigh = location.span.continuum.high.toString();
-        this.spanRealityLow = location.span.reality.low.toString();
-        this.spanRealityHigh = location.span.reality.high.toString();
-        this.metadataList = [];
-        for (const [key, val] of location.metadata.entries()) {
-            this.metadataList.push([key, val]);
-        }
-        this.sortMetadata();
-        this.tagList = [];
-        for (const tag of location.tags) {
-            this.tagList.push(tag);
-        }
-        this.sortTags();
-
-        this._isDataReady = true;
-        this._lastDataChange = new Date();
-    }
-
     public ngOnDestroy(): void {
         this._locationRetrievalSubscription.unsubscribe();
-    }
-
-    public get isDataReady(): boolean {
-        return this._isDataReady;
     }
 
     public insertNewMetadata(): void {
@@ -161,14 +141,33 @@ export class LocationComponent implements OnInit, OnDestroy {
         return index;
     }
 
-    public get isDifferentFromPersistedLocation(): boolean {
-        const locationData = this.constructLocationData();
+    private initialize(location: Location): void {
+        this._location = location;
+        this.name = location.name;
+        this.description = location.description;
+        this.spanLatitudeLow = location.span.latitude.low.toString();
+        this.spanLatitudeHigh = location.span.latitude.high.toString();
+        this.spanLongitudeLow = location.span.longitude.low.toString();
+        this.spanLongitudeHigh = location.span.longitude.high.toString();
+        this.spanAltitudeLow = location.span.altitude.low.toString();
+        this.spanAltitudeHigh = location.span.altitude.high.toString();
+        this.spanContinuumLow = location.span.continuum.low.toString();
+        this.spanContinuumHigh = location.span.continuum.high.toString();
+        this.spanRealityLow = location.span.reality.low.toString();
+        this.spanRealityHigh = location.span.reality.high.toString();
+        this.metadataList = [];
+        for (const [key, val] of location.metadata.entries()) {
+            this.metadataList.push([key, val]);
+        }
+        this.sortMetadata();
+        this.tagList = [];
+        for (const tag of location.tags) {
+            this.tagList.push(tag);
+        }
+        this.sortTags();
 
-        // TODO add better validation: non-empty, NaN, etc
-        const isValid = true;
-
-        const isIdentical = this._location.equals(new Location(locationData));
-        return isValid && !isIdentical;
+        this._isDataReady = true;
+        this._lastDataChange = new Date();
     }
 
     private isDeletionFrozen(): boolean {
