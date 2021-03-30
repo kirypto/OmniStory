@@ -1,10 +1,10 @@
 import {TestBed} from "@angular/core/testing";
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {HttpTestingController} from "@angular/common/http/testing";
 
 import {LocationGatewayService} from "./location-gateway.service";
 import {Location} from "../types/location";
 import {sampleLocationData} from "../types/location.spec";
-import {deepCopy} from "../../test-helpers.spec";
+import {deepCopy, getTestImports} from "../../test-helpers.spec";
 
 describe("LocationGatewayService", () => {
     let service: LocationGatewayService;
@@ -14,7 +14,7 @@ describe("LocationGatewayService", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule]
+            imports: getTestImports(),
         });
         service = TestBed.inject(LocationGatewayService);
         httpMock = TestBed.inject(HttpTestingController);

@@ -2,8 +2,9 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 
 import {LocationComponent} from "./location.component";
 import {Location} from "../../types/location";
-import {applicationDeclarations, applicationImports} from "../../../app-index";
+import {applicationDeclarations} from "../../../app-index";
 import {sampleLocationData} from "../../types/location.spec";
+import {getTestImports} from "../../../test-helpers.spec";
 
 describe("LocationComponent", () => {
     let component: LocationComponent;
@@ -12,7 +13,7 @@ describe("LocationComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: applicationImports,
+            imports: getTestImports(),
             declarations: applicationDeclarations
         }).compileComponents();
     });
