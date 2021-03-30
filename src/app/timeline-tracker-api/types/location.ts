@@ -107,4 +107,25 @@ export class Location implements IdentifiedEntity {
             && [...this._metadata.keys()].every(metadataKey => this._metadata.get(metadataKey) === other._metadata.get(metadataKey))
             ;
     }
+
+    public getData(): LocationData {
+        const rawMetadata = {};
+        for (const [key, val] of this._metadata) {
+            rawMetadata[key] = val;
+        }
+        return {
+            id: this._id,
+            name: this._name,
+            description: this._description,
+            span: {
+                latitude: {low: this._span.latitude.low, high: this._span.latitude.high},
+                longitude: {low: this._span.longitude.low, high: this._span.longitude.high},
+                altitude: {low: this._span.altitude.low, high: this._span.altitude.high},
+                continuum: {low: this._span.continuum.low, high: this._span.continuum.high},
+                reality: {low: this._span.reality.low, high: this._span.reality.high},
+            },
+            tags: [...this._tags],
+            metadata: rawMetadata,
+        };
+    }
 }
