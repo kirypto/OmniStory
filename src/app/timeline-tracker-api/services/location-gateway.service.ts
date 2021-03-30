@@ -1,7 +1,8 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {catchError, map, tap} from "rxjs/operators";
+import {catchError, filter, map, mergeMap, tap} from "rxjs/operators";
+import {createPatch} from "rfc6902";
 
 import {Location, LocationData} from "../types/location";
 import {constructEncodedQueryParams, handleError} from "./util";
@@ -19,7 +20,7 @@ export class LocationGatewayService {
     ) {
     }
 
-    retrieveLocation(locationId: string): Observable<Location | undefined> {
+    public retrieveLocation(locationId: string): Observable<Location | undefined> {
         return this._httpClient.get<LocationData>(`${this._timelineTrackerApiUrl}/location/${locationId}`)
             .pipe(
                 tap(locationData => console.log(`Fetched ${locationData.id} Location`)),
@@ -28,12 +29,29 @@ export class LocationGatewayService {
             );
     }
 
-    retrieveLocationIds(filters?: LocationFilters): Observable<string[]> {
+    public retrieveLocationIds(filters?: LocationFilters): Observable<string[]> {
         const url = `${this._timelineTrackerApiUrl}/locations${constructEncodedQueryParams(filters)}`;
         return this._httpClient.get<string[]>(url)
             .pipe(
                 tap(locationDataArr => console.log(`Fetched ${locationDataArr.length} Location Ids`)),
                 catchError(handleError<string[]>("retrieveLocationIds()", [])),
             );
+    }
+
+    public updateLocation(location: Location): Observable<void> {
+        return this.retrieveLocation(location.id).pipe(
+            filter((retrievedLocation: Location | undefined) => retrievedLocation !== undefined),
+            map((retrievedLocation: Location) => {
+                console.log(retrievedLocation.getData().tags);
+                console.log(location.getData().tags);
+                return createPatch(retrievedLocation.getData(), location.getData());
+            }),
+            map((jsonPatchOperations: object[]) => {
+                const url = `${this._timelineTrackerApiUrl}/location/${location.id}`;
+                return this._httpClient.patch<void>(url, JSON.stringify(jsonPatchOperations, null, 2));
+            }),
+            mergeMap(observablePipe => observablePipe),
+            catchError(handleError<void>(`updateLocation(${location.id})`)),
+        );
     }
 }

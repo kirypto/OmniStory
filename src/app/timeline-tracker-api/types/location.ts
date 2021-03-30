@@ -124,7 +124,7 @@ export class Location implements IdentifiedEntity {
                 continuum: {low: this._span.continuum.low, high: this._span.continuum.high},
                 reality: {low: this._span.reality.low, high: this._span.reality.high},
             },
-            tags: [...this._tags],
+            tags: [...this._tags].sort((tag1: string, tag2: string) => tag1.localeCompare(tag2)),
             metadata: rawMetadata,
         };
     }

@@ -4,6 +4,7 @@ import {HttpClientTestingModule, HttpTestingController} from "@angular/common/ht
 import {LocationGatewayService} from "./location-gateway.service";
 import {Location} from "../types/location";
 import {sampleLocationData} from "../types/location.spec";
+import {deepCopy} from "../../test-helpers.spec";
 
 describe("LocationGatewayService", () => {
     let service: LocationGatewayService;
@@ -75,6 +76,63 @@ describe("LocationGatewayService", () => {
             expect(req.request.method).toBe("GET");
             req.flush(expectedLocations);
             expect(actualLocationIds).toEqual(expectedLocations);
+        });
+    });
+
+    describe("updateLocation", () => {
+        it("should make get call for current state of Location", () => {
+            // Arrange
+            const location = new Location(sampleLocationData);
+
+            // Act
+            service.updateLocation(location).subscribe();
+
+            // Assert
+            const req = httpMock.expectOne(`${ttapiUrl}/api/location/${location.id}`);
+            expect(req.request.method).toBe("GET");
+            req.flush(sampleLocationData);
+        });
+
+        it("should make a patch call with the differences when the retrieved Location differs from provided", () => {
+            // Arrange
+            const modifiedLocationData = deepCopy(sampleLocationData);
+            modifiedLocationData.name = "New Name";
+            modifiedLocationData.tags.push("new-tag");
+            const expectedPatch = JSON.stringify([
+                {op: "replace", path: "/name", value: "New Name"},
+                {op: "add", path: `/tags/0`, value: "new-tag"},
+            ], null, 2);
+            const modifiedLocation = new Location(modifiedLocationData);
+
+            // Act
+            service.updateLocation(modifiedLocation).subscribe();
+
+            // Assert
+            const getReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            expect(getReq.request.method).toBe("GET");
+            getReq.flush(sampleLocationData);
+            const patchReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            expect(patchReq.request.method).toBe("PATCH");
+            expect(patchReq.request.body).toBe(expectedPatch);
+        });
+
+        it("should not modify tags when the retrieved Location returns same tags in different order", () => {
+            // Arrange
+            const locationDataWithReversedTags = deepCopy(sampleLocationData);
+            locationDataWithReversedTags.tags.reverse();
+            const expectedPatch = "[]";
+            const modifiedLocation = new Location(locationDataWithReversedTags);
+
+            // Act
+            service.updateLocation(modifiedLocation).subscribe();
+
+            // Assert
+            const getReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            expect(getReq.request.method).toBe("GET");
+            getReq.flush(sampleLocationData);
+            const patchReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            expect(patchReq.request.method).toBe("PATCH");
+            expect(patchReq.request.body).toBe(expectedPatch);
         });
     });
 });

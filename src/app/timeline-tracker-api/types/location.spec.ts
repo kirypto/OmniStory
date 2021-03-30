@@ -126,4 +126,36 @@ describe("Location", () => {
             expect(actual).toBeFalse();
         });
     });
+
+    describe("getData", () => {
+        it("should sort tags", () => {
+            // Arrange
+            const locationData = deepCopy(sampleLocationData);
+            locationData.tags.sort((tag1, tag2) => tag1.localeCompare(tag2));
+            const expectedTags = [...locationData.tags];
+            locationData.tags.reverse();
+            const location = new Location(locationData);
+
+            // Act
+            const actual = location.getData().tags;
+
+            // Assert
+            expect(actual).toEqual(expectedTags);
+        });
+
+        it("should sort metadata", () => {
+            // Arrange
+            const locationData = deepCopy(sampleLocationData);
+            locationData.tags.sort((tag1, tag2) => tag1.localeCompare(tag2));
+            const expectedTags = [...locationData.tags];
+            locationData.tags.reverse();
+            const location = new Location(locationData);
+
+            // Act
+            const actual = location.getData().tags;
+
+            // Assert
+            expect(actual).toEqual(expectedTags);
+        });
+    });
 });
