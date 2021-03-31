@@ -141,6 +141,11 @@ export class LocationComponent implements OnInit, OnDestroy {
         return index;
     }
 
+    public save(): void {
+        this._locationGateway.updateLocation(new Location(this.constructLocationData()))
+            .subscribe();
+    }
+
     private initialize(location: Location): void {
         this._location = location;
         this.name = location.name;

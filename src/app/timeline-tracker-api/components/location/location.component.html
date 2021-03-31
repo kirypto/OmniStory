@@ -136,7 +136,7 @@
 
 
     <div fxLayout="row" fxLayoutAlign="end stretch">
-      <button mat-raised-button color="accent" [disabled]="!isDifferentFromPersistedLocation">Save</button>
+      <button mat-raised-button color="accent" [disabled]="!isDifferentFromPersistedLocation" (click)="save()">Save</button>
     </div>
   </div>
 </div>

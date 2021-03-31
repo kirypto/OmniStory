@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {catchError, filter, map, mergeMap, tap} from "rxjs/operators";
 import {createPatch} from "rfc6902";
@@ -48,7 +48,9 @@ export class LocationGatewayService {
             }),
             map((jsonPatchOperations: object[]) => {
                 const url = `${this._timelineTrackerApiUrl}/location/${location.id}`;
-                return this._httpClient.patch<void>(url, JSON.stringify(jsonPatchOperations, null, 2));
+                const httpHeaders = new HttpHeaders().set("Content-Type", "application/json");
+                return this._httpClient.patch<void>(url, JSON.stringify(jsonPatchOperations, null, 2),
+                    {headers: httpHeaders});
             }),
             mergeMap(observablePipe => observablePipe),
             catchError(handleError<void>(`updateLocation(${location.id})`)),
