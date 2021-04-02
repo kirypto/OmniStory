@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+
 import {RoutePaths} from "../../types/route-paths";
 
 @Component({

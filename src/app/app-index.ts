@@ -1,20 +1,21 @@
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {FormsModule} from "@angular/forms";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
+import {MatInputModule} from "@angular/material/input";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {BrowserModule} from "@angular/platform-browser";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {RouterModule, Routes} from "@angular/router";
+
 import {AppComponent} from "./app.component";
 import {MainComponent} from "./common/components/main/main.component";
 import {NotFoundComponent} from "./common/components/not-found/not-found.component";
-import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
-import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
-import {BrowserModule} from "@angular/platform-browser";
-import {FormsModule} from "@angular/forms";
-import {RouterModule, Routes} from "@angular/router";
+import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
 import {RoutePaths} from "./common/types/route-paths";
-import {MatButtonModule} from "@angular/material/button";
-import {MatSlideToggleModule} from "@angular/material/slide-toggle";
-import {FlexLayoutModule} from "@angular/flex-layout";
-import {MatInputModule} from "@angular/material/input";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MatIconModule} from "@angular/material/icon";
+import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
+import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
 
 /**
  * All http interceptor providers in outside-in order
