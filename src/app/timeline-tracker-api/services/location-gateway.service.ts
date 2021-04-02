@@ -23,7 +23,7 @@ export class LocationGatewayService {
     public retrieveLocation(locationId: string): Observable<Location | undefined> {
         return this._httpClient.get<LocationData>(`${this._timelineTrackerApiUrl}/location/${locationId}`)
             .pipe(
-                tap(locationData => console.log(`Fetched ${locationData.id} Location`)),
+                tap(locationData => console.log(`Fetched Location ${locationData.id}`)),
                 map((locationData: LocationData) => new Location(locationData as LocationData)),
                 catchError(handleError<Location>(`retrieveLocation(${locationId})`, undefined)),
             );
@@ -38,22 +38,22 @@ export class LocationGatewayService {
             );
     }
 
-    public updateLocation(location: Location): Observable<void> {
+    public updateLocation(location: Location): Observable<Location> {
         return this.retrieveLocation(location.id).pipe(
             filter((retrievedLocation: Location | undefined) => retrievedLocation !== undefined),
             map((retrievedLocation: Location) => {
-                console.log(retrievedLocation.getData().tags);
-                console.log(location.getData().tags);
                 return createPatch(retrievedLocation.getData(), location.getData());
             }),
             map((jsonPatchOperations: object[]) => {
                 const url = `${this._timelineTrackerApiUrl}/location/${location.id}`;
                 const httpHeaders = new HttpHeaders().set("Content-Type", "application/json");
-                return this._httpClient.patch<void>(url, JSON.stringify(jsonPatchOperations, null, 2),
+                return this._httpClient.patch<LocationData>(url, JSON.stringify(jsonPatchOperations, null, 2),
                     {headers: httpHeaders});
             }),
             mergeMap(observablePipe => observablePipe),
-            catchError(handleError<void>(`updateLocation(${location.id})`)),
+            map((locationData: LocationData) => new Location(locationData as LocationData)),
+            tap(locationData => console.log(`Updated Location ${locationData.id}`)),
+            catchError(handleError<Location>(`updateLocation(${location.id})`, location)),
         );
     }
 }
