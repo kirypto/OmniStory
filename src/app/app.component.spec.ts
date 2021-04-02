@@ -1,12 +1,14 @@
 import {TestBed} from "@angular/core/testing";
+
 import {AppComponent} from "./app.component";
+import {applicationDeclarations} from "./app-index";
+import {getTestImports} from "./test-helpers.spec";
 
 describe("AppComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [
-                AppComponent
-            ],
+            imports: getTestImports(),
+            declarations: applicationDeclarations,
         }).compileComponents();
     });
 
@@ -20,12 +22,5 @@ describe("AppComponent", () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
         expect(app.title).toEqual("Timeline Tracker UI");
-    });
-
-    it("should render greeting", () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        const compiled = fixture.nativeElement;
-        expect(compiled.querySelector("#hello").textContent).toContain("Hello, Timeline Tracker UI!");
     });
 });

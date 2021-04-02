@@ -1,0 +1,26 @@
+:host {
+    display: block;
+    border: 1px solid #4c4c4c;
+    padding: 10px;
+    overflow-y: auto;
+    min-height: 50vh;
+    max-height: calc(100vh - 150px);
+}
+
+button {
+    margin: 0.5ch 0.25ch;
+}
+
+div.filter span {
+    display: inline-block;
+    min-width: 20ch;
+}
+
+span.spacer {
+    display: inline-block;
+    width: 12ch;
+}
+
+input {
+    width: 50ch;
+}

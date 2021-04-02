@@ -1,0 +1,35 @@
+<div fxLayout="row">
+  <span class="mat-headline"> Entity Search </span>
+  <span style="flex:auto"></span>
+  <mat-slide-toggle [(ngModel)]="advancedSearch"> Advanced Search</mat-slide-toggle>
+</div>
+
+
+<div *ngIf="!advancedSearch">
+<!--  <i><b>TODO:</b> Add a search bar </i>-->
+</div>
+<div *ngIf="advancedSearch">
+  <span>
+    <button (click)="findEntities('location')">Find Locations</button>
+    <button (click)="findEntities('traveler')">Find Travelers</button>
+    <button (click)="findEntities('event')">Find Events</button>
+  </span>
+  <div class="filter"><span> Name Is Exactly:     </span> <input [(ngModel)]="filterNameIs" placeholder="exact name text"></div>
+  <div class="filter"><span> Name Contains:       </span> <input [(ngModel)]="filterNameHas" placeholder="text found within name"></div>
+  <div class="filter"><span> Tagged With All Of:  </span> <input [(ngModel)]="filterTaggedAll" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Tagged With Any Of:  </span> <input [(ngModel)]="filterTaggedAny" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Tagged With Only Of: </span> <input [(ngModel)]="filterTaggedOnly" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Tagged With None Of: </span> <input [(ngModel)]="filterTaggedNone" placeholder="comma separated list of tags"></div>
+  <div class="filter"><span> Span Includes:       </span> <input [(ngModel)]="filterSpanIncludes" placeholder="position object"></div>
+  <div class="filter"><span> Span Intersects:     </span> <input [(ngModel)]="filterSpanIntersects" placeholder="range object"></div>
+</div>
+
+
+<hr>
+
+
+<ul>
+  <li *ngFor="let idNamePair of entityIdsAndNames | keyvalue">
+    <a routerLink="/location/{{idNamePair.key}}"><button mat-raised-button color="primary">{{idNamePair.value}}</button></a>
+  </li>
+</ul>

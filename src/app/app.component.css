@@ -1,3 +1,7 @@
+:host {
+    display: block;
+}
+
 #hello {
     font-size: x-large;
 }
