@@ -140,7 +140,7 @@ export class LocationComponent implements OnInit, OnDestroy {
         return index;
     }
 
-    public sortReality(): void {
+    public sortRealities(): void {
         let changedOrder = false;
         this.spanRealities.sort((reality1: number, reality2: number) => {
             const comparison = reality1 - reality2;
@@ -151,6 +151,11 @@ export class LocationComponent implements OnInit, OnDestroy {
         if (changedOrder) {
             this._lastDataChange = new Date();
         }
+    }
+
+    public identifyReality(index: number, _reality: number): number {
+        // Identify using the index so that Angular does not re-render mid typing causing focus loss after each character change
+        return index;
     }
 
     public save(): void {
@@ -178,7 +183,7 @@ export class LocationComponent implements OnInit, OnDestroy {
         for (const reality of location.span.reality) {
             this.spanRealities.push(reality);
         }
-        this.sortReality();
+        this.sortRealities();
         this.metadataList = [];
         for (const [key, val] of location.metadata.entries()) {
             this.metadataList.push([key, val]);
