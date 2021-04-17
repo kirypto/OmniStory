@@ -27,8 +27,7 @@ export class LocationComponent implements OnInit, OnDestroy {
     public spanAltitudeHigh: string;
     public spanContinuumLow: string;
     public spanContinuumHigh: string;
-    public spanRealityLow: string;
-    public spanRealityHigh: string;
+    public spanRealities: number[];
     public metadataList: [string, string][];
     public tagList: string[];
 
@@ -141,6 +140,19 @@ export class LocationComponent implements OnInit, OnDestroy {
         return index;
     }
 
+    public sortReality(): void {
+        let changedOrder = false;
+        this.spanRealities.sort((reality1: number, reality2: number) => {
+            const comparison = reality1 - reality2;
+            if (comparison < 0) { changedOrder = true; }
+            return comparison;
+        });
+
+        if (changedOrder) {
+            this._lastDataChange = new Date();
+        }
+    }
+
     public save(): void {
         this._isDataReady = false;
         this._locationGateway.updateLocation(new Location(this.constructLocationData()))
@@ -162,8 +174,11 @@ export class LocationComponent implements OnInit, OnDestroy {
         this.spanAltitudeHigh = location.span.altitude.high.toString();
         this.spanContinuumLow = location.span.continuum.low.toString();
         this.spanContinuumHigh = location.span.continuum.high.toString();
-        this.spanRealityLow = location.span.reality.low.toString();
-        this.spanRealityHigh = location.span.reality.high.toString();
+        this.spanRealities = [];
+        for (const reality of location.span.reality) {
+            this.spanRealities.push(reality);
+        }
+        this.sortReality();
         this.metadataList = [];
         for (const [key, val] of location.metadata.entries()) {
             this.metadataList.push([key, val]);
@@ -198,7 +213,7 @@ export class LocationComponent implements OnInit, OnDestroy {
                 longitude: {low: parseFloat(this.spanLongitudeLow), high: parseFloat(this.spanLongitudeHigh)},
                 altitude: {low: parseFloat(this.spanAltitudeLow), high: parseFloat(this.spanAltitudeHigh)},
                 continuum: {low: parseFloat(this.spanContinuumLow), high: parseFloat(this.spanContinuumHigh)},
-                reality: {low: parseFloat(this.spanRealityLow), high: parseFloat(this.spanRealityHigh)},
+                reality: [...this.spanRealities],
             },
             tags: [...this.tagList],
             metadata: metadataObj,

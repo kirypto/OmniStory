@@ -10,7 +10,7 @@ export const sampleLocationData: LocationData = {
         longitude: {low: 5457.91, high: 5483.174},
         altitude: {low: 0.972, high: 1.034},
         continuum: {low: -9383.0, high: Infinity},
-        reality: {low: 0, high: 0},
+        reality: [0],
     },
     tags: ["tag1", "tag2"],
     metadata: {meta_key: "meta_val"}
