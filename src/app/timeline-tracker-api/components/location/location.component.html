@@ -73,7 +73,7 @@
         <div fxLayout="row wrap">
           <span style="width: 8ch" *ngFor="let tag of spanRealities; index as i; trackBy:identifyReality">
             <mat-form-field color="accent" fxFlex="60">
-              <input matInput [(ngModel)]="spanRealities[i]" (focusout)="sortRealities()">
+              <input matInput type="number" [(ngModel)]="spanRealities[i]" (focusout)="sortRealities()">
             </mat-form-field>
           </span>
           <button mat-fab color="primary" class="delete-button-tiny" (click)="insertNewReality()"><mat-icon>add_circle</mat-icon></button>

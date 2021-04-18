@@ -8,6 +8,7 @@ import {RoutePaths} from "../../../common/types/route-paths";
 import {Location, LocationData} from "../../types/location";
 import {LocationGatewayService} from "../../services/location-gateway.service";
 import {handleError} from "../../services/util";
+import {isNumeric} from "rxjs/internal-compatibility";
 
 @Component({
     selector: "app-location",
@@ -141,14 +142,12 @@ export class LocationComponent implements OnInit, OnDestroy {
     }
 
     public sortRealities(): void {
-        let changed = false;
-        this.spanRealities.sort((reality1: number, reality2: number) => {
-            const comparison = reality1 - reality2;
-            if (comparison < 0) { changed = true; }
-            return comparison;
-        });
+        const realitiesCleaned = LocationComponent.purifyRealities(this.spanRealities);
+        realitiesCleaned.sort((a, b) => a - b);
+        const changed = this.spanRealities.some((origReality, i) => realitiesCleaned[i] !== origReality);
 
         if (changed) {
+            this.spanRealities = realitiesCleaned;
             this._lastDataChange = new Date();
         }
     }
@@ -170,6 +169,14 @@ export class LocationComponent implements OnInit, OnDestroy {
                 map((location: Location) => this.initialize(location))
             )
             .subscribe();
+    }
+
+    private static purifyRealities(realities: any[]): number[] {
+        return [...new Set<number>(realities
+            .map(reality => String(reality))
+            .filter(reality => isNumeric(reality))
+            .map(reality => parseInt(reality, 10))
+        )];
     }
 
     private initialize(location: Location): void {
