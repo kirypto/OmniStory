@@ -8,6 +8,7 @@ import {RoutePaths} from "../../../common/types/route-paths";
 import {Location, LocationData} from "../../types/location";
 import {LocationGatewayService} from "../../services/location-gateway.service";
 import {handleError} from "../../services/util";
+import {isNumeric} from "rxjs/internal-compatibility";
 
 @Component({
     selector: "app-location",
@@ -27,8 +28,7 @@ export class LocationComponent implements OnInit, OnDestroy {
     public spanAltitudeHigh: string;
     public spanContinuumLow: string;
     public spanContinuumHigh: string;
-    public spanRealityLow: string;
-    public spanRealityHigh: string;
+    public spanRealities: number[];
     public metadataList: [string, string][];
     public tagList: string[];
 
@@ -141,6 +141,27 @@ export class LocationComponent implements OnInit, OnDestroy {
         return index;
     }
 
+    public sortRealities(): void {
+        const realitiesCleaned = LocationComponent.purifyRealities(this.spanRealities);
+        realitiesCleaned.sort((a, b) => a - b);
+        const changed = this.spanRealities.some((origReality, i) => realitiesCleaned[i] !== origReality);
+
+        if (changed) {
+            this.spanRealities = realitiesCleaned;
+            this._lastDataChange = new Date();
+        }
+    }
+
+    public identifyReality(index: number, _reality: number): number {
+        // Identify using the index so that Angular does not re-render mid typing causing focus loss after each character change
+        return index;
+    }
+
+    public insertNewReality(): void {
+        const highestReality = this.spanRealities[this.spanRealities.length - 1];
+        this.spanRealities.push(highestReality + 1);
+    }
+
     public save(): void {
         this._isDataReady = false;
         this._locationGateway.updateLocation(new Location(this.constructLocationData()))
@@ -148,6 +169,14 @@ export class LocationComponent implements OnInit, OnDestroy {
                 map((location: Location) => this.initialize(location))
             )
             .subscribe();
+    }
+
+    private static purifyRealities(realities: any[]): number[] {
+        return [...new Set<number>(realities
+            .map(reality => String(reality))
+            .filter(reality => isNumeric(reality))
+            .map(reality => parseInt(reality, 10))
+        )];
     }
 
     private initialize(location: Location): void {
@@ -162,8 +191,11 @@ export class LocationComponent implements OnInit, OnDestroy {
         this.spanAltitudeHigh = location.span.altitude.high.toString();
         this.spanContinuumLow = location.span.continuum.low.toString();
         this.spanContinuumHigh = location.span.continuum.high.toString();
-        this.spanRealityLow = location.span.reality.low.toString();
-        this.spanRealityHigh = location.span.reality.high.toString();
+        this.spanRealities = [];
+        for (const reality of location.span.reality) {
+            this.spanRealities.push(reality);
+        }
+        this.sortRealities();
         this.metadataList = [];
         for (const [key, val] of location.metadata.entries()) {
             this.metadataList.push([key, val]);
@@ -198,7 +230,7 @@ export class LocationComponent implements OnInit, OnDestroy {
                 longitude: {low: parseFloat(this.spanLongitudeLow), high: parseFloat(this.spanLongitudeHigh)},
                 altitude: {low: parseFloat(this.spanAltitudeLow), high: parseFloat(this.spanAltitudeHigh)},
                 continuum: {low: parseFloat(this.spanContinuumLow), high: parseFloat(this.spanContinuumHigh)},
-                reality: {low: parseFloat(this.spanRealityLow), high: parseFloat(this.spanRealityHigh)},
+                reality: [...this.spanRealities],
             },
             tags: [...this.tagList],
             metadata: metadataObj,

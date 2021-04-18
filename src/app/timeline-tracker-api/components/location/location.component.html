@@ -68,18 +68,15 @@
             </mat-form-field>
           </div>
         </div>
-        <div fxLayout="row" fxLayoutAlign="space-between">
-          <div fxFlex="48" fxFlex.lt-md="100"
-               fxLayout="row" fxLayoutAlign="space-between">
-            <mat-form-field color="accent" fxFlex="48">
-              <mat-label>Reality Low</mat-label>
-              <input matInput placeholder="Reality Low" [(ngModel)]="spanRealityLow" name="spanRealityLow">
+
+        <div>Realities:</div>
+        <div fxLayout="row wrap">
+          <span style="width: 8ch" *ngFor="let tag of spanRealities; index as i; trackBy:identifyReality">
+            <mat-form-field color="accent" fxFlex="60">
+              <input matInput type="number" [(ngModel)]="spanRealities[i]" (focusout)="sortRealities()">
             </mat-form-field>
-            <mat-form-field color="accent" fxFlex="48">
-              <mat-label>Reality High</mat-label>
-              <input matInput placeholder="Reality High" [(ngModel)]="spanRealityHigh" name="spanRealityHigh">
-            </mat-form-field>
-          </div>
+          </span>
+          <button mat-fab color="primary" class="delete-button-tiny" (click)="insertNewReality()"><mat-icon>add_circle</mat-icon></button>
         </div>
       </div>
     </div>
@@ -112,7 +109,7 @@
     <div fxLayout="row" fxLayoutAlign="center">
       <div fxFlex="95">
         <div fxLayout="row wrap">
-          <span fxLayout="row" fxLayoutAlign="center center" fxFlex.md="30" fxFlex.gt-md="20" fxFlex.lt-md="45" fxFlex.lt-sm="75"
+          <span fxLayout="row" fxLayoutAlign="center center" fxFlex.md="30" fxFlex.gt-md="20" fxFlex.lt-md="45" fxFlex.lt-sm="90"
                 *ngFor="let tag of tagList; index as i; trackBy:identifyTag">
             <mat-icon svgIcon="tag" color="accent"></mat-icon>
             <span fxFlex="1"></span>

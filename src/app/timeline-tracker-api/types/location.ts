@@ -10,19 +10,27 @@ export interface Range {
     high: number;
 }
 
-export interface Span {
+export interface SpanData {
     latitude: Range;
     longitude: Range;
     altitude: Range;
     continuum: Range;
-    reality: Range;
+    reality: number[];
+}
+
+export interface SpanReal {
+    latitude: Range;
+    longitude: Range;
+    altitude: Range;
+    continuum: Range;
+    reality: Set<number>;
 }
 
 export interface LocationData {
     id: string;
     name: string;
     description: string;
-    span: Span;
+    span: SpanData;
     tags: string[];
     metadata: { [key: string]: string };
 }
@@ -44,11 +52,21 @@ function validateLocationId(name: string, locationId: string): string {
     return locationId;
 }
 
+function toSpan(spanData: SpanData): SpanReal {
+    return {
+        latitude: spanData.latitude,
+        longitude: spanData.longitude,
+        altitude: spanData.altitude,
+        continuum: spanData.continuum,
+        reality: new Set<number>(spanData.reality)
+    };
+}
+
 export class Location implements IdentifiedEntity {
     _id: string;
     _name: string;
     _description: string;
-    _span: Span;
+    _span: SpanReal;
     _tags: Tags;
     _metadata: Metadata;
 
@@ -56,7 +74,7 @@ export class Location implements IdentifiedEntity {
         this._id = validateLocationId("id", locationData.id);
         this._name = validateNeitherNullNorUndefined("name", locationData.name);
         this._description = validateNeitherNullNorUndefined("description", locationData.description);
-        this._span = validateNeitherNullNorUndefined("span", locationData.span);
+        this._span = toSpan(validateNeitherNullNorUndefined("span", locationData.span));
         this._tags = new Set<string>(validateNeitherNullNorUndefined("tags", locationData.tags));
         this._metadata = new Map<string, string>(Object.entries(validateNeitherNullNorUndefined("metadata", locationData.metadata)));
     }
@@ -73,7 +91,7 @@ export class Location implements IdentifiedEntity {
         return this._description;
     }
 
-    get span(): Span {
+    get span(): SpanReal {
         return this._span;
     }
 
@@ -98,8 +116,8 @@ export class Location implements IdentifiedEntity {
             && this._span.altitude.high === other._span.altitude.high
             && this._span.continuum.low === other._span.continuum.low
             && this._span.continuum.high === other._span.continuum.high
-            && this._span.reality.low === other._span.reality.low
-            && this._span.reality.high === other._span.reality.high
+            && this._span.reality.size === other._span.reality.size
+            && [...this._span.reality].every(tag => other._span.reality.has(tag))
             && this._tags.size === other._tags.size
             && [...this._tags].every(tag => other._tags.has(tag))
             && this._metadata.size === other._metadata.size
@@ -122,7 +140,7 @@ export class Location implements IdentifiedEntity {
                 longitude: {low: this._span.longitude.low, high: this._span.longitude.high},
                 altitude: {low: this._span.altitude.low, high: this._span.altitude.high},
                 continuum: {low: this._span.continuum.low, high: this._span.continuum.high},
-                reality: {low: this._span.reality.low, high: this._span.reality.high},
+                reality: [...this._span.reality].sort((n1, n2) => n1 - n2)
             },
             tags: [...this._tags].sort((tag1: string, tag2: string) => tag1.localeCompare(tag2)),
             metadata: rawMetadata,
