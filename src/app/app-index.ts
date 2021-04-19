@@ -18,6 +18,7 @@ import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-w
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
+import {NavbarComponent} from "./common/components/navbar/navbar.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -68,6 +69,7 @@ export const applicationDeclarations = [
     AppComponent,
     MainComponent,
     NotFoundComponent,
+    NavbarComponent,
     LocationComponent,
     EntitySearchComponent,
 ];

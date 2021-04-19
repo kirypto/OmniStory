@@ -1,6 +1,7 @@
 <mat-sidenav-container>
-  <mat-sidenav role="navigation"></mat-sidenav>
+  <mat-sidenav #sidenav role="navigation"></mat-sidenav>
   <mat-sidenav-content>
+    <app-navbar (sidenavToggle)="sidenav.toggle()"></app-navbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
