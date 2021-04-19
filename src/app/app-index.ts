@@ -4,6 +4,8 @@ import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -54,6 +56,8 @@ export const applicationImports = [
     MatInputModule,
     BrowserAnimationsModule,
     MatIconModule,
+    MatSidenavModule,
+    MatToolbarModule,
     RouterModule.forRoot(routes),
 ];
 
