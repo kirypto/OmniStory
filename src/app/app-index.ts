@@ -6,6 +6,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatListModule} from "@angular/material/list";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -19,6 +20,7 @@ import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
 import {NavbarComponent} from "./common/components/navbar/navbar.component";
+import {NavbarOverlayComponent} from "./common/components/navbar-overlay/navbar-overlay.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -59,6 +61,7 @@ export const applicationImports = [
     MatIconModule,
     MatSidenavModule,
     MatToolbarModule,
+    MatListModule,
     RouterModule.forRoot(routes),
 ];
 
@@ -70,6 +73,7 @@ export const applicationDeclarations = [
     MainComponent,
     NotFoundComponent,
     NavbarComponent,
+    NavbarOverlayComponent,
     LocationComponent,
     EntitySearchComponent,
 ];
