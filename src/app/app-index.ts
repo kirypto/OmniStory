@@ -40,7 +40,7 @@ export const applicationProviders = [
  * Primary routes used in the application, used in the Application Imports
  */
 const routes: Routes = [
-    {path: RoutePaths.main, component: MainComponent},
+    {path: RoutePaths.home, component: MainComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
     {path: RoutePaths.location_locationId, component: LocationComponent},
     {path: "**", component: NotFoundComponent},
