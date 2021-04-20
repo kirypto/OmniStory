@@ -12,6 +12,6 @@ mat-sidenav, mat-sidenav-content, mat-sidenav-container {
 }
 
 mat-sidenav {
-    width: 150px;
+    width: 42ch;
 }
 

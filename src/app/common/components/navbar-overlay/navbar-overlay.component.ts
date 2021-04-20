@@ -4,7 +4,7 @@ import {RoutePaths} from "../../types/route-paths";
 @Component({
     selector: "app-navbar-overlay",
     templateUrl: "./navbar-overlay.component.html",
-    styleUrls: ["./navbar-overlay.component.css"]
+    styleUrls: ["./navbar-overlay.component.scss"]
 })
 export class NavbarOverlayComponent {
     @Output() sidenavClose = new EventEmitter();
