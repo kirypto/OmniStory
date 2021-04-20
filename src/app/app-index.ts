@@ -13,7 +13,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
 
 import {AppComponent} from "./app.component";
-import {MainComponent} from "./common/components/main/main.component";
+import {HomeComponent} from "./common/components/home/home.component";
 import {NotFoundComponent} from "./common/components/not-found/not-found.component";
 import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
 import {RoutePaths} from "./common/types/route-paths";
@@ -40,7 +40,7 @@ export const applicationProviders = [
  * Primary routes used in the application, used in the Application Imports
  */
 const routes: Routes = [
-    {path: RoutePaths.home, component: MainComponent},
+    {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
     {path: RoutePaths.location_locationId, component: LocationComponent},
     {path: "**", component: NotFoundComponent},
@@ -70,7 +70,7 @@ export const applicationImports = [
  */
 export const applicationDeclarations = [
     AppComponent,
-    MainComponent,
+    HomeComponent,
     NotFoundComponent,
     NavbarComponent,
     NavbarOverlayComponent,
