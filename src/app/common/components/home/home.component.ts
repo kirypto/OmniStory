@@ -4,7 +4,7 @@ import {RoutingComponent} from "../RoutingComponent";
 @Component({
     selector: "app-home-page",
     templateUrl: "./home.component.html",
-    styleUrls: ["./home.component.css"]
+    styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent extends RoutingComponent implements OnInit {
 
