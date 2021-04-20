@@ -4,4 +4,8 @@
   width: 100%;
 }
 
+mat-nav-list a:hover {
+  color: #69f0ae;
+}
+
 /*# sourceMappingURL=navbar-overlay.component.css.map */
