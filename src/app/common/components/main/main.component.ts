@@ -1,19 +1,15 @@
 import {Component, OnInit} from "@angular/core";
-
-import {RoutePaths} from "../../types/route-paths";
+import {RoutingComponent} from "../RoutingComponent";
 
 @Component({
     selector: "app-home-page",
     templateUrl: "./main.component.html",
     styleUrls: ["./main.component.css"]
 })
-export class MainComponent implements OnInit {
+export class MainComponent extends RoutingComponent implements OnInit {
 
     public constructor() {
-    }
-
-    public get RoutePaths(): typeof RoutePaths {
-        return RoutePaths;
+        super();
     }
 
     public ngOnInit(): void {

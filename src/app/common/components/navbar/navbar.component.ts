@@ -1,19 +1,16 @@
-import {Component, Output, EventEmitter} from "@angular/core";
-import {RoutePaths} from "../../types/route-paths";
+import {Component, EventEmitter, Output} from "@angular/core";
+import {RoutingComponent} from "../RoutingComponent";
 
 @Component({
     selector: "app-navbar",
     templateUrl: "./navbar.component.html",
     styleUrls: ["./navbar.component.scss"]
 })
-export class NavbarComponent {
+export class NavbarComponent extends RoutingComponent {
     @Output() public sidenavToggle = new EventEmitter();
 
     public constructor() {
-    }
-
-    public get RoutePaths(): typeof RoutePaths {
-        return RoutePaths;
+        super();
     }
 
     public onToggleSidenav = () => {

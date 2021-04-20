@@ -1,19 +1,16 @@
 import {Component, EventEmitter, Output} from "@angular/core";
-import {RoutePaths} from "../../types/route-paths";
+import {RoutingComponent} from "../RoutingComponent";
 
 @Component({
     selector: "app-navbar-overlay",
     templateUrl: "./navbar-overlay.component.html",
     styleUrls: ["./navbar-overlay.component.scss"]
 })
-export class NavbarOverlayComponent {
+export class NavbarOverlayComponent extends RoutingComponent {
     @Output() sidenavClose = new EventEmitter();
 
     constructor() {
-    }
-
-    public get RoutePaths(): typeof RoutePaths {
-        return RoutePaths;
+        super();
     }
 
     public onSidenavClose = () => {
