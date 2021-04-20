@@ -7,11 +7,9 @@
   <div>
     <a routerLink="{{RoutePaths.home}}">Home</a>
   </div>
-  <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
-    <ul fxLayout fxLayoutGap="15px" class="navigation-items">
-      <li>
-        <a routerLink="{{RoutePaths.entitySearch}}">Search</a>
-      </li>
+  <div fxFlex fxLayoutAlign="end" fxHide.xs>
+    <ul fxLayout="row" fxLayoutGap="2ch" class="navigation-items">
+      <li><a routerLink="{{RoutePaths.entitySearch}}">Search</a></li>
     </ul>
   </div>
 </mat-toolbar>
