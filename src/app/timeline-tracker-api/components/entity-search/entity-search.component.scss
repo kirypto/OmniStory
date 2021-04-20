@@ -5,32 +5,28 @@ $warn: rgb(244, 67, 54);
 
 
 :host {
-    display: block;
     height: 100%;
     width: 100%;
-    overflow-y: scroll;
-    padding: 0 1.5ch 0 0;
+    display: block;
+    overflow-y: auto;
 }
 
-ul {
-    margin: 0;
+button {
+    margin: 0.5ch 0.25ch;
 }
 
-pre {
-    margin: 0;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    white-space: -moz-pre-wrap;
-    white-space: -o-pre-wrap;
-    word-wrap: break-word;
+div.filter span {
+    display: inline-block;
+    min-width: 20ch;
 }
 
-button.delete-button-small {
-    transform: scale(0.85);
+span.spacer {
+    display: inline-block;
+    width: 12ch;
 }
 
-button.delete-button-tiny {
-    transform: scale(0.7);
+input {
+    width: 50ch;
 }
 
 

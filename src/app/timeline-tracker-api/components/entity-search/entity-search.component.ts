@@ -11,7 +11,7 @@ import {Location} from "../../types/location";
 @Component({
     selector: "app-entity-finder",
     templateUrl: "./entity-search.component.html",
-    styleUrls: ["./entity-search.component.css"]
+    styleUrls: ["./entity-search.component.scss"]
 })
 @Injectable({providedIn: "root"})
 export class EntitySearchComponent {

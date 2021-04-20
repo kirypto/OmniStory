@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+  <div fxHide.gt-xs>
+    <button mat-icon-button (click)="onToggleSidenav()" onclick="this.blur()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+  <div>
+    <a routerLink="{{RoutePaths.home}}">Home</a>
+  </div>
+  <div fxFlex fxLayoutAlign="end" fxHide.xs>
+    <mat-nav-list fxLayout="row" fxLayoutGap="2ch">
+        <a routerLink="{{RoutePaths.entitySearch}}">Search</a>
+        <a routerLink="{{RoutePaths.entitySearch}}">Search</a>
+    </mat-nav-list>
+  </div>
+</mat-toolbar>

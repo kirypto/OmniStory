@@ -4,18 +4,23 @@ import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatListModule} from "@angular/material/list";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
 
 import {AppComponent} from "./app.component";
-import {MainComponent} from "./common/components/main/main.component";
+import {HomeComponent} from "./common/components/home/home.component";
 import {NotFoundComponent} from "./common/components/not-found/not-found.component";
 import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
+import {NavbarComponent} from "./common/components/navbar/navbar.component";
+import {NavbarOverlayComponent} from "./common/components/navbar-overlay/navbar-overlay.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -35,7 +40,7 @@ export const applicationProviders = [
  * Primary routes used in the application, used in the Application Imports
  */
 const routes: Routes = [
-    {path: RoutePaths.main, component: MainComponent},
+    {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
     {path: RoutePaths.location_locationId, component: LocationComponent},
     {path: "**", component: NotFoundComponent},
@@ -54,6 +59,9 @@ export const applicationImports = [
     MatInputModule,
     BrowserAnimationsModule,
     MatIconModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
     RouterModule.forRoot(routes),
 ];
 
@@ -62,8 +70,10 @@ export const applicationImports = [
  */
 export const applicationDeclarations = [
     AppComponent,
-    MainComponent,
+    HomeComponent,
     NotFoundComponent,
+    NavbarComponent,
+    NavbarOverlayComponent,
     LocationComponent,
     EntitySearchComponent,
 ];

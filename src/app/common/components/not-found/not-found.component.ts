@@ -1,21 +1,14 @@
-import {Component, OnInit} from "@angular/core";
-
-import {RoutePaths} from "../../types/route-paths";
+import {Component} from "@angular/core";
+import {RoutingComponent} from "../RoutingComponent";
 
 @Component({
     selector: "app-page-not-found-component",
     templateUrl: "./not-found.component.html",
     styleUrls: ["./not-found.component.css"]
 })
-export class NotFoundComponent implements OnInit {
+export class NotFoundComponent extends RoutingComponent {
 
     public constructor() {
-    }
-
-    public get RoutePaths(): typeof RoutePaths {
-        return RoutePaths;
-    }
-
-    public ngOnInit(): void {
+        super();
     }
 }

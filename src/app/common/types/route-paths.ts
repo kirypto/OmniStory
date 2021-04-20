@@ -1,5 +1,5 @@
 export enum RoutePaths {
-    main = "",
+    home = "",
     entitySearch = "entity-search",
     location_locationId = "location/:locationId",
 }

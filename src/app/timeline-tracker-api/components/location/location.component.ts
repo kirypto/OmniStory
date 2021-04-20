@@ -3,12 +3,12 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {Subscription} from "rxjs";
 import {catchError, map, mergeMap, tap} from "rxjs/operators";
+import {isNumeric} from "rxjs/internal-compatibility";
 
 import {RoutePaths} from "../../../common/types/route-paths";
 import {Location, LocationData} from "../../types/location";
 import {LocationGatewayService} from "../../services/location-gateway.service";
 import {handleError} from "../../services/util";
-import {isNumeric} from "rxjs/internal-compatibility";
 
 @Component({
     selector: "app-location",

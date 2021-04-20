@@ -1,0 +1,14 @@
+// TODO: figure out how to get these from the global theme
+$primary: rgb(156, 39, 176);
+$accent: rgb(105, 240, 174);
+$warn: rgb(244, 67, 54);
+
+:host {
+    background-color: $primary;
+    display: block;
+    width: 100%;
+}
+
+mat-nav-list a:hover {
+    color: $accent;
+}
