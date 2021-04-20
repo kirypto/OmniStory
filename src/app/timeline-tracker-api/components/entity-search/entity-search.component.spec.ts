@@ -4,7 +4,7 @@ import {By} from "@angular/platform-browser";
 import {of} from "rxjs";
 
 import {EntitySearchComponent} from "./entity-search.component";
-import {LocationGatewayService} from "../../services/location-gateway.service";
+import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
 import {Location} from "../../types/location";
 import {applicationDeclarations} from "../../../app-index";
 import {sampleLocationData} from "../../types/location.spec";

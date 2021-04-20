@@ -4,9 +4,9 @@ import {Observable} from "rxjs";
 import {catchError, filter, map, mergeMap, tap} from "rxjs/operators";
 import {createPatch} from "rfc6902";
 
-import {Location, LocationData} from "../types/location";
-import {constructEncodedQueryParams, handleError} from "./util";
-import {LocationFilters} from "./filters";
+import {Location, LocationData} from "../../types/location";
+import {constructEncodedQueryParams, handleError} from "../util";
+import {LocationFilters} from "../filters";
 
 @Injectable({
     providedIn: "root"

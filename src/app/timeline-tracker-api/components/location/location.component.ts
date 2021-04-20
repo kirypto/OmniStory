@@ -7,7 +7,7 @@ import {isNumeric} from "rxjs/internal-compatibility";
 
 import {RoutePaths} from "../../../common/types/route-paths";
 import {Location, LocationData} from "../../types/location";
-import {LocationGatewayService} from "../../services/location-gateway.service";
+import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
 import {handleError} from "../../services/util";
 
 @Component({
