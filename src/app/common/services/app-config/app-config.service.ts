@@ -27,7 +27,7 @@ export class AppConfigService {
         if (this._initialized) {
             throw new Error("AppConfigService was already initialized.");
         }
-        return this._httpClient.get(`/assets/config/app.config.yaml`, {responseType: "text"})
+        return this._httpClient.get(`/assets/app-config.yaml`, {responseType: "text"})
             .toPromise()
             .then((configText: string) => {
                 const configContainer = parse(configText);
