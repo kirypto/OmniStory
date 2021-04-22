@@ -21,6 +21,8 @@ import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-se
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
 import {NavbarComponent} from "./common/components/navbar/navbar.component";
 import {NavbarOverlayComponent} from "./common/components/navbar-overlay/navbar-overlay.component";
+import {AppConfigService} from "./common/services/app-config/app-config.service";
+import {APP_INITIALIZER, Provider} from "@angular/core";
 
 /**
  * All http interceptor providers in outside-in order
@@ -30,10 +32,19 @@ const httpInterceptorProviders = [
 ];
 
 /**
+ * App config provider, ensuring config is loaded before constructing any dependant classes
+ */
+const appConfigProvider: Provider = {
+    provide: APP_INITIALIZER, multi: true, deps: [AppConfigService],
+    useFactory: (appConfigService: AppConfigService) => (() => appConfigService.initializeConfig()),
+};
+
+/**
  * All Application Providers
  */
-export const applicationProviders = [
+export const applicationProviders: Provider[] = [
     httpInterceptorProviders,
+    appConfigProvider
 ];
 
 /**

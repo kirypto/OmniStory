@@ -4,7 +4,7 @@ import {from, Observable} from "rxjs";
 import {filter, map, mergeMap} from "rxjs/operators";
 
 import {LocationFilters} from "../../services/filters";
-import {LocationGatewayService} from "../../services/location-gateway.service";
+import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
 import {IdentifiedEntity} from "../../types/identified-entity";
 import {Location} from "../../types/location";
 

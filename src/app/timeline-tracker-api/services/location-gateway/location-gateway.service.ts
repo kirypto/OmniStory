@@ -4,20 +4,24 @@ import {Observable} from "rxjs";
 import {catchError, filter, map, mergeMap, tap} from "rxjs/operators";
 import {createPatch} from "rfc6902";
 
-import {Location, LocationData} from "../types/location";
-import {constructEncodedQueryParams, handleError} from "./util";
-import {LocationFilters} from "./filters";
+import {Location, LocationData} from "../../types/location";
+import {constructEncodedQueryParams, handleError} from "../util";
+import {LocationFilters} from "../filters";
+import {AppConfigService} from "../../../common/services/app-config/app-config.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class LocationGatewayService {
     // noinspection HttpUrlsUsage
-    private _timelineTrackerApiUrl = "http://172.16.1.101:1337/api";
+    private readonly _timelineTrackerApiUrl;
 
     constructor(
         private _httpClient: HttpClient,
+        private _appConfig: AppConfigService,
     ) {
+        this._timelineTrackerApiUrl = this._appConfig.ttapiBaseUrl;
+        console.log(`CONFIG (location gateway): ${this._timelineTrackerApiUrl}`);
     }
 
     public retrieveLocation(locationId: string): Observable<Location | undefined> {
