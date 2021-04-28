@@ -36,7 +36,7 @@ const httpInterceptorProviders = [
  */
 const appConfigProvider: Provider = {
     provide: APP_INITIALIZER, multi: true, deps: [AppConfigService],
-    useFactory: (appConfigService: AppConfigService) => (() => appConfigService.initializeConfig()),
+    useFactory: (appConfigService: AppConfigService) => (() => appConfigService.loadApplicationConfig()),
 };
 
 /**

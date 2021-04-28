@@ -4,16 +4,18 @@ import {HttpTestingController} from "@angular/common/http/testing";
 import {LocationGatewayService} from "./location-gateway.service";
 import {Location} from "../../types/location";
 import {sampleLocationData} from "../../types/location.spec";
-import {deepCopy, getTestImports} from "../../../test-helpers.spec";
+import {deepCopy, getTestImports, getTestProviders} from "../../../test-helpers.spec";
+import {sampleApplicationConfig} from "../../../common/services/app-config/app-config.service.spec";
+
 
 describe("LocationGatewayService", () => {
     let service: LocationGatewayService;
     let httpMock: HttpTestingController;
-    // noinspection HttpUrlsUsage
-    const ttapiUrl = "http://172.16.1.101:1337";
+    const ttapiUrl = sampleApplicationConfig.ttapiBaseUrl;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
+            providers: getTestProviders(),
             imports: getTestImports(),
         });
         service = TestBed.inject(LocationGatewayService);
@@ -38,7 +40,7 @@ describe("LocationGatewayService", () => {
             service.retrieveLocation(locationId).subscribe(location => actualLocation = location);
 
             // Assert
-            const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
+            const req = httpMock.expectOne(`${ttapiUrl}/location/${locationId}`);
             expect(req.request.method).toBe("GET");
             req.flush(body, {status: 200, statusText: "OK"});
             expect(actualLocation.equals(expectedLocation)).toBeTrue();
@@ -51,7 +53,7 @@ describe("LocationGatewayService", () => {
             service.retrieveLocation(locationId).subscribe(location => actualLocation = location);
 
             // Assert
-            const req = httpMock.expectOne(`${ttapiUrl}/api/location/${locationId}`);
+            const req = httpMock.expectOne(`${ttapiUrl}/location/${locationId}`);
             expect(req.request.method).toBe("GET");
             req.flush(null, {status: 404, statusText: "Not Found"});
             expect(actualLocation).toBeUndefined();
@@ -72,7 +74,7 @@ describe("LocationGatewayService", () => {
             service.retrieveLocationIds().subscribe(locationIds => actualLocationIds = locationIds);
 
             // Assert
-            const req = httpMock.expectOne(`${ttapiUrl}/api/locations`);
+            const req = httpMock.expectOne(`${ttapiUrl}/locations`);
             expect(req.request.method).toBe("GET");
             req.flush(expectedLocations);
             expect(actualLocationIds).toEqual(expectedLocations);
@@ -88,7 +90,7 @@ describe("LocationGatewayService", () => {
             service.updateLocation(location).subscribe();
 
             // Assert
-            const req = httpMock.expectOne(`${ttapiUrl}/api/location/${location.id}`);
+            const req = httpMock.expectOne(`${ttapiUrl}/location/${location.id}`);
             expect(req.request.method).toBe("GET");
             req.flush(sampleLocationData);
         });
@@ -108,10 +110,10 @@ describe("LocationGatewayService", () => {
             service.updateLocation(modifiedLocation).subscribe();
 
             // Assert
-            const getReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            const getReq = httpMock.expectOne(`${ttapiUrl}/location/${sampleLocationData.id}`);
             expect(getReq.request.method).toBe("GET");
             getReq.flush(sampleLocationData);
-            const patchReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            const patchReq = httpMock.expectOne(`${ttapiUrl}/location/${sampleLocationData.id}`);
             expect(patchReq.request.method).toBe("PATCH");
             expect(patchReq.request.body).toBe(expectedPatch);
         });
@@ -127,10 +129,10 @@ describe("LocationGatewayService", () => {
             service.updateLocation(modifiedLocation).subscribe();
 
             // Assert
-            const getReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            const getReq = httpMock.expectOne(`${ttapiUrl}/location/${sampleLocationData.id}`);
             expect(getReq.request.method).toBe("GET");
             getReq.flush(sampleLocationData);
-            const patchReq = httpMock.expectOne(`${ttapiUrl}/api/location/${sampleLocationData.id}`);
+            const patchReq = httpMock.expectOne(`${ttapiUrl}/location/${sampleLocationData.id}`);
             expect(patchReq.request.method).toBe("PATCH");
             expect(patchReq.request.body).toBe(expectedPatch);
         });

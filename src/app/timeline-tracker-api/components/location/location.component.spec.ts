@@ -4,7 +4,7 @@ import {LocationComponent} from "./location.component";
 import {Location} from "../../types/location";
 import {applicationDeclarations} from "../../../app-index";
 import {sampleLocationData} from "../../types/location.spec";
-import {getTestImports} from "../../../test-helpers.spec";
+import {getTestImports, getTestProviders} from "../../../test-helpers.spec";
 
 describe("LocationComponent", () => {
     let component: LocationComponent;
@@ -14,7 +14,8 @@ describe("LocationComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: getTestImports(),
-            declarations: applicationDeclarations
+            declarations: applicationDeclarations,
+            providers: getTestProviders(),
         }).compileComponents();
     });
 

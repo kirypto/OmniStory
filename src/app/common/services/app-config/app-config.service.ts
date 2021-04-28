@@ -23,7 +23,7 @@ export class AppConfigService {
         return this._ttapiBaseUrl;
     }
 
-    public initializeConfig(): Promise<void> {
+    public loadApplicationConfig(): Promise<void> {
         if (this._initialized) {
             throw new Error("AppConfigService was already initialized.");
         }
@@ -31,12 +31,15 @@ export class AppConfigService {
             .toPromise()
             .then((configText: string) => {
                 const configContainer = parse(configText);
-
-                this._version = extractConfig(configContainer, "version", "string");
-                this._ttapiBaseUrl = extractConfig(configContainer, "ttapiBaseUrl", "string");
-
-                this._initialized = true;
+                this.initialize(configContainer);
             });
+    }
+
+    private initialize(configContainer: object): void {
+        this._version = extractConfig(configContainer, "version", "string");
+        this._ttapiBaseUrl = extractConfig(configContainer, "ttapiBaseUrl", "string");
+
+        this._initialized = true;
     }
 
     private validateInitialized(): void {
