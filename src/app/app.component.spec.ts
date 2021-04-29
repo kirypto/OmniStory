@@ -1,15 +1,12 @@
 import {TestBed} from "@angular/core/testing";
 
 import {AppComponent} from "./app.component";
-import {applicationDeclarations} from "./app-index";
-import {getTestImports} from "./test-helpers.spec";
+import {testingModuleDefinitions} from "./test-helpers.spec";
 
 describe("AppComponent", () => {
     beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: getTestImports(),
-            declarations: applicationDeclarations,
-        }).compileComponents();
+        await TestBed.configureTestingModule(testingModuleDefinitions)
+            .compileComponents();
     });
 
     it("should create the app", () => {

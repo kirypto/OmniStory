@@ -2,9 +2,8 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 
 import {LocationComponent} from "./location.component";
 import {Location} from "../../types/location";
-import {applicationDeclarations} from "../../../app-index";
 import {sampleLocationData} from "../../types/location.spec";
-import {getTestImports, getTestProviders} from "../../../test-helpers.spec";
+import {testingModuleDefinitions} from "../../../test-helpers.spec";
 
 describe("LocationComponent", () => {
     let component: LocationComponent;
@@ -12,11 +11,8 @@ describe("LocationComponent", () => {
     const sampleLocation: Location = new Location(sampleLocationData);
 
     beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: getTestImports(),
-            declarations: applicationDeclarations,
-            providers: getTestProviders(),
-        }).compileComponents();
+        await TestBed.configureTestingModule(testingModuleDefinitions)
+            .compileComponents();
     });
 
     beforeEach(() => {

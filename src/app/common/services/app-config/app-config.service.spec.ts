@@ -1,7 +1,7 @@
 import {TestBed} from "@angular/core/testing";
 
 import {AppConfigService} from "./app-config.service";
-import {getTestImports} from "../../../test-helpers.spec";
+import {testingModuleDefinitions} from "../../../test-helpers.spec";
 
 export const sampleApplicationConfig = {
     version: "TEST",
@@ -13,9 +13,7 @@ describe("AppConfigService", () => {
     let service: AppConfigService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: getTestImports(),
-        });
+        TestBed.configureTestingModule(testingModuleDefinitions);
         service = TestBed.inject(AppConfigService);
     });
 

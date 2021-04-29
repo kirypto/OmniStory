@@ -4,7 +4,7 @@ import {HttpTestingController} from "@angular/common/http/testing";
 import {LocationGatewayService} from "./location-gateway.service";
 import {Location} from "../../types/location";
 import {sampleLocationData} from "../../types/location.spec";
-import {deepCopy, getTestImports, getTestProviders} from "../../../test-helpers.spec";
+import {deepCopy, testingModuleDefinitions} from "../../../test-helpers.spec";
 import {sampleApplicationConfig} from "../../../common/services/app-config/app-config.service.spec";
 
 
@@ -14,10 +14,7 @@ describe("LocationGatewayService", () => {
     const ttapiUrl = sampleApplicationConfig.ttapiBaseUrl;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: getTestProviders(),
-            imports: getTestImports(),
-        });
+        TestBed.configureTestingModule(testingModuleDefinitions);
         service = TestBed.inject(LocationGatewayService);
         httpMock = TestBed.inject(HttpTestingController);
     });

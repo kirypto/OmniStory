@@ -6,10 +6,8 @@ import {of} from "rxjs";
 import {EntitySearchComponent} from "./entity-search.component";
 import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
 import {Location} from "../../types/location";
-import {applicationDeclarations} from "../../../app-index";
 import {sampleLocationData} from "../../types/location.spec";
-import {getTestImports} from "../../../test-helpers.spec";
-
+import {testingModuleDefinitions} from "../../../test-helpers.spec";
 import SpyObj = jasmine.SpyObj;
 
 
@@ -24,8 +22,8 @@ describe("EntityFinderComponent", () => {
             "retrieveLocation", "retrieveLocationIds"
         ]);
         await TestBed.configureTestingModule({
-            imports: getTestImports(),
-            declarations: applicationDeclarations,
+            imports: testingModuleDefinitions.imports,
+            declarations: testingModuleDefinitions.declarations,
             providers: [{
                 provide: LocationGatewayService, useValue: locationGatewaySpy
             }],
