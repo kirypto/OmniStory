@@ -1,12 +1,33 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {parse} from "yaml";
+import {CalendarConfig, TtapiConfig} from "../../types/config-types";
+import {CalendarType} from "../../types/calendar-type";
+
+
+function initializeTtapiConfig(configContainer: object): TtapiConfig {
+    return {
+        baseUrl: extractConfig(configContainer, "baseUrl", "string"),
+    };
+}
+
+function initializeCalendarConfig(configContainer: object): CalendarConfig {
+    const calendarTypeRaw = extractConfig(configContainer, "system", "string");
+    const calendarType: CalendarType = CalendarType[calendarTypeRaw as keyof typeof CalendarType];
+    if (calendarType === undefined) {
+        throw new Error(`Failed parse calendar configuration, unknown system '${calendarTypeRaw}'`);
+    }
+    return {
+        system: calendarType,
+    };
+}
 
 @Injectable({providedIn: "root"})
 export class AppConfigService {
     private _initialized = false;
     private _version: string;
-    private _ttapiBaseUrl: string;
+    private _ttapi: TtapiConfig;
+    private _calendar: CalendarConfig;
 
     public constructor(
         private _httpClient: HttpClient
@@ -18,9 +39,12 @@ export class AppConfigService {
         return this._version;
     }
 
-    public get ttapiBaseUrl(): string {
-        this.validateInitialized();
-        return this._ttapiBaseUrl;
+    public get TtapiConfig(): TtapiConfig {
+        return this._ttapi;
+    }
+
+    public get CalendarConfig(): CalendarConfig {
+        return this._calendar;
     }
 
     public loadApplicationConfig(): Promise<void> {
@@ -37,7 +61,8 @@ export class AppConfigService {
 
     private initialize(configContainer: object): void {
         this._version = extractConfig(configContainer, "version", "string");
-        this._ttapiBaseUrl = extractConfig(configContainer, "ttapiBaseUrl", "string");
+        this._ttapi = initializeTtapiConfig(extractConfig(configContainer, "ttapiConfiguration", "object"));
+        this._calendar = initializeCalendarConfig(extractConfig(configContainer, "calendarConfiguration", "object"));
 
         this._initialized = true;
     }

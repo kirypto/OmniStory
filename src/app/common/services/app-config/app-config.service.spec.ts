@@ -5,7 +5,12 @@ import {testingModuleDefinitions} from "../../../test-helpers.spec";
 
 export const sampleApplicationConfig = {
     version: "TEST",
-    ttapiBaseUrl: "fake.test.url:9999",
+    ttapiConfiguration: {
+        baseUrl: "fake.test.url:9999",
+    },
+    calendarConfiguration: {
+        system: "Gregorian",
+    },
 };
 
 
