@@ -1,0 +1,37 @@
+// TODO: figure out how to get these from the global theme
+$primary: rgb(156, 39, 176);
+$accent: rgb(105, 240, 174);
+$warn: rgb(244, 67, 54);
+
+
+:host {
+  height: 100%;
+  width: 100%;
+  //display: block;
+  //overflow-y: auto;
+}
+
+// The emerging W3C standard, Firefox-only as of 2021-March-26
+//noinspection CssUnknownProperty
+.scrollable-content {
+  scrollbar-width: thin;
+  scrollbar-color: $accent $primary;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  //overflow-y: hidden !important;
+  //display: block !important;
+}
+// Works on Chrome/Edge/Safari
+.scrollable-content::-webkit-scrollbar {
+  width: 10px;
+}
+.scrollable-content::-webkit-scrollbar-track {
+  background: $primary;
+}
+.scrollable-content::-webkit-scrollbar-thumb {
+  background-color: $accent;
+  border-radius: 20px;
+  border: 3px solid $primary;
+}
