@@ -55,6 +55,7 @@ export const applicationProviders: Provider[] = [
 const routes: Routes = [
     {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
+    {path: RoutePaths.worldCalendar, component: WorldCalendarComponent},
     {path: RoutePaths.location_locationId, component: LocationComponent},
     {path: "**", component: NotFoundComponent},
 ];
