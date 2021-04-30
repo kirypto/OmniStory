@@ -23,6 +23,7 @@ import {NavbarComponent} from "./common/components/navbar/navbar.component";
 import {NavbarOverlayComponent} from "./common/components/navbar-overlay/navbar-overlay.component";
 import {AppConfigService} from "./common/services/app-config/app-config.service";
 import {APP_INITIALIZER, Provider} from "@angular/core";
+import {WorldCalendarComponent} from "./common/components/world-calendar/world-calendar.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -87,4 +88,5 @@ export const applicationDeclarations = [
     NavbarOverlayComponent,
     LocationComponent,
     EntitySearchComponent,
+    WorldCalendarComponent,
 ];
