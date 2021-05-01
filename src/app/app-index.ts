@@ -25,6 +25,7 @@ import {AppConfigService} from "./common/services/app-config/app-config.service"
 import {APP_INITIALIZER, Provider} from "@angular/core";
 import {WorldCalendarComponent} from "./common/components/world-calendar/world-calendar.component";
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
+import {ContinuumInputComponent} from "./common/components/continuum-input/continuum-input.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -92,4 +93,5 @@ export const applicationDeclarations = [
     EntitySearchComponent,
     WorldCalendarComponent,
     ScrollableContainerComponent,
+    ContinuumInputComponent,
 ];
