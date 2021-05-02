@@ -6,10 +6,25 @@ import {CalendarType} from "../../types/calendar-type";
     providedIn: "root"
 })
 export class CalendarService {
-    private _calendarSystem: CalendarType;
+    private readonly _calendarSystem: CalendarType;
+    private readonly _epoch: Date;
 
-    constructor(_appConfigService: AppConfigService) {
+    private constructor(_appConfigService: AppConfigService) {
         this._calendarSystem = _appConfigService.CalendarConfig.system;
-        console.log(`Calendar system: ${this._calendarSystem}`);
+
+        this._epoch = new Date();
+    }
+
+    public get System(): CalendarType {
+        return this._calendarSystem;
+    }
+
+    public translateFromContinuum(continuum: number): Date {
+        if (this._calendarSystem === CalendarType.Gregorian) {
+            const epochMillis = this._epoch.getTime();
+            return new Date(epochMillis + (continuum * 24 * 60 * 60 * 1000));
+        } else {
+            throw new Error(`Unsupported calendar system ${this._calendarSystem}`);
+        }
     }
 }
