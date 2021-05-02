@@ -35,20 +35,16 @@ export class ScrollableContainerComponent {
 }
 
 function convert(fxFlexInstruction: number | string): string {
-    let msg = `Converting '${fxFlexInstruction}'`;
     let fxFlexInstructionStr: string;
     if (typeof fxFlexInstruction === "string") {
         fxFlexInstructionStr = fxFlexInstruction;
     } else if (typeof fxFlexInstruction === "number") {
         fxFlexInstructionStr = fxFlexInstruction.toString();
-        msg += `-> From number to '${fxFlexInstructionStr}'`;
     } else {
         throw new Error(`[${ScrollableContainerComponent}] Failed to convert flex instruction '${fxFlexInstruction}'`);
     }
     if (isNumeric(fxFlexInstructionStr)) {
         fxFlexInstructionStr = `${fxFlexInstructionStr}%`;
-        msg += `-> From numeric string to '${fxFlexInstructionStr}'`;
     }
-    console.log(msg);
     return fxFlexInstructionStr;
 }
