@@ -1,5 +1,14 @@
 <app-scrollable-container _leftFxFlex="0.5ch" _rightFxFlex="0.5ch" _bottomFxFlex="0.5ch">
-  <div fxFlex="100" style="background-color: #3f1441">
-    <app-continuum-input [(continuum)]="ContinuumLow"></app-continuum-input>
+  <div fxLayout="row wrap" fxLayoutAlign="space-evenly">
+    <!-- TODO: Move label into continuum input -->
+    <!-- TODO: Move add spacing around continuum input -->
+    <div>
+      From:
+      <app-continuum-input [(continuum)]="continuumLow"></app-continuum-input>
+    </div>
+    <div>
+      To:
+      <app-continuum-input [(continuum)]="continuumHigh"></app-continuum-input>
+    </div>
   </div>
 </app-scrollable-container>
