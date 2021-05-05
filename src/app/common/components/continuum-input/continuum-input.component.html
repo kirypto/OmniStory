@@ -1,6 +1,6 @@
 <span fxLayout="row">
   <span *ngFor="let continuumPart of continuumParts; index as i; trackBy:continuumPartTrackBy">
-    <mat-form-field color="accent" fxFlex="7ch" floatLabel="auto">
+    <mat-form-field color="accent" fxFlex="6ch" floatLabel="auto">
       <mat-label>{{continuumPart.name}}</mat-label>
       <input matInput type="number" (change)="OnChange()" [(ngModel)]="continuumPart.value">
     </mat-form-field>
