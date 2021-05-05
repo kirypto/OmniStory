@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AppConfigService} from "../app-config/app-config.service";
-import {ContinuumPart, CalendarType} from "../../types/calendar-type";
+import {CalendarType, ContinuumPart} from "../../types/calendar-type";
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -15,10 +15,15 @@ export class CalendarService {
         private _appConfigService: AppConfigService
     ) {
         this._calendarSystem = this._appConfigService.calendarConfig.system;
-        this._epoch = new Date(2021, 1, 1);
-    }
+        if (this._calendarSystem === CalendarType.Gregorian) {
+            this._epoch = new Date(Date.parse(this._appConfigService.calendarConfig.epoch));
+        } else {
+            throw new Error(`Unsupported calendar system ${this._calendarSystem}`);
+        }
 
-    public translateFromContinuum(continuum: number): ContinuumPart[] {
+}
+
+public translateFromContinuum(continuum: number): ContinuumPart[] {
         if (this._calendarSystem === CalendarType.Gregorian) {
             const epochMillis = this._epoch.getTime();
             const dateTime = new Date(epochMillis + (continuum * MILLISECONDS_PER_DAY));

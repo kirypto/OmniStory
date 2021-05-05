@@ -6,5 +6,6 @@ export interface TtapiConfig {
 
 export interface CalendarConfig {
     system: CalendarType;
+    epoch: string;
 }
 

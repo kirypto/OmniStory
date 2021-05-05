@@ -19,6 +19,7 @@ function initializeCalendarConfig(configContainer: object): CalendarConfig {
     }
     return {
         system: calendarType,
+        epoch: extractConfig(configContainer, "epoch", "string"),
     };
 }
 
