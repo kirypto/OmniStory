@@ -14,7 +14,7 @@ export class CalendarService {
     public constructor(
         private _appConfigService: AppConfigService
     ) {
-        this._calendarSystem = _appConfigService.CalendarConfig.system;
+        this._calendarSystem = this._appConfigService.calendarConfig.system;
         this._epoch = new Date(2021, 1, 1);
     }
 

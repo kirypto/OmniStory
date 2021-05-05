@@ -39,11 +39,11 @@ export class AppConfigService {
         return this._version;
     }
 
-    public get TtapiConfig(): TtapiConfig {
+    public get ttapiConfig(): TtapiConfig {
         return this._ttapi;
     }
 
-    public get CalendarConfig(): CalendarConfig {
+    public get calendarConfig(): CalendarConfig {
         return this._calendar;
     }
 

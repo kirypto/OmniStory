@@ -20,7 +20,7 @@ export class LocationGatewayService {
         private _httpClient: HttpClient,
         private _appConfigService: AppConfigService,
     ) {
-        this._timelineTrackerApiUrl = this._appConfigService.TtapiConfig.baseUrl;
+        this._timelineTrackerApiUrl = this._appConfigService.ttapiConfig.baseUrl;
     }
 
     public retrieveLocation(locationId: string): Observable<Location | undefined> {
