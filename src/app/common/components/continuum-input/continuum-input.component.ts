@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from "@angular/core";
 
 import {CalendarService} from "../../services/calendar/calendar.service";
-import {CalendarPart} from "../../types/calendar-type";
+import {ContinuumPart} from "../../types/calendar-type";
 
 @Component({
     selector: "app-continuum-input",
@@ -9,7 +9,7 @@ import {CalendarPart} from "../../types/calendar-type";
     styleUrls: ["./continuum-input.component.scss"]
 })
 export class ContinuumInputComponent implements OnChanges {
-    public continuumParts: CalendarPart[] = [];
+    public continuumParts: ContinuumPart[] = [];
 
     @Input() public continuum: number;
     @Output() public continuumChange = new EventEmitter<number>();
@@ -28,7 +28,7 @@ export class ContinuumInputComponent implements OnChanges {
         this.continuumParts = this._calendarService.translateFromContinuum(this.continuum);
     }
 
-    public continuumPartTrackBy(index: number, _continuumPart: CalendarPart): number {
+    public continuumPartTrackBy(index: number, _continuumPart: ContinuumPart): number {
         // Identify using the index so that Angular does not re-render mid typing causing focus loss after each character change
         return index;
     }

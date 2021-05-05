@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AppConfigService} from "../app-config/app-config.service";
-import {CalendarPart, CalendarType} from "../../types/calendar-type";
+import {ContinuumPart, CalendarType} from "../../types/calendar-type";
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -18,7 +18,7 @@ export class CalendarService {
         this._epoch = new Date(2021, 1, 1);
     }
 
-    public translateFromContinuum(continuum: number): CalendarPart[] {
+    public translateFromContinuum(continuum: number): ContinuumPart[] {
         if (this._calendarSystem === CalendarType.Gregorian) {
             const epochMillis = this._epoch.getTime();
             const dateTime = new Date(epochMillis + (continuum * MILLISECONDS_PER_DAY));
@@ -35,9 +35,9 @@ export class CalendarService {
         }
     }
 
-    public translateToContinuum(calendarParts: CalendarPart[]): number {
+    public translateToContinuum(continuumParts: ContinuumPart[]): number {
         const parts = new Map<string, number>();
-        calendarParts.forEach(calendarPart => {
+        continuumParts.forEach(calendarPart => {
             if (calendarPart.value !== undefined) {
                 parts.set(calendarPart.name, calendarPart.value);
             }

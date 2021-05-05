@@ -2,7 +2,7 @@ export enum CalendarType {
     Gregorian,
 }
 
-export interface CalendarPart {
+export interface ContinuumPart {
     name: string;
     value?: number;
 }
