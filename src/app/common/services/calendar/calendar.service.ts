@@ -18,10 +18,6 @@ export class CalendarService {
         this._epoch = new Date(2021, 1, 1);
     }
 
-    public get System(): CalendarType {
-        return this._calendarSystem;
-    }
-
     public translateFromContinuum(continuum: number): CalendarPart[] {
         if (this._calendarSystem === CalendarType.Gregorian) {
             const epochMillis = this._epoch.getTime();
@@ -29,7 +25,7 @@ export class CalendarService {
             return [
                 {name: "Year", value: dateTime.getFullYear()},
                 {name: "Month", value: dateTime.getMonth()},
-                {name: "Day", value: dateTime.getDay()},
+                {name: "Date", value: dateTime.getDate()},
                 {name: "Hour", value: dateTime.getHours()},
                 {name: "Minute", value: dateTime.getMinutes()},
                 {name: "Second", value: dateTime.getSeconds()},
@@ -50,7 +46,7 @@ export class CalendarService {
             const date = new Date(
                 parts.has("Year") ? parts.get("Year") : 0,
                 parts.has("Month") ? parts.get("Month") : 0,
-                parts.has("Day") ? parts.get("Day") : 0,
+                parts.has("Date") ? parts.get("Date") : 0,
                 parts.has("Hour") ? parts.get("Hour") : 0,
                 parts.has("Minute") ? parts.get("Minute") : 0,
                 parts.has("Second") ? parts.get("Second") : 0
