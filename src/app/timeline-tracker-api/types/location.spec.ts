@@ -1,7 +1,10 @@
 import {Location, LocationData} from "./location";
+import {components} from "../schema";
 import {deepCopy} from "../../test-helpers.spec";
 
-export const sampleLocationData: LocationData = {
+type LocationSpec = components["schemas"]["ExistingLocation"];
+
+export const sampleLocationData: LocationSpec = {
     id: "location-00000000-0000-4000-8000-000000000000",
     name: "a name",
     description: "a description",
@@ -13,7 +16,7 @@ export const sampleLocationData: LocationData = {
         reality: [0],
     },
     tags: ["tag1", "tag2"],
-    metadata: {meta_key: "meta_val"}
+    metadata: {meta_key: "meta_val"},
 };
 
 describe("Location", () => {
