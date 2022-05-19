@@ -16,7 +16,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
 
 import {AppComponent} from "./app.component";
-import {ContinuumInputComponent} from "./common/components/continuum-input/continuum-input.component";
+// import {ContinuumInputComponent} from "./common/components/continuum-input/continuum-input.component";
 import {HomeComponent} from "./common/components/home/home.component";
 import {NavbarOverlayComponent} from "./common/components/navbar-overlay/navbar-overlay.component";
 import {NavbarComponent} from "./common/components/navbar/navbar.component";
@@ -98,5 +98,5 @@ export const applicationDeclarations = [
     EntitySearchComponent,
     WorldCalendarComponent,
     ScrollableContainerComponent,
-    ContinuumInputComponent,
+    // ContinuumInputComponent,
 ];
