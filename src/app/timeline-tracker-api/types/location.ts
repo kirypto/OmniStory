@@ -42,7 +42,7 @@ function validateNeitherNullNorUndefined<T>(name: string, obj: T): T {
     return obj;
 }
 
-const locationIdRegExp = new RegExp("^location-\d{8}-\d{4}-\d{4}-\d{4}-\d{12}$").compile();
+const locationIdRegExp = new RegExp("^location-\d{8}-\d{4}-\d{4}-\d{4}-\d{12}$");
 
 function validateLocationId(name: string, locationId: string): string {
     validateNeitherNullNorUndefined(name, locationId);
