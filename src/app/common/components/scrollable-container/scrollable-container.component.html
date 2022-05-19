@@ -1,0 +1,11 @@
+<div fxFlex="100" fxLayout="column" fxLayoutAlign="space-between stretch">
+  <div fxFlex="0 0 {{TopFxFlex}}"></div>
+  <div fxFlex="0 0 calc(100% - {{TopFxFlex}} - {{BottomFxFlex}})" fxLayout="row" fxLayoutAlign="space-between stretch">
+    <div fxFlex="0 0 {{LeftFxFlex}}"></div>
+    <div fxFlex="0 0 calc(100% - {{LeftFxFlex}} - {{RightFxFlex}})" class="scrollable-content" fxLayout="column">
+      <ng-content></ng-content>
+    </div>
+    <div fxFlex="0 0 {{RightFxFlex}}"></div>
+  </div>
+  <div fxFlex="0 0 {{BottomFxFlex}}"></div>
+</div>

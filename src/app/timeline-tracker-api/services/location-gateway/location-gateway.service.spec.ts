@@ -11,7 +11,7 @@ import {sampleApplicationConfig} from "../../../common/services/app-config/app-c
 describe("LocationGatewayService", () => {
     let service: LocationGatewayService;
     let httpMock: HttpTestingController;
-    const ttapiUrl = sampleApplicationConfig.ttapiBaseUrl;
+    const ttapiUrl = sampleApplicationConfig.ttapiConfiguration.baseUrl;
 
     beforeEach(() => {
         TestBed.configureTestingModule(testingModuleDefinitions);

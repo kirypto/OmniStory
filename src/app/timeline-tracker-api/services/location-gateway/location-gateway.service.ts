@@ -18,10 +18,9 @@ export class LocationGatewayService {
 
     constructor(
         private _httpClient: HttpClient,
-        private _appConfig: AppConfigService,
+        private _appConfigService: AppConfigService,
     ) {
-        this._timelineTrackerApiUrl = this._appConfig.ttapiBaseUrl;
-        console.log(`CONFIG (location gateway): ${this._timelineTrackerApiUrl}`);
+        this._timelineTrackerApiUrl = this._appConfigService.ttapiConfig.baseUrl;
     }
 
     public retrieveLocation(locationId: string): Observable<Location | undefined> {
