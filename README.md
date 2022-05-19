@@ -1,5 +1,5 @@
-# Timeline Tracker UI (Ttui)
+# OmniStory
 
-Timeline Tracker UI is a front end for the [Timeline Tracker API][Ttapi]. 
+OmniStory is a work in progress web application designed to work with
+the [Timeline Tracker API](https://github.com/kirypto/TimelineTracker).
 
-Pronunciation: `t-too-ee` or just `too-ee`, the pronunciation is up to youee.
