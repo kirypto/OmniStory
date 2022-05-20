@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {catchError, filter, map, mergeMap, tap} from "rxjs/operators";
-import {createPatch} from "rfc6902";
+// import {createPatch} from "rfc6902";
 
 import {Location, LocationData} from "../../types/location";
 import {constructEncodedQueryParams, handleError} from "../util";
@@ -41,22 +41,22 @@ export class LocationGatewayService {
             );
     }
 
-    public updateLocation(location: Location): Observable<Location> {
-        return this.retrieveLocation(location.id).pipe(
-            filter((retrievedLocation: Location | undefined) => retrievedLocation !== undefined),
-            map((retrievedLocation: Location) => {
-                return createPatch(retrievedLocation.getData(), location.getData());
-            }),
-            map((jsonPatchOperations: object[]) => {
-                const url = `${this._timelineTrackerApiUrl}/location/${location.id}`;
-                const httpHeaders = new HttpHeaders().set("Content-Type", "application/json");
-                return this._httpClient.patch<LocationData>(url, JSON.stringify(jsonPatchOperations, null, 2),
-                    {headers: httpHeaders});
-            }),
-            mergeMap(observablePipe => observablePipe),
-            map((locationData: LocationData) => new Location(locationData as LocationData)),
-            tap(locationData => console.log(`Updated Location ${locationData.id}`)),
-            catchError(handleError<Location>(`updateLocation(${location.id})`, location)),
-        );
-    }
+    // public updateLocation(location: Location): Observable<Location> {
+    //     return this.retrieveLocation(location.id).pipe(
+    //         filter((retrievedLocation: Location | undefined) => retrievedLocation !== undefined),
+    //         map((retrievedLocation: Location) => {
+    //             return createPatch(retrievedLocation.getData(), location.getData());
+    //         }),
+    //         map((jsonPatchOperations: object[]) => {
+    //             const url = `${this._timelineTrackerApiUrl}/location/${location.id}`;
+    //             const httpHeaders = new HttpHeaders().set("Content-Type", "application/json");
+    //             return this._httpClient.patch<LocationData>(url, JSON.stringify(jsonPatchOperations, null, 2),
+    //                 {headers: httpHeaders});
+    //         }),
+    //         mergeMap(observablePipe => observablePipe),
+    //         map((locationData: LocationData) => new Location(locationData as LocationData)),
+    //         tap(locationData => console.log(`Updated Location ${locationData.id}`)),
+    //         catchError(handleError<Location>(`updateLocation(${location.id})`, location)),
+    //     );
+    // }
 }

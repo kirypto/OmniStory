@@ -163,12 +163,13 @@ export class LocationComponent implements OnInit, OnDestroy {
     }
 
     public save(): void {
-        this._isDataReady = false;
-        this._locationGateway.updateLocation(new Location(this.constructLocationData()))
-            .pipe(
-                map((location: Location) => this.initialize(location))
-            )
-            .subscribe();
+        alert("Save Not Implemented!");
+        // this._isDataReady = false;
+        // this._locationGateway.updateLocation(new Location(this.constructLocationData()))
+        //     .pipe(
+        //         map((location: Location) => this.initialize(location))
+        //     )
+        //     .subscribe();
     }
 
     private static purifyRealities(realities: any[]): number[] {
