@@ -28,6 +28,7 @@ import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-w
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
+import {AuthModule} from "@auth0/auth0-angular";
 
 /**
  * All http interceptor providers in outside-in order
@@ -64,6 +65,7 @@ const routes: Routes = [
     {path: "**", component: NotFoundComponent},
 ];
 
+// noinspection SpellCheckingInspection
 /**
  * All Application Imports
  */
@@ -83,6 +85,10 @@ export const applicationImports = [
     MatDatepickerModule,
     MatNativeDateModule,
     RouterModule.forRoot(routes),
+    AuthModule.forRoot({
+        domain: "dev-80z7621b.us.auth0.com",
+        clientId: "EeMRqeqJoTMZyVdMharAoIjeI0Yo88xM",
+    }),
 ];
 
 /**
