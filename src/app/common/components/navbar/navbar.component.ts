@@ -21,4 +21,8 @@ export class NavbarComponent extends RoutingComponent {
     public doLogin(): void {
         this._authService.loginWithRedirect();
     }
+
+    public doLogout(): void {
+        this._authService.logout({returnTo: document.location.origin});
+    }
 }
