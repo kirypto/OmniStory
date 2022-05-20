@@ -7,6 +7,7 @@ import {LocationFilters} from "../../services/filters";
 import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
 import {IdentifiedEntity} from "../../types/identified-entity";
 import {Location} from "../../types/location";
+import {GatewayService} from "../../gateway.service";
 
 @Component({
     selector: "app-entity-finder",
@@ -28,7 +29,8 @@ export class EntitySearchComponent {
     private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
 
     public constructor(
-        private _locationGateway: LocationGatewayService
+        private _locationGateway: LocationGatewayService,
+        private _ttapiGateway: GatewayService,
     ) {
     }
 
@@ -45,16 +47,17 @@ export class EntitySearchComponent {
     public findEntities(entityType: string): void {
         this._entitiesById.clear();
 
-        let entityObservable: Observable<IdentifiedEntity>;
-        if (entityType === "location") {
-            entityObservable = this.findLocations();
-        } else {
-            alert(`Finding ${entityType}s is not yet supported`);
-            return;
-        }
-        entityObservable.pipe(
-            filter((value) => value !== undefined),
-        ).subscribe((location) => this._entitiesById.set(location.id, location));
+        // let entityObservable: Observable<IdentifiedEntity>;
+        // if (entityType === "location") {
+        //     entityObservable = this.findLocations();
+        // } else {
+        //     alert(`Finding ${entityType}s is not yet supported`);
+        //     return;
+        // }
+        this._ttapiGateway.retrieveWorldIds().pipe(
+            filter((valueArr) => valueArr !== undefined),
+            mergeMap((locationIdsArr) => from(locationIdsArr)),
+        ).subscribe((value) => this._entitiesById.set(value, {id: value}));
 
     }
 

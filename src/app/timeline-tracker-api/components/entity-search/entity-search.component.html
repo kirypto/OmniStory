@@ -11,6 +11,7 @@
 </div>
 <div *ngIf="advancedSearch">
   <span>
+    <button (click)="findEntities('world')">Find World</button>
     <button (click)="findEntities('location')">Find Locations</button>
     <button (click)="findEntities('traveler')">Find Travelers</button>
     <button (click)="findEntities('event')">Find Events</button>
