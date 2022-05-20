@@ -14,6 +14,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
+import {AuthHttpInterceptor} from "@auth0/auth0-angular";
 
 import {AppComponent} from "./app.component";
 // import {ContinuumInputComponent} from "./common/components/continuum-input/continuum-input.component";
@@ -35,6 +36,7 @@ import {AuthModule} from "@auth0/auth0-angular";
  */
 const httpInterceptorProviders = [
     {provide: HTTP_INTERCEPTORS, useClass: JsonBareWordNumericSymbolTranslator, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true},
 ];
 
 /**
@@ -85,9 +87,22 @@ export const applicationImports = [
     MatDatepickerModule,
     MatNativeDateModule,
     RouterModule.forRoot(routes),
+    HttpClientModule,
     AuthModule.forRoot({
         domain: "dev-80z7621b.us.auth0.com",
         clientId: "I1aVHsO0Y92ecGY5TZGyTGIFinuUec2I",
+        audience: "https://dev-80z7621b.us.auth0.com/api/v2/",
+        scope: "read:current_user",
+        httpInterceptor: {
+            allowedList: [
+                {
+                    uri: "https://dev-80z7621b.us.auth0.com/api/v2/*", tokenOptions: {
+                        audience: "https://dev-80z7621b.us.auth0.com/api/v2/",
+                        scope: "read:current_user",
+                    },
+                },
+            ],
+        },
     }),
 ];
 
