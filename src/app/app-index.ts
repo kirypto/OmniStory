@@ -87,7 +87,7 @@ export const applicationImports = [
     RouterModule.forRoot(routes),
     AuthModule.forRoot({
         domain: "dev-80z7621b.us.auth0.com",
-        clientId: "EeMRqeqJoTMZyVdMharAoIjeI0Yo88xM",
+        clientId: "I1aVHsO0Y92ecGY5TZGyTGIFinuUec2I",
     }),
 ];
 
