@@ -1,12 +1,8 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 
-import {of} from "rxjs";
-
 import {EntitySearchComponent} from "./entity-search.component";
 import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
-import {Location} from "../../types/location";
-import {sampleLocationData} from "../../types/location.spec";
 import {testingModuleDefinitions} from "../../../test-helpers.spec";
 import SpyObj = jasmine.SpyObj;
 
@@ -15,7 +11,6 @@ describe("EntityFinderComponent", () => {
     let component: EntitySearchComponent;
     let fixture: ComponentFixture<EntitySearchComponent>;
     let locationGatewayServiceMock: SpyObj<LocationGatewayService>;
-    const location = new Location(sampleLocationData);
 
     beforeEach(async () => {
         const locationGatewaySpy = jasmine.createSpyObj("LocationGatewayService", [
@@ -41,61 +36,6 @@ describe("EntityFinderComponent", () => {
         // Act
         // Assert
         expect(component).toBeTruthy();
-    });
-
-    describe("class and methods", () => {
-
-        describe("locationNamesById", () => {
-            it("should return the id and name of each stored entity", () => {
-                // Arrange
-                (component as any)._entitiesById.set(location.id, location);
-
-                // Act
-                const actual = component.entityIdsAndNames;
-
-                // Assert
-                expect(actual.get(location.id)).toEqual(location.name);
-            });
-
-            it("should return in form supporting ReadonlyMap iteration", () => {
-                // Arrange
-                (component as any)._entitiesById.set(location.id, location);
-
-                // Act
-                const actual = (component.entityIdsAndNames as ReadonlyMap<string, string>);
-
-                // Assert
-                expect(actual).toHaveSize(1);
-                expect(actual.get(location.id)).toEqual(location.name);
-            });
-        });
-
-        describe("findEntities", () => {
-            it("should retrieve locations from gateway and persist when given 'location'", () => {
-                // Arrange
-                locationGatewayServiceMock.retrieveLocation.and.returnValue(of(location));
-                locationGatewayServiceMock.retrieveLocationIds.and.returnValue(of([location.id]));
-
-                // Act
-                component.findEntities("location");
-                const actual = (component as any)._entitiesById;
-
-                // Assert
-                expect(actual).toHaveSize(1);
-            });
-
-            it("should clear persisted entities and alert failure when given invalid type", () => {
-                // Arrange
-                locationGatewayServiceMock.retrieveLocation.and.returnValue(of(location));
-
-                // Act
-                component.findEntities("invalid");
-                const actual = (component as any)._entitiesById;
-
-                // Assert
-                expect(actual).toHaveSize(0);
-            });
-        });
     });
 
     describe("html and ui", () => {
