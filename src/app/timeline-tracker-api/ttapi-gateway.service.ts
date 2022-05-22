@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Fetcher, Middleware} from "openapi-typescript-fetch";
 
 import {AppConfigService} from "../common/services/app-config/app-config.service";
-import {paths} from "./schema";
+import {paths} from "./ttapi-schema";
 import {from, Observable} from "rxjs";
 import {handleError} from "./services/util";
 import {catchError, map} from "rxjs/operators";
