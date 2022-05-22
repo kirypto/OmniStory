@@ -7,7 +7,7 @@ import {LocationFilters} from "../../services/filters";
 import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
 import {IdentifiedEntity} from "../../types/identified-entity";
 import {Location} from "../../types/location";
-import {GatewayService} from "../../gateway.service";
+import {TtapiGatewayService} from "../../ttapi-gateway.service";
 
 @Component({
     selector: "app-entity-finder",
@@ -30,7 +30,7 @@ export class EntitySearchComponent {
 
     public constructor(
         private _locationGateway: LocationGatewayService,
-        private _ttapiGateway: GatewayService,
+        private _ttapiGateway: TtapiGatewayService,
     ) {
     }
 

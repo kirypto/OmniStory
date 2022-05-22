@@ -12,7 +12,7 @@ import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types"
 @Injectable({
     providedIn: "root",
 })
-export class GatewayService {
+export class TtapiGatewayService {
     private _fetcher;
 
     private readonly _getWorlds;

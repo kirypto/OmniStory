@@ -1,13 +1,13 @@
 import {TestBed} from "@angular/core/testing";
 
-import {GatewayService} from "./gateway.service";
+import {TtapiGatewayService} from "./ttapi-gateway.service";
 
 describe("GatewayService", () => {
-    let service: GatewayService;
+    let service: TtapiGatewayService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(GatewayService);
+        service = TestBed.inject(TtapiGatewayService);
     });
 
     it("should be created", () => {
