@@ -2,28 +2,20 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from "@angular/core/testing"
 import {By} from "@angular/platform-browser";
 
 import {EntitySearchComponent} from "./entity-search.component";
-import {LocationGatewayService} from "../../services/location-gateway/location-gateway.service";
 import {testingModuleDefinitions} from "../../../test-helpers.spec";
-import SpyObj = jasmine.SpyObj;
 
 
 describe("EntityFinderComponent", () => {
     let component: EntitySearchComponent;
     let fixture: ComponentFixture<EntitySearchComponent>;
-    let locationGatewayServiceMock: SpyObj<LocationGatewayService>;
 
     beforeEach(async () => {
-        const locationGatewaySpy = jasmine.createSpyObj("LocationGatewayService", [
-            "retrieveLocation", "retrieveLocationIds"
-        ]);
         await TestBed.configureTestingModule({
             imports: testingModuleDefinitions.imports,
             declarations: testingModuleDefinitions.declarations,
             providers: [{
-                provide: LocationGatewayService, useValue: locationGatewaySpy
             }],
         }).compileComponents();
-        locationGatewayServiceMock = TestBed.inject(LocationGatewayService) as SpyObj<LocationGatewayService>;
     });
 
     beforeEach(() => {
