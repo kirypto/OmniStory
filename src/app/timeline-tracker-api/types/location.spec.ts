@@ -1,5 +1,5 @@
-import {Location, LocationData} from "./location";
-import {components} from "../schema";
+import {Location} from "./location";
+import {components} from "../ttapi-schema";
 import {deepCopy} from "../../test-helpers.spec";
 
 type LocationSpec = components["schemas"]["ExistingLocation"];

@@ -14,6 +14,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
+import {AuthHttpInterceptor} from "@auth0/auth0-angular";
 
 import {AppComponent} from "./app.component";
 // import {ContinuumInputComponent} from "./common/components/continuum-input/continuum-input.component";
@@ -28,12 +29,14 @@ import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-w
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
+import {AuthModule} from "@auth0/auth0-angular";
 
 /**
  * All http interceptor providers in outside-in order
  */
 const httpInterceptorProviders = [
     {provide: HTTP_INTERCEPTORS, useClass: JsonBareWordNumericSymbolTranslator, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true},
 ];
 
 /**
@@ -64,6 +67,7 @@ const routes: Routes = [
     {path: "**", component: NotFoundComponent},
 ];
 
+// noinspection SpellCheckingInspection
 /**
  * All Application Imports
  */
@@ -83,6 +87,23 @@ export const applicationImports = [
     MatDatepickerModule,
     MatNativeDateModule,
     RouterModule.forRoot(routes),
+    HttpClientModule,
+    AuthModule.forRoot({
+        domain: "dev-80z7621b.us.auth0.com",
+        clientId: "I1aVHsO0Y92ecGY5TZGyTGIFinuUec2I",
+        audience: "https://dev-80z7621b.us.auth0.com/api/v2/",
+        scope: "read:current_user",
+        httpInterceptor: {
+            allowedList: [
+                {
+                    uri: "https://dev-80z7621b.us.auth0.com/api/v2/*", tokenOptions: {
+                        audience: "https://dev-80z7621b.us.auth0.com/api/v2/",
+                        scope: "read:current_user",
+                    },
+                },
+            ],
+        },
+    }),
 ];
 
 /**

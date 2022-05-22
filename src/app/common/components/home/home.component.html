@@ -2,5 +2,15 @@
 
 <ul>
   <li> To search for entities, use the <a routerLink="{{RoutePaths.entitySearch}}">Entity Search</a> page.</li>
+  <ng-container *ngIf="user | async as user; else notLoggedIn">
+    <li>{{ user.email }}</li>
+    <li><img src="{{user.picture}}" alt="profile image"/></li>
+  </ng-container>
+  <ng-template #notLoggedIn>
+    <li>Not logged in.</li>
+  </ng-template>
+  <li *ngFor="let idNamePair of metadata | keyvalue">
+    <div>{{idNamePair.key}}: {{idNamePair.value}}</div>
+  </li>
 </ul>
 <p></p>
