@@ -17,7 +17,6 @@ import {RouterModule, Routes} from "@angular/router";
 import {AuthHttpInterceptor} from "@auth0/auth0-angular";
 
 import {AppComponent} from "./app.component";
-// import {ContinuumInputComponent} from "./common/components/continuum-input/continuum-input.component";
 import {HomeComponent} from "./common/components/home/home.component";
 import {NavbarOverlayComponent} from "./common/components/navbar-overlay/navbar-overlay.component";
 import {NavbarComponent} from "./common/components/navbar/navbar.component";
@@ -28,7 +27,6 @@ import {AppConfigService} from "./common/services/app-config/app-config.service"
 import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
-import {LocationComponent} from "./timeline-tracker-api/components/location/location.component";
 import {AuthModule} from "@auth0/auth0-angular";
 
 /**
@@ -63,7 +61,6 @@ const routes: Routes = [
     {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
     {path: RoutePaths.worldCalendar, component: WorldCalendarComponent},
-    {path: RoutePaths.location_locationId, component: LocationComponent},
     {path: "**", component: NotFoundComponent},
 ];
 
@@ -115,7 +112,6 @@ export const applicationDeclarations = [
     NotFoundComponent,
     NavbarComponent,
     NavbarOverlayComponent,
-    LocationComponent,
     EntitySearchComponent,
     WorldCalendarComponent,
     ScrollableContainerComponent,
