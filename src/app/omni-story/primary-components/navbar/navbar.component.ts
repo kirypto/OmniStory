@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Output} from "@angular/core";
-import {RoutingComponent} from "../RoutingComponent";
+import {RoutingComponent} from "../../../common/components/RoutingComponent";
 import {AuthService} from "@auth0/auth0-angular";
 
 @Component({

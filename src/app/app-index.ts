@@ -17,10 +17,10 @@ import {RouterModule, Routes} from "@angular/router";
 import {AuthHttpInterceptor} from "@auth0/auth0-angular";
 
 import {AppComponent} from "./app.component";
-import {HomeComponent} from "./common/components/home/home.component";
-import {NavbarOverlayComponent} from "./common/components/navbar-overlay/navbar-overlay.component";
-import {NavbarComponent} from "./common/components/navbar/navbar.component";
-import {NotFoundComponent} from "./common/components/not-found/not-found.component";
+import {HomeComponent} from "./omni-story/primary-components/home/home.component";
+import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
+import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
+import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
 import {WorldCalendarComponent} from "./common/components/world-calendar/world-calendar.component";
 import {AppConfigService} from "./common/services/app-config/app-config.service";

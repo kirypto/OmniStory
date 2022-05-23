@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {RoutingComponent} from "../RoutingComponent";
+import {RoutingComponent} from "../../../common/components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {Observable} from "rxjs";
 import {concatMap, filter, map, pluck} from "rxjs/operators";

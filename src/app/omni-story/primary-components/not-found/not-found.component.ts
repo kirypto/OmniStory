@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {RoutingComponent} from "../RoutingComponent";
+import {RoutingComponent} from "../../../common/components/RoutingComponent";
 
 @Component({
     selector: "app-page-not-found-component",
