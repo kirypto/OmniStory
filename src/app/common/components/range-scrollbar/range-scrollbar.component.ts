@@ -15,6 +15,15 @@ export class RangeScrollbarComponent implements OnInit {
     public constructor() {
     }
 
+    public get cdkLockDirection(): string {
+        return this.scrollDirection === "vertical" ? "y" : "x";
+    }
+
+    public get isVertical(): boolean {
+        return this.scrollDirection === "vertical";
+    }
+
+
     public ngOnInit(): void {
         if (!this._allowedDirections.has(this.scrollDirection)) {
             throw new Error(`Input 'scrollDirection' must be one of: ${this._allowedDirectionStrings}; was '${this.scrollDirection}'.`);
