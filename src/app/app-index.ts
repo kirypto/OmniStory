@@ -28,6 +28,7 @@ import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-w
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 import {AuthModule} from "@auth0/auth0-angular";
+import {MapComponent} from "./omni-story/map/map.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -61,6 +62,7 @@ const routes: Routes = [
     {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
     {path: RoutePaths.worldCalendar, component: WorldCalendarComponent},
+    {path: RoutePaths.map, component: MapComponent},
     {path: "**", component: NotFoundComponent},
 ];
 
@@ -115,5 +117,6 @@ export const applicationDeclarations = [
     EntitySearchComponent,
     WorldCalendarComponent,
     ScrollableContainerComponent,
+    MapComponent,
     // ContinuumInputComponent,
 ];
