@@ -4,7 +4,7 @@ import {Fetcher, Middleware} from "openapi-typescript-fetch";
 import {AppConfigService} from "../common/services/app-config/app-config.service";
 import {paths} from "./ttapi-schema";
 import {from, Observable} from "rxjs";
-import {handleError} from "./services/util";
+import {handleError} from "./util";
 import {catchError, map} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
 import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types";
