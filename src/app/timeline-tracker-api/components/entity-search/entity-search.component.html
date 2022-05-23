@@ -31,7 +31,7 @@
 
 
 <ul>
-  <li *ngFor="let idNamePair of entityIdsAndNames | keyvalue">
-    <a routerLink="/location/{{idNamePair.key}}"><button mat-raised-button color="primary">{{idNamePair.value}}</button></a>
+  <li *ngFor="let id of entityIds">
+    <a routerLink="/location/{{id}}"><button mat-raised-button color="primary">{{id}}</button></a>
   </li>
 </ul>

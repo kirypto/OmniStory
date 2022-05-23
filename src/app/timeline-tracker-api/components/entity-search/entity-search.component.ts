@@ -2,7 +2,6 @@ import {Component, Injectable} from "@angular/core";
 
 import {from} from "rxjs";
 import {filter, mergeMap} from "rxjs/operators";
-import {IdentifiedEntity} from "../../types/identified-entity";
 import {TtapiGatewayService} from "../../ttapi-gateway.service";
 
 @Component({
@@ -22,29 +21,29 @@ export class EntitySearchComponent {
     public filterSpanIncludes = "";
     public filterSpanIntersects = "";
 
-    private _entitiesById: Map<string, IdentifiedEntity> = new Map<string, IdentifiedEntity>();
+    private _entityIds: Set<string> = new Set<string>();
 
     public constructor(
         private _ttapiGateway: TtapiGatewayService,
     ) {
     }
 
-    public get entityIdsAndNames(): Map<string, string> {
-        const namesById = new Map<string, string>();
-        for (const [key, val] of this._entitiesById.entries()) {
-            namesById.set(key, val.id);
+    public get entityIds(): Set<string> {
+        const ids = new Set<string>();
+        for (const id of this._entityIds) {
+            ids.add(id);
         }
-        return namesById;
+        return ids;
     }
 
     public findEntities(entityType: string): void {
         // TODO: work in other entity types
         console.log(`Asked to retrieve ${entityType}, but only worlds retrieval is currently supported`);
-        this._entitiesById.clear();
+        this._entityIds.clear();
         this._ttapiGateway.retrieveWorldIds().pipe(
             filter((valueArr) => valueArr !== undefined),
             mergeMap((locationIdsArr) => from(locationIdsArr)),
-        ).subscribe((value) => this._entitiesById.set(value, {id: value}));
+        ).subscribe((value) => this._entityIds.add(value));
     }
 }
 
