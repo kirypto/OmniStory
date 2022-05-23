@@ -1,7 +1,9 @@
 <div fxFlexFill fxLayout="row" fxLayoutAlign="space-between stretch" style="background-color: #5b0a0a">
   <div fxFlex="95" fxLayout="column" fxLayoutAlign="space-between stretch" style="background-color: #9a2626">
-    <div fxFlex="92" style="background-color: #fa2626">
-      <p style="margin: 0">map works!</p>
+    <div fxFlex="92" class="test-boundary" style="background-color: #fa2626">
+      <div cdkDrag cdkDragBoundary=".test-boundary" style="background-color: #69f0ae">
+        <p style="margin: 0">map works!</p>
+      </div>
     </div>
     <div fxFlex="3" style="background-color: #fa2626"></div>
     <div fxFlex="3" style="background-color: #fa2626"></div>
