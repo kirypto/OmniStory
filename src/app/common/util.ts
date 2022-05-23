@@ -1,6 +1,22 @@
 import {Observable, of} from "rxjs";
 
 
+export function Required<T>(target: T, propertyKey: string): void {
+    Object.defineProperty(target, propertyKey, {
+        get(): T {
+            throw new Error(`Attribute ${propertyKey} is required`);
+        },
+        set(value: T): void {
+            Object.defineProperty(target, propertyKey, {
+                value,
+                writable: true,
+                configurable: true,
+            });
+        },
+        configurable: true
+    });
+}
+
 /**
  * Handle Http operation that failed.
  * Let the app continue.
