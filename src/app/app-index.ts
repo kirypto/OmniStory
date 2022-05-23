@@ -28,7 +28,7 @@ import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-w
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
 import {AuthModule} from "@auth0/auth0-angular";
-import {MapComponent} from "./omni-story/map/map.component";
+import {MapComponent} from "./omni-story/primary-components/map/map.component";
 
 /**
  * All http interceptor providers in outside-in order
