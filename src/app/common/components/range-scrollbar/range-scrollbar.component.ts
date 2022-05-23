@@ -3,7 +3,7 @@ import {Required} from "../../util";
 import {CdkDragMove} from "@angular/cdk/drag-drop";
 
 
-type Position = { x: number, y: number };
+type XY = { x: number, y: number };
 
 @Component({
     selector: "app-range-scrollbar",
@@ -23,8 +23,11 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     private _minimum = 0.0;
     private _maximum = 100.0;
 
-    private _selectionLow = 25;
-    private _selectionHigh = 75;
+    private _selectionLowPercent = 0.25;
+    private _selectionHighPercent = 0.75;
+
+    private _selectionLowPercentAtDragStart: number | undefined = undefined;
+    private _selectionHighPercentAtDragStart: number | undefined = undefined;
 
     public constructor() {
     }
@@ -53,22 +56,28 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         this.updateHandlePositions();
     }
 
+    public onDragStart(): void {
+        this._selectionLowPercentAtDragStart = this._selectionLowPercent;
+        this._selectionHighPercentAtDragStart = this._selectionHighPercent;
+    }
+
     public onDragMin($event: CdkDragMove): void {
-        const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
-        const percentPosition = this.calcPercentagePosition(pixelPosition);
-        console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
+        // const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
+        // const percentPosition = this.calcPercentageDelta(pixelPosition);
+        // console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
     }
 
     public onDragMain($event: CdkDragMove): void {
-        const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
-        const percentPosition = this.calcPercentagePosition(pixelPosition);
-        console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
+        // const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
+        // const percentPosition = this.calcPercentageDelta(pixelPosition);
+        const percentageDelta = this.calcPercentageDelta($event.distance);
+        console.log(`Distance x=${percentageDelta.x}, y=${percentageDelta.y}`);
     }
 
     public onDragMax($event: CdkDragMove): void {
-        const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
-        const percentPosition = this.calcPercentagePosition(pixelPosition);
-        console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
+        // const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
+        // const percentPosition = this.calcPercentageDelta(pixelPosition);
+        // console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
     }
 
     private get draggableAreaSize(): { width: number, height: number } {
@@ -77,23 +86,21 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     }
 
     private updateHandlePositions(): void {
-        const selectionLowPercent = this.calcSelectionPercentage(this._selectionLow);
-        const selectionHighPercent = this.calcSelectionPercentage(this._selectionHigh);
         const draggableAreaSize = this.draggableAreaSize;
 
         let pixelPositionLow: number;
         let pixelPositionHigh: number;
         if (this.isVertical) {
-            pixelPositionLow = draggableAreaSize.height * selectionLowPercent;
-            pixelPositionHigh = draggableAreaSize.height * selectionHighPercent;
+            pixelPositionLow = draggableAreaSize.height * this._selectionLowPercent;
+            pixelPositionHigh = draggableAreaSize.height * this._selectionHighPercent;
             const pixelPositionMid = (pixelPositionLow + pixelPositionHigh) / 2;
 
             this._minHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow}px, 0px)`;
             this._mainHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionMid - 10}px, 0px)`;
             this._maxHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionHigh - 20}px, 0px)`;
         } else {
-            pixelPositionLow = draggableAreaSize.width * selectionLowPercent;
-            pixelPositionHigh = draggableAreaSize.width * selectionHighPercent;
+            pixelPositionLow = draggableAreaSize.width * this._selectionLowPercent;
+            pixelPositionHigh = draggableAreaSize.width * this._selectionHighPercent;
             console.log(`${pixelPositionLow} ${pixelPositionHigh}`);
         }
     }
@@ -103,11 +110,11 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         return Math.max(this._minimum, Math.min(this._maximum, selectionPositionPercent));
     }
 
-    private calcPercentagePosition(pixelPosition: Position): Position {
+    private calcPercentageDelta(pixelDelta: XY): XY {
         const draggableAreaSize = this.draggableAreaSize;
         return {
-            x: pixelPosition.x / draggableAreaSize.width,
-            y: pixelPosition.y / draggableAreaSize.height,
+            x: pixelDelta.x / draggableAreaSize.width,
+            y: pixelDelta.y / draggableAreaSize.height,
         };
     }
 }
