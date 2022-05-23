@@ -2,7 +2,7 @@ import {TestBed} from "@angular/core/testing";
 
 import {TtapiGatewayService} from "./ttapi-gateway.service";
 
-describe("GatewayService", () => {
+describe("TtapiGatewayService", () => {
     let service: TtapiGatewayService;
 
     beforeEach(() => {
