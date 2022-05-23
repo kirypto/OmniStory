@@ -30,6 +30,7 @@ import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./omni-story/primary-components/entity-search/entity-search.component";
 import {AuthModule} from "@auth0/auth0-angular";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
+import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -120,5 +121,6 @@ export const applicationDeclarations = [
     WorldCalendarComponent,
     ScrollableContainerComponent,
     MapComponent,
+    RangeScrollbarComponent,
     // ContinuumInputComponent,
 ];
