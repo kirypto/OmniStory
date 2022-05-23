@@ -26,7 +26,7 @@ import {WorldCalendarComponent} from "./common/components/world-calendar/world-c
 import {AppConfigService} from "./common/services/app-config/app-config.service";
 import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
 import {RoutePaths} from "./common/types/route-paths";
-import {EntitySearchComponent} from "./timeline-tracker-api/components/entity-search/entity-search.component";
+import {EntitySearchComponent} from "./omni-story/primary-components/entity-search/entity-search.component";
 import {AuthModule} from "@auth0/auth0-angular";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
 
