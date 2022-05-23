@@ -1,5 +1,5 @@
 <div #draggableArea fxFlexFill class="draggable-area">
-  <div cdkDrag cdkDragBoundary=".draggable-area" class="draggable-main" cdkDragLockAxis="{{cdkLockDirection}}" (cdkDragMoved)="onDrag($event)"
+  <div cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle" cdkDragLockAxis="{{cdkLockDirection}}" (cdkDragMoved)="onDrag($event)"
        [ngClass]="isVertical ? 'vertical' : 'horizontal'"></div>
 </div>
 

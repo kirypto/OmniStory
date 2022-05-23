@@ -9,17 +9,17 @@
   background-color: rgba(245, 245, 245, 0.27);
 }
 
-.draggable-main {
+.draggable-handle {
   background-color: #69f0ae;
   width: 10px;
   height: 10px;
 }
 
-.draggable-main.vertical {
+.draggable-handle.vertical {
   width: 100%;
 }
 
-.draggable-main.horizontal {
+.draggable-handle.horizontal {
   height: 100%;
 }
 
