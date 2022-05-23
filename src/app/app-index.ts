@@ -15,6 +15,7 @@ import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
 import {AuthHttpInterceptor} from "@auth0/auth0-angular";
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 import {AppComponent} from "./app.component";
 import {HomeComponent} from "./omni-story/primary-components/home/home.component";
@@ -85,6 +86,7 @@ export const applicationImports = [
     MatListModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    DragDropModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
     AuthModule.forRoot({
