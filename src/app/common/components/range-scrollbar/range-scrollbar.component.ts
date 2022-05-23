@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
 import {Required} from "../../util";
 import {CdkDragMove} from "@angular/cdk/drag-drop";
 
@@ -10,7 +10,7 @@ type Position = { x: number, y: number };
     templateUrl: "./range-scrollbar.component.html",
     styleUrls: ["./range-scrollbar.component.scss"],
 })
-export class RangeScrollbarComponent implements OnInit {
+export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     @Input() @Required public scrollDirection: string;
 
     @ViewChild("draggableArea") private _draggableAreaElement: ElementRef;
@@ -36,7 +36,20 @@ export class RangeScrollbarComponent implements OnInit {
         }
     }
 
-    public onDrag($event: CdkDragMove): void {
+    public ngAfterViewInit(): void {
+        if (!this.isVertical) {
+            // Initial position stacks vertically, move it to be to the right instead of below
+            this._maxHandleElement.nativeElement.style.transform = "translate3d(10px, -100%, 0px)";
+        }
+    }
+
+    public onDragMin($event: CdkDragMove): void {
+        const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
+        const percentPosition = this.calcPercentagePosition(pixelPosition);
+        console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
+    }
+
+    public onDragMax($event: CdkDragMove): void {
         const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
         const percentPosition = this.calcPercentagePosition(pixelPosition);
         console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
