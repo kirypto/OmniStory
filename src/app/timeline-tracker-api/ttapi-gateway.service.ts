@@ -37,9 +37,9 @@ export class TtapiGatewayService {
 
     public retrieveWorldIds(): Observable<string[]> {
         return from((async () => {
-            const {status, data: worldIds} = await this._getWorlds();
+            const {status, data: worldIds} = await this._getWorlds() as {status: number, data: string[]};
             console.log(`Fetched ${worldIds}, status code ${status}`);
-            return [status, worldIds];
+            return worldIds;
         })()).pipe(
             catchError(handleError<string[]>("retrieveWorldIds()", [])),
         );
