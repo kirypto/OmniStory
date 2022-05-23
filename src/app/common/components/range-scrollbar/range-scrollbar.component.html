@@ -1,5 +1,7 @@
 <div #draggableArea fxFlexFill class="draggable-area">
-  <div cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle" cdkDragLockAxis="{{cdkLockDirection}}" (cdkDragMoved)="onDrag($event)"
-       [ngClass]="isVertical ? 'vertical' : 'horizontal'"></div>
+  <div #minHandle cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle" cdkDragLockAxis="{{cdkLockDirection}}" (cdkDragMoved)="onDrag($event)"
+       [ngClass]="isVertical ? 'vertical' : 'horizontal'">^</div>
+  <div #maxHandle cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle" cdkDragLockAxis="{{cdkLockDirection}}" (cdkDragMoved)="onDrag($event)"
+       [ngClass]="isVertical ? 'vertical' : 'horizontal'">$</div>
 </div>
 

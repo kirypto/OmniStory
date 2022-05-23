@@ -2,6 +2,9 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
 import {Required} from "../../util";
 import {CdkDragMove} from "@angular/cdk/drag-drop";
 
+
+type Position = { x: number, y: number };
+
 @Component({
     selector: "app-range-scrollbar",
     templateUrl: "./range-scrollbar.component.html",
@@ -10,7 +13,9 @@ import {CdkDragMove} from "@angular/cdk/drag-drop";
 export class RangeScrollbarComponent implements OnInit {
     @Input() @Required public scrollDirection: string;
 
-    @ViewChild("draggableArea") draggableAreaElement: ElementRef;
+    @ViewChild("draggableArea") private _draggableAreaElement: ElementRef;
+    @ViewChild("minHandle") private _minHandleElement: ElementRef;
+    @ViewChild("maxHandle") private _maxHandleElement: ElementRef;
     private readonly _allowedDirections = new Set(["vertical", "horizontal"]);
     private readonly _allowedDirectionStrings = [...this._allowedDirections].join(", ");
 
@@ -38,11 +43,11 @@ export class RangeScrollbarComponent implements OnInit {
     }
 
     private get draggableAreaSize(): { width: number, height: number } {
-        const nativeElement = this.draggableAreaElement.nativeElement;
+        const nativeElement = this._draggableAreaElement.nativeElement;
         return {width: nativeElement.offsetWidth, height: nativeElement.offsetHeight};
     }
 
-    private calcPercentagePosition(pixelPosition: { x: number, y: number }): { x: number, y: number } {
+    private calcPercentagePosition(pixelPosition: Position): Position {
         const draggableAreaSize = this.draggableAreaSize;
         return {
             x: pixelPosition.x / draggableAreaSize.width,
