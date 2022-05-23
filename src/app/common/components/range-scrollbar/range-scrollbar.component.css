@@ -15,6 +15,10 @@
   height: 10px;
 }
 
+.draggable-handle.main {
+  background-color: #59d99a;
+}
+
 .draggable-handle.vertical {
   width: 100%;
 }
