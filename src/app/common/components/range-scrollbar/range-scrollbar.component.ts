@@ -1,9 +1,12 @@
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
 import {Required} from "../../util";
 import {CdkDragMove} from "@angular/cdk/drag-drop";
+import {fromEvent} from "rxjs";
+import {debounceTime, throttleTime} from "rxjs/operators";
 
 
 type XY = { x: number, y: number };
+type HandleSizes = { min: number, main: number, max: number };
 
 @Component({
     selector: "app-range-scrollbar",
@@ -27,6 +30,10 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     private _selectionHighPercentAtDragStart: number | undefined = undefined;
 
     public constructor() {
+        fromEvent(window, "resize").pipe(
+            throttleTime(25),
+            debounceTime(25),
+        ).subscribe(() => this.updateHandles());
     }
 
     public get cdkLockDirection(): string {
@@ -44,7 +51,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        this.updateHandlePositions();
+        this.updateHandles();
     }
 
     public onDragStart(): void {
@@ -62,7 +69,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         const clampedPercentageDelta = Math.max(minimumAllowedPercentDelta, Math.min(maximumAllowedPercentDelta, desiredPercentDelta));
 
         this._selectionLowPercent = this._selectionLowPercentAtDragStart + clampedPercentageDelta;
-        this.updateHandlePositions();
+        this.updateHandles();
     }
 
     public onDragMain($event: CdkDragMove): void {
@@ -76,7 +83,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
 
         this._selectionLowPercent = this._selectionLowPercentAtDragStart + clampedPercentageDelta;
         this._selectionHighPercent = this._selectionHighPercentAtDragStart + clampedPercentageDelta;
-        this.updateHandlePositions();
+        this.updateHandles();
     }
 
     public onDragMax($event: CdkDragMove): void {
@@ -89,7 +96,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         const clampedPercentageDelta = Math.max(minimumAllowedPercentDelta, Math.min(maximumAllowedPercentDelta, desiredPercentDelta));
 
         this._selectionHighPercent = this._selectionHighPercentAtDragStart + clampedPercentageDelta;
-        this.updateHandlePositions();
+        this.updateHandles();
     }
 
     private get draggableAreaSize(): { width: number, height: number } {
@@ -97,7 +104,12 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         return {width: nativeElement.offsetWidth, height: nativeElement.offsetHeight};
     }
 
-    private updateHandlePositions(): void {
+    private updateHandles(): void {
+        const handleSizes = this.updateHandleSizes();
+        this.updateHandlePositions(handleSizes);
+    }
+
+    private updateHandlePositions(handleSizes: HandleSizes): void {
         const draggableAreaSize = this.draggableAreaSize;
 
         let pixelPositionLow: number;
@@ -105,21 +117,46 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         if (this.isVertical) {
             pixelPositionLow = draggableAreaSize.height * this._selectionLowPercent;
             pixelPositionHigh = draggableAreaSize.height * this._selectionHighPercent;
-            const pixelPositionMid = (pixelPositionLow + pixelPositionHigh) / 2;
 
             this._minHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow}px, 0px)`;
-            this._mainHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionMid - 10}px, 0px)`;
-            this._maxHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionHigh - 20}px, 0px)`;
+            this._mainHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow + 10 - handleSizes.min}px, 0px)`;
+            this._maxHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionHigh - 20 - handleSizes.main}px, 0px)`;
         } else {
             pixelPositionLow = draggableAreaSize.width * this._selectionLowPercent;
             pixelPositionHigh = draggableAreaSize.width * this._selectionHighPercent;
-            const pixelPositionMid = (pixelPositionLow + pixelPositionHigh) / 2;
 
-            // Initial position stacks vertically, account for that so main and max handles are to the right of min handle instead of below
+            // Initial position stacks vertically, so the y positions need to account for that for the main and max handled. Additionally,
+            // that so main and max handles are to the right of min handle instead of below
             this._minHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow}px, 0px, 0px)`;
-            this._mainHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionMid}px, -100%, 0px)`;
-            this._maxHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionHigh}px, -200%, 0px)`;
+            this._mainHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow + 10}px, -100%, 0px)`;
+            this._maxHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionHigh - 10}px, -200%, 0px)`;
         }
+    }
+
+    private updateHandleSizes(): HandleSizes {
+        const selectedRangePercent = this._selectionHighPercent - this._selectionLowPercent;
+        const draggableAreaSize = this.draggableAreaSize;
+        const selectedRangePixels = (this.isVertical ? draggableAreaSize.height : draggableAreaSize.width) * selectedRangePercent;
+
+        const minHandlePixels = 10;
+        const maxHandlePixels = 10;
+        const mainHandlePixels = selectedRangePixels - minHandlePixels - maxHandlePixels;
+
+        if (this.isVertical) {
+            this._minHandleElement.nativeElement.style.height = `${minHandlePixels}px`;
+            this._mainHandleElement.nativeElement.style.height = `${mainHandlePixels}px`;
+            this._maxHandleElement.nativeElement.style.height = `${maxHandlePixels}px`;
+        } else {
+            this._minHandleElement.nativeElement.style.width = `${minHandlePixels}px`;
+            this._mainHandleElement.nativeElement.style.width = `${mainHandlePixels}px`;
+            this._maxHandleElement.nativeElement.style.width = `${maxHandlePixels}px`;
+        }
+
+        return {
+            min: minHandlePixels,
+            main: mainHandlePixels,
+            max: maxHandlePixels,
+        };
     }
 
     private calcPercentageDelta(pixelDelta: XY): XY {
