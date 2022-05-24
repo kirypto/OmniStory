@@ -14,6 +14,7 @@ import {Required} from "../../util";
 import {CdkDragMove} from "@angular/cdk/drag-drop";
 import {fromEvent} from "rxjs";
 import {debounceTime, throttleTime} from "rxjs/operators";
+import {NumericRange} from "../../simple-types";
 
 
 type XY = { x: number, y: number };
@@ -26,8 +27,7 @@ type HandleSizes = { min: number, main: number, max: number };
 })
 export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() @Required public scrollDirection: string;
-    @Input() @Required public maximum: number;
-    @Input() @Required public minimum: number;
+    @Input() @Required public limits: NumericRange;
     @Input() public selectionLow: number;
     @Output() public selectionLowChange = new EventEmitter<number>();
     @Input() public selectionHigh: number;
@@ -67,8 +67,8 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
             throw new Error(`Input 'scrollDirection' must be one of: ${this._allowedDirectionStrings}; was '${this.scrollDirection}'.`);
         }
 
-        this.selectionLow = this.selectionLow === undefined ? this.minimum : Math.max(this.minimum, this.selectionLow);
-        this.selectionHigh = this.selectionHigh === undefined ? this.maximum : Math.max(this.maximum, this.selectionHigh);
+        this.selectionLow = this.selectionLow === undefined ? this.limits.low : Math.max(this.limits.low, this.selectionLow);
+        this.selectionHigh = this.selectionHigh === undefined ? this.limits.high : Math.max(this.limits.high, this.selectionHigh);
 
         this.updateSelectionPercentages();
     }
@@ -137,8 +137,8 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     private updateSelectionPercentages(): void {
-        this._selectionLowPercent = (this.selectionLow - this.minimum) / (this.maximum - this.minimum);
-        this._selectionHighPercent = (this.selectionHigh - this.minimum) / (this.maximum - this.minimum);
+        this._selectionLowPercent = (this.selectionLow - this.limits.low) / (this.limits.high - this.limits.low);
+        this._selectionHighPercent = (this.selectionHigh - this.limits.low) / (this.limits.high - this.limits.low);
     }
 
     private updateHandles(): void {
