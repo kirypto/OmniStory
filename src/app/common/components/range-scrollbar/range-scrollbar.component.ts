@@ -49,7 +49,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         fromEvent(window, "resize").pipe(
             throttleTime(25),
             debounceTime(25),
-        ).subscribe(() => this.updateHandles());
+        ).subscribe(() => this.update());
     }
 
     public get cdkLockDirection(): string {
@@ -74,7 +74,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     public ngAfterViewInit(): void {
-        this.updateHandles();
+        this.update();
         this._isFullyInitialized = true;
     }
 
@@ -82,8 +82,8 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         if (!this._isFullyInitialized) {
             return;
         }
-        console.log("here" + this._draggableAreaElement);
-        this.updateHandles();
+        console.log("Currently not handling input changes!");
+        this.update();
     }
 
     public onDragStart(): void {
@@ -101,7 +101,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         const clampedPercentageDelta = Math.max(minimumAllowedPercentDelta, Math.min(maximumAllowedPercentDelta, desiredPercentDelta));
 
         this._selectionLowPercent = this._selectionLowPercentAtDragStart + clampedPercentageDelta;
-        this.updateHandles();
+        this.update();
     }
 
     public onDragMain($event: CdkDragMove): void {
@@ -115,7 +115,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
 
         this._selectionLowPercent = this._selectionLowPercentAtDragStart + clampedPercentageDelta;
         this._selectionHighPercent = this._selectionHighPercentAtDragStart + clampedPercentageDelta;
-        this.updateHandles();
+        this.update();
     }
 
     public onDragMax($event: CdkDragMove): void {
@@ -128,7 +128,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         const clampedPercentageDelta = Math.max(minimumAllowedPercentDelta, Math.min(maximumAllowedPercentDelta, desiredPercentDelta));
 
         this._selectionHighPercent = this._selectionHighPercentAtDragStart + clampedPercentageDelta;
-        this.updateHandles();
+        this.update();
     }
 
     private get draggableAreaSize(): { width: number, height: number } {
@@ -141,9 +141,14 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         this._selectionHighPercent = (this.selection.high - this.limits.low) / (this.limits.high - this.limits.low);
     }
 
-    private updateHandles(): void {
+    private update(): void {
         const handleSizes = this.updateHandleSizes();
         this.updateHandlePositions(handleSizes);
+        const selection = {
+            low: this.limits.low + (this.limits.high - this.limits.low) * this._selectionLowPercent,
+            high: this.limits.high + (this.limits.high - this.limits.low) * this._selectionHighPercent,
+        };
+        this.selectionChange.emit(selection);
     }
 
     private updateHandlePositions(handleSizes: HandleSizes): void {
