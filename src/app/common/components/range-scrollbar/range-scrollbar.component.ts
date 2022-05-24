@@ -20,9 +20,6 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     private readonly _allowedDirections = new Set(["vertical", "horizontal"]);
     private readonly _allowedDirectionStrings = [...this._allowedDirections].join(", ");
 
-    private _minimum = 0.0;
-    private _maximum = 100.0;
-
     private _selectionLowPercent = 0.25;
     private _selectionHighPercent = 0.75;
 
@@ -47,12 +44,6 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        if (!this.isVertical) {
-            // Initial position stacks vertically, main and max handles to be to the right of the min instead of below
-            this._mainHandleElement.nativeElement.style.transform = "translate3d(10px, -100%, 0px)";
-            this._maxHandleElement.nativeElement.style.transform = "translate3d(20px, -200%, 0px)";
-        }
-
         this.updateHandlePositions();
     }
 
@@ -68,10 +59,16 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     }
 
     public onDragMain($event: CdkDragMove): void {
-        // const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
-        // const percentPosition = this.calcPercentageDelta(pixelPosition);
-        const percentageDelta = this.calcPercentageDelta($event.distance);
-        console.log(`Distance x=${percentageDelta.x}, y=${percentageDelta.y}`);
+        const desiredPercentDeltaXY = this.calcPercentageDelta($event.distance);
+        const desiredPercentDelta = this.isVertical ? desiredPercentDeltaXY.y : desiredPercentDeltaXY.x;
+
+        const maximumAllowedPercentDelta = 1.0 - this._selectionHighPercentAtDragStart;
+        const minimumAllowedPercentDelta = -this._selectionLowPercentAtDragStart;
+        const clampedPercentageDelta = Math.max(minimumAllowedPercentDelta, Math.min(maximumAllowedPercentDelta, desiredPercentDelta));
+
+        this._selectionLowPercent = this._selectionLowPercentAtDragStart + clampedPercentageDelta;
+        this._selectionHighPercent = this._selectionHighPercentAtDragStart + clampedPercentageDelta;
+        this.updateHandlePositions();
     }
 
     public onDragMax($event: CdkDragMove): void {
@@ -101,13 +98,13 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         } else {
             pixelPositionLow = draggableAreaSize.width * this._selectionLowPercent;
             pixelPositionHigh = draggableAreaSize.width * this._selectionHighPercent;
-            console.log(`${pixelPositionLow} ${pixelPositionHigh}`);
-        }
-    }
+            const pixelPositionMid = (pixelPositionLow + pixelPositionHigh) / 2;
 
-    private calcSelectionPercentage(selectionPosition: number): number {
-        const selectionPositionPercent = (selectionPosition - this._minimum) / (this._maximum - this._minimum);
-        return Math.max(this._minimum, Math.min(this._maximum, selectionPositionPercent));
+            // Initial position stacks vertically, account for that so main and max handles are to the right of min handle instead of below
+            this._minHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow}px, 0px, 0px)`;
+            this._mainHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionMid}px, -100%, 0px)`;
+            this._maxHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionHigh}px, -200%, 0px)`;
+        }
     }
 
     private calcPercentageDelta(pixelDelta: XY): XY {
