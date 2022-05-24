@@ -1,15 +1,12 @@
 <div #draggableArea fxFlexFill class="draggable-area">
-  <div #minHandle cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle" cdkDragLockAxis="{{cdkLockDirection}}"
+  <div #minHandle cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle min" cdkDragLockAxis="{{cdkLockDirection}}"
        (cdkDragMoved)="onDragMin($event)" (cdkDragStarted)="onDragStart()"
-       style="background-color: aqua"
        [ngClass]="isVertical ? 'vertical' : 'horizontal'"></div>
   <div #mainHandle cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle main" cdkDragLockAxis="{{cdkLockDirection}}"
        (cdkDragMoved)="onDragMain($event)" (cdkDragStarted)="onDragStart()"
-       style="background-color: #009dff"
        [ngClass]="isVertical ? 'vertical' : 'horizontal'"></div>
-  <div #maxHandle cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle" cdkDragLockAxis="{{cdkLockDirection}}"
+  <div #maxHandle cdkDrag cdkDragBoundary=".draggable-area" class="draggable-handle max" cdkDragLockAxis="{{cdkLockDirection}}"
        (cdkDragMoved)="onDragMax($event)" (cdkDragStarted)="onDragStart()"
-       style="background-color: #0048ff"
        [ngClass]="isVertical ? 'vertical' : 'horizontal'"></div>
 </div>
 
