@@ -1,4 +1,15 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild,
+} from "@angular/core";
 import {Required} from "../../util";
 import {CdkDragMove} from "@angular/cdk/drag-drop";
 import {fromEvent} from "rxjs";
@@ -13,8 +24,14 @@ type HandleSizes = { min: number, main: number, max: number };
     templateUrl: "./range-scrollbar.component.html",
     styleUrls: ["./range-scrollbar.component.scss"],
 })
-export class RangeScrollbarComponent implements OnInit, AfterViewInit {
+export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() @Required public scrollDirection: string;
+    @Input() @Required public maximum: number;
+    @Input() @Required public minimum: number;
+    @Input() public selectionLow: number;
+    @Output() public selectionLowChange = new EventEmitter<number>();
+    @Input() public selectionHigh: number;
+    @Output() public selectionHighChange = new EventEmitter<number>();
 
     @ViewChild("draggableArea") private _draggableAreaElement: ElementRef;
     @ViewChild("minHandle") private _minHandleElement: ElementRef;
@@ -28,6 +45,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
 
     private _selectionLowPercentAtDragStart: number | undefined = undefined;
     private _selectionHighPercentAtDragStart: number | undefined = undefined;
+    private _isFullyInitialized = false;
 
     public constructor() {
         fromEvent(window, "resize").pipe(
@@ -48,9 +66,23 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         if (!this._allowedDirections.has(this.scrollDirection)) {
             throw new Error(`Input 'scrollDirection' must be one of: ${this._allowedDirectionStrings}; was '${this.scrollDirection}'.`);
         }
+
+        this.selectionLow = this.selectionLow === undefined ? this.minimum : Math.max(this.minimum, this.selectionLow);
+        this.selectionHigh = this.selectionHigh === undefined ? this.maximum : Math.max(this.maximum, this.selectionHigh);
+
+        this.updateSelectionPercentages();
     }
 
     public ngAfterViewInit(): void {
+        this.updateHandles();
+        this._isFullyInitialized = true;
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (!this._isFullyInitialized) {
+            return;
+        }
+        console.log("here" + this._draggableAreaElement);
         this.updateHandles();
     }
 
@@ -102,6 +134,11 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     private get draggableAreaSize(): { width: number, height: number } {
         const nativeElement = this._draggableAreaElement.nativeElement;
         return {width: nativeElement.offsetWidth, height: nativeElement.offsetHeight};
+    }
+
+    private updateSelectionPercentages(): void {
+        this._selectionLowPercent = (this.selectionLow - this.minimum) / (this.maximum - this.minimum);
+        this._selectionHighPercent = (this.selectionHigh - this.minimum) / (this.maximum - this.minimum);
     }
 
     private updateHandles(): void {
