@@ -146,7 +146,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         this.updateHandlePositions(handleSizes);
         const selection = {
             low: this.limits.low + (this.limits.high - this.limits.low) * this._selectionLowPercent,
-            high: this.limits.high + (this.limits.high - this.limits.low) * this._selectionHighPercent,
+            high: this.limits.low + (this.limits.high - this.limits.low) * this._selectionHighPercent,
         };
         this.selectionChange.emit(selection);
     }
