@@ -53,15 +53,23 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
     }
 
     public onDragMin($event: CdkDragMove): void {
-        // const pixelPosition = {x: $event.distance.x, y: $event.distance.y};
-        // const percentPosition = this.calcPercentageDelta(pixelPosition);
-        // console.log(`Percentage position: x=${percentPosition.x}, y=${percentPosition.y}`);
+        const desiredPercentDeltaXY = this.calcPercentageDelta($event.distance);
+        const desiredPercentDelta = this.isVertical ? desiredPercentDeltaXY.y : desiredPercentDeltaXY.x;
+
+        // Only allow zooming up to the point that the min would reach either the end or the max
+        const maximumAllowedPercentDelta = this._selectionHighPercentAtDragStart - this._selectionLowPercentAtDragStart;
+        const minimumAllowedPercentDelta = -this._selectionLowPercentAtDragStart;
+        const clampedPercentageDelta = Math.max(minimumAllowedPercentDelta, Math.min(maximumAllowedPercentDelta, desiredPercentDelta));
+
+        this._selectionLowPercent = this._selectionLowPercentAtDragStart + clampedPercentageDelta;
+        this.updateHandlePositions();
     }
 
     public onDragMain($event: CdkDragMove): void {
         const desiredPercentDeltaXY = this.calcPercentageDelta($event.distance);
         const desiredPercentDelta = this.isVertical ? desiredPercentDeltaXY.y : desiredPercentDeltaXY.x;
 
+        // Only allow scrolling up to the point that the max or min would reach either end
         const maximumAllowedPercentDelta = 1.0 - this._selectionHighPercentAtDragStart;
         const minimumAllowedPercentDelta = -this._selectionLowPercentAtDragStart;
         const clampedPercentageDelta = Math.max(minimumAllowedPercentDelta, Math.min(maximumAllowedPercentDelta, desiredPercentDelta));
