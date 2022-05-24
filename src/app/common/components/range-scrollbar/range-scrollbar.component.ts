@@ -18,7 +18,7 @@ import {NumericRange} from "../../simple-types";
 
 
 type XY = { x: number, y: number };
-type HandleSizes = { min: number, main: number, max: number };
+type HandleSizes = { main: number, ends: number };
 
 @Component({
     selector: "app-range-scrollbar",
@@ -165,7 +165,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
             // be accounted for.
             this._minHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow}px, 0px)`;
             this._mainHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow}px, 0px)`;
-            this._maxHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionHigh - handleSizes.main - handleSizes.min - handleSizes.max}px, 0px)`;
+            this._maxHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionHigh - handleSizes.main - 2 * handleSizes.ends}px, 0px)`;
         } else {
             pixelPositionLow = draggableAreaSize.width * this._selectionLowPercent;
             pixelPositionHigh = draggableAreaSize.width * this._selectionHighPercent;
@@ -174,8 +174,8 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
             // the x positions need to be adjusted as the sizes of the preceding elements (based on initial creation) are being used in the
             // automatic calculation, which throws off how it is being used here.
             this._minHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow}px, 0px, 0px)`;
-            this._mainHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow + handleSizes.min}px, -100%, 0px)`;
-            this._maxHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionHigh - handleSizes.max}px, -200%, 0px)`;
+            this._mainHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow + handleSizes.ends}px, -100%, 0px)`;
+            this._maxHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionHigh - handleSizes.ends}px, -200%, 0px)`;
         }
     }
 
@@ -184,7 +184,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         const draggableAreaSize = this.draggableAreaSize;
         const selectedRangePixels = (this.isVertical ? draggableAreaSize.height : draggableAreaSize.width) * selectedRangePercent;
 
-        const endHandlePixels = Math.max(7, Math.min(42, selectedRangePixels * 0.1));
+        const endHandlePixels = Math.max(7, Math.min(35, selectedRangePixels * 0.1));
         const mainHandlePixels = selectedRangePixels - 2 * endHandlePixels;
 
         if (this.isVertical) {
@@ -198,9 +198,8 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         }
 
         return {
-            min: endHandlePixels,
+            ends: endHandlePixels,
             main: mainHandlePixels,
-            max: endHandlePixels,
         };
     }
 
