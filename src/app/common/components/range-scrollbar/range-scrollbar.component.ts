@@ -118,18 +118,22 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
             pixelPositionLow = draggableAreaSize.height * this._selectionLowPercent;
             pixelPositionHigh = draggableAreaSize.height * this._selectionHighPercent;
 
+            // The automatic calculations for the positions of the handles attempts to take into account initial creation, which is why the
+            // min and main handles have the same translation. However, max does not work because of the larger size of main and needs to
+            // be accounted for.
             this._minHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow}px, 0px)`;
-            this._mainHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow + 10 - handleSizes.min}px, 0px)`;
-            this._maxHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionHigh - 20 - handleSizes.main}px, 0px)`;
+            this._mainHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionLow}px, 0px)`;
+            this._maxHandleElement.nativeElement.style.transform = `translate3d(0px, ${pixelPositionHigh - handleSizes.main - handleSizes.min - handleSizes.max}px, 0px)`;
         } else {
             pixelPositionLow = draggableAreaSize.width * this._selectionLowPercent;
             pixelPositionHigh = draggableAreaSize.width * this._selectionHighPercent;
 
             // Initial position stacks vertically, so the y positions need to account for that for the main and max handled. Additionally,
-            // that so main and max handles are to the right of min handle instead of below
+            // the x positions need to be adjusted as the sizes of the preceding elements (based on initial creation) are being used in the
+            // automatic calculation, which throws off how it is being used here.
             this._minHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow}px, 0px, 0px)`;
-            this._mainHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow + 10}px, -100%, 0px)`;
-            this._maxHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionHigh - 10}px, -200%, 0px)`;
+            this._mainHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionLow + handleSizes.min}px, -100%, 0px)`;
+            this._maxHandleElement.nativeElement.style.transform = `translate3d(${pixelPositionHigh - handleSizes.max}px, -200%, 0px)`;
         }
     }
 
@@ -138,24 +142,23 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit {
         const draggableAreaSize = this.draggableAreaSize;
         const selectedRangePixels = (this.isVertical ? draggableAreaSize.height : draggableAreaSize.width) * selectedRangePercent;
 
-        const minHandlePixels = 10;
-        const maxHandlePixels = 10;
-        const mainHandlePixels = selectedRangePixels - minHandlePixels - maxHandlePixels;
+        const endHandlePixels = Math.max(7, Math.min(42, selectedRangePixels * 0.1));
+        const mainHandlePixels = selectedRangePixels - 2 * endHandlePixels;
 
         if (this.isVertical) {
-            this._minHandleElement.nativeElement.style.height = `${minHandlePixels}px`;
+            this._minHandleElement.nativeElement.style.height = `${endHandlePixels}px`;
             this._mainHandleElement.nativeElement.style.height = `${mainHandlePixels}px`;
-            this._maxHandleElement.nativeElement.style.height = `${maxHandlePixels}px`;
+            this._maxHandleElement.nativeElement.style.height = `${endHandlePixels}px`;
         } else {
-            this._minHandleElement.nativeElement.style.width = `${minHandlePixels}px`;
+            this._minHandleElement.nativeElement.style.width = `${endHandlePixels}px`;
             this._mainHandleElement.nativeElement.style.width = `${mainHandlePixels}px`;
-            this._maxHandleElement.nativeElement.style.width = `${maxHandlePixels}px`;
+            this._maxHandleElement.nativeElement.style.width = `${endHandlePixels}px`;
         }
 
         return {
-            min: minHandlePixels,
+            min: endHandlePixels,
             main: mainHandlePixels,
-            max: maxHandlePixels,
+            max: endHandlePixels,
         };
     }
 
