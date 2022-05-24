@@ -67,7 +67,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
 
         this.selection = {
             low: this.selection === undefined ? this.limits.low : Math.max(this.limits.low, this.selection.low),
-            high: this.selection === undefined ? this.limits.high : Math.max(this.limits.high, this.selection.high),
+            high: this.selection === undefined ? this.limits.high : Math.min(this.limits.high, this.selection.high),
         };
 
         this.updateSelectionPercentages();
