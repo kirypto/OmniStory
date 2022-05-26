@@ -82,10 +82,10 @@ export class MapComponent {
 
     private updateMap(): void {
         this._mapCanvas.clear();
-        const fontSize = 20;
-        this._mapCanvas.fillText(`latitude: ${JSON.stringify(this._latitude)}`, 15, fontSize * 2);
-        this._mapCanvas.fillText(`longitude: ${JSON.stringify(this._longitude)}`, 15, fontSize * 3);
-        this._mapCanvas.fillText(`altitude: ${JSON.stringify(this._altitude)}`, 15, fontSize * 4);
-        this._mapCanvas.fillText(`continuum: ${JSON.stringify(this._continuum)}`, 15, fontSize * 5);
+        const fontSize = 14;
+        this._mapCanvas.fillText(`latitude: ${JSON.stringify(this._latitude)}`, 15, fontSize * 2, fontSize);
+        this._mapCanvas.fillText(`longitude: ${JSON.stringify(this._longitude)}`, 15, fontSize * 3, fontSize);
+        this._mapCanvas.fillText(`altitude: ${JSON.stringify(this._altitude)}`, 15, fontSize * 4, fontSize);
+        this._mapCanvas.fillText(`continuum: ${JSON.stringify(this._continuum)}`, 15, fontSize * 5, fontSize);
     }
 }
