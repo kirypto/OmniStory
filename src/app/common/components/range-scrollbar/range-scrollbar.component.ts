@@ -82,7 +82,7 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
         if (!this._isFullyInitialized) {
             return;
         }
-        console.log("Currently not handling input changes!");
+        // console.log("Currently not handling input changes!");
         this.update();
     }
 

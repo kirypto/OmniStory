@@ -1,8 +1,8 @@
 <div fxFlexFill fxLayout="row" fxLayoutAlign="space-between stretch">
   <div fxFlex="95" fxLayout="column" fxLayoutAlign="space-between stretch">
-    <div fxFlex="92" class="test-boundary">
+    <div fxFlex="92" class="map-area">
       <!-- MAIN MAP AREA -->
-      <pre>{{selections}}</pre>
+      <canvas fxFlexFill #mapCanvas width="1600" height="900"></canvas>
     </div>
     <div fxFlex="3">
       <!-- LATITUDE RANGE SCROLLBAR-->
