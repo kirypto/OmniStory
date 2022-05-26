@@ -31,6 +31,7 @@ import {EntitySearchComponent} from "./omni-story/primary-components/entity-sear
 import {AuthModule} from "@auth0/auth0-angular";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
 import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
+import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
 
 /**
  * All http interceptor providers in outside-in order
@@ -122,5 +123,6 @@ export const applicationDeclarations = [
     ScrollableContainerComponent,
     MapComponent,
     RangeScrollbarComponent,
+    MapCanvasComponent,
     // ContinuumInputComponent,
 ];
