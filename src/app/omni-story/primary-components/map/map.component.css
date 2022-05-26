@@ -3,12 +3,4 @@
   height: 100%;
 }
 
-div.map-area > canvas {
-  width: 100%;
-  height: 59%;
-  margin: 0;
-  padding: 0;
-  background-color: rgba(19, 108, 185, 0.17);
-}
-
 /*# sourceMappingURL=map.component.css.map */

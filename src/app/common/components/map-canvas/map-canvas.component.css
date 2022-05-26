@@ -3,7 +3,5 @@
     height: 100%
 }
 canvas {
-     margin: 0;
-     padding: 0;
      background-color: rgba(19, 108, 185, 0.17);
  }
