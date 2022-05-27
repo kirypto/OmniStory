@@ -1,6 +1,11 @@
 import {Observable, of} from "rxjs";
+import {Input} from "@angular/core";
 
 
+/**
+ * Used in combination with {@link Input} to mark a component's input as required.
+ * Note: This can only be evaluated at runtime. An error will be logged to the console describing which property was not provided
+ */
 export function Required<T>(target: T, propertyKey: string): void {
     Object.defineProperty(target, propertyKey, {
         get(): T {
