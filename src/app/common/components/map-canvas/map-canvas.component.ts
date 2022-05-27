@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {fromEvent} from "rxjs";
+import {NumericRange} from "../../simple-types";
 
 interface Canvas {
     width: number;
@@ -8,6 +9,12 @@ interface Canvas {
     offsetHeight: number;
 
     getContext(ctx: string): CanvasRenderingContext2D;
+}
+
+export interface MapImage {
+    source: CanvasImageSource;
+    x: NumericRange;
+    y: NumericRange;
 }
 
 @Component({
@@ -19,9 +26,15 @@ export class MapCanvasComponent implements AfterViewInit {
     @ViewChild("mapCanvas") private _mapCanvasElement: ElementRef;
     private _mapCanvas: Canvas;
     private _mapCanvasCtx: CanvasRenderingContext2D;
+    private _mapImages: MapImage[] = [];
 
     public constructor() {
         fromEvent(window, "resize").subscribe(() => this.updateCanvasSize());
+    }
+
+    public set mapImages(images: MapImage[]) {
+        this._mapImages = images;
+        this.redraw();
     }
 
     public ngAfterViewInit(): void {
@@ -40,8 +53,20 @@ export class MapCanvasComponent implements AfterViewInit {
         this._mapCanvasCtx.fillText(text, x, y);
     }
 
+    private redraw(): void {
+        this.drawMapImages();
+    }
+
     private updateCanvasSize(): void {
         this._mapCanvas.width = this._mapCanvas.offsetWidth;
         this._mapCanvas.height = this._mapCanvas.offsetHeight;
+    }
+
+    private drawMapImages(): void {
+        for (const mapImage of this._mapImages) {
+            this._mapCanvasCtx.drawImage(mapImage.source,
+                mapImage.x.low, mapImage.y.low,
+                mapImage.x.high - mapImage.x.low, mapImage.y.high - mapImage.y.low);
+        }
     }
 }
