@@ -92,18 +92,6 @@ export const applicationImports = [
     AuthModule.forRoot({
         domain: "dev-80z7621b.us.auth0.com",
         clientId: "I1aVHsO0Y92ecGY5TZGyTGIFinuUec2I",
-        audience: "https://dev-80z7621b.us.auth0.com/api/v2/",
-        scope: "read:current_user",
-        httpInterceptor: {
-            allowedList: [
-                {
-                    uri: "https://dev-80z7621b.us.auth0.com/api/v2/*", tokenOptions: {
-                        audience: "https://dev-80z7621b.us.auth0.com/api/v2/",
-                        scope: "read:current_user",
-                    },
-                },
-            ],
-        },
     }),
 ];
 
