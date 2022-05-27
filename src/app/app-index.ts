@@ -23,7 +23,6 @@ import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-ove
 import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
-import {WorldCalendarComponent} from "./common/components/world-calendar/world-calendar.component";
 import {AppConfigService} from "./common/services/app-config/app-config.service";
 import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
 import {RoutePaths} from "./common/types/route-paths";
@@ -64,7 +63,6 @@ export const applicationProviders: Provider[] = [
 const routes: Routes = [
     {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
-    {path: RoutePaths.worldCalendar, component: WorldCalendarComponent},
     {path: RoutePaths.map, component: MapComponent},
     {path: "**", component: NotFoundComponent},
 ];
@@ -119,7 +117,6 @@ export const applicationDeclarations = [
     NavbarComponent,
     NavbarOverlayComponent,
     EntitySearchComponent,
-    WorldCalendarComponent,
     ScrollableContainerComponent,
     MapComponent,
     RangeScrollbarComponent,

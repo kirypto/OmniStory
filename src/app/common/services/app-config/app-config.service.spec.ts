@@ -8,9 +8,6 @@ export const sampleApplicationConfig = {
     ttapiConfiguration: {
         baseUrl: "fake.test.url:9999",
     },
-    calendarConfiguration: {
-        system: "Gregorian",
-    },
 };
 
 
