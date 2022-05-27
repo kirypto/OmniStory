@@ -40,7 +40,7 @@ export class MapCanvasComponent implements AfterViewInit {
     public ngAfterViewInit(): void {
         this._mapCanvas = this._mapCanvasElement.nativeElement;
         this._mapCanvasCtx = this._mapCanvas.getContext("2d");
-        this.updateCanvasSize();
+        setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
     }
 
     public clear(): void {
