@@ -124,5 +124,4 @@ export const applicationDeclarations = [
     MapComponent,
     RangeScrollbarComponent,
     MapCanvasComponent,
-    // ContinuumInputComponent,
 ];

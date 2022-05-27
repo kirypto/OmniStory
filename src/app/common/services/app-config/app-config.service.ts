@@ -10,24 +10,11 @@ function initializeTtapiConfig(configContainer: object): TtapiConfig {
     };
 }
 
-// function initializeCalendarConfig(configContainer: object): CalendarConfig {
-//     const calendarTypeRaw = extractConfig(configContainer, "system", "string");
-//     const calendarType: CalendarType = CalendarType[calendarTypeRaw as keyof typeof CalendarType];
-//     if (calendarType === undefined) {
-//         throw new Error(`Failed parse calendar configuration, unknown system '${calendarTypeRaw}'`);
-//     }
-//     return {
-//         system: calendarType,
-//         epoch: extractConfig(configContainer, "epoch", "string"),
-//     };
-// }
-
 @Injectable({providedIn: "root"})
 export class AppConfigService {
     private _initialized = false;
     private _version: string;
     private _ttapi: TtapiConfig;
-    // private _calendar: CalendarConfig;
 
     public constructor(
         private _httpClient: HttpClient
@@ -42,10 +29,6 @@ export class AppConfigService {
     public get ttapiConfig(): TtapiConfig {
         return this._ttapi;
     }
-
-    // public get calendarConfig(): CalendarConfig {
-    //     return this._calendar;
-    // }
 
     public loadApplicationConfig(): Promise<void> {
         if (this._initialized) {
@@ -62,7 +45,6 @@ export class AppConfigService {
     private initialize(configContainer: object): void {
         this._version = extractConfig(configContainer, "version", "string");
         this._ttapi = initializeTtapiConfig(extractConfig(configContainer, "ttapiConfiguration", "object"));
-        // this._calendar = initializeCalendarConfig(extractConfig(configContainer, "calendarConfiguration", "object"));
 
         this._initialized = true;
     }
