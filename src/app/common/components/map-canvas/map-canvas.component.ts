@@ -17,6 +17,14 @@ export interface MapImage {
     y: NumericRange;
 }
 
+export interface MapLabel {
+    text: string;
+    colour?: string;
+    fontSize?: number;
+    x: number;
+    y: number;
+}
+
 @Component({
     selector: "app-map-canvas",
     templateUrl: "./map-canvas.component.html",
@@ -27,13 +35,19 @@ export class MapCanvasComponent implements AfterViewInit {
     private _mapCanvas: Canvas;
     private _mapCanvasCtx: CanvasRenderingContext2D;
     private _mapImages: MapImage[] = [];
+    private _mapLabels: MapLabel[] = [];
 
     public constructor() {
-        fromEvent(window, "resize").subscribe(() => this.updateCanvasSize());
+        fromEvent(window, "resize").subscribe(() => this.redraw());
     }
 
     public set mapImages(images: MapImage[]) {
         this._mapImages = images;
+        this.redraw();
+    }
+
+    public set mapLabel(labels: MapLabel[]) {
+        this._mapLabels = labels;
         this.redraw();
     }
 
@@ -43,18 +57,11 @@ export class MapCanvasComponent implements AfterViewInit {
         setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
     }
 
-    public clear(): void {
-        // this._mapCanvasCtx.clearRect(0, 0, this._mapCanvas.width, this._mapCanvas.height);
-    }
-
-    public fillText(text: string, x: number, y: number, fontSize: number = 20): void {
-        // this._mapCanvasCtx.font = `${fontSize}px Arial`;
-        // this._mapCanvasCtx.fillStyle = "#d3d3d3";
-        // this._mapCanvasCtx.fillText(text, x, y);
-    }
-
     private redraw(): void {
+        this.updateCanvasSize();
+        this._mapCanvasCtx.clearRect(0, 0, this._mapCanvas.width, this._mapCanvas.height);
         this.drawMapImages();
+        this.drawMapLabels();
     }
 
     private updateCanvasSize(): void {
@@ -67,6 +74,14 @@ export class MapCanvasComponent implements AfterViewInit {
             this._mapCanvasCtx.drawImage(mapImage.source,
                 mapImage.x.low, mapImage.y.low,
                 mapImage.x.high - mapImage.x.low, mapImage.y.high - mapImage.y.low);
+        }
+    }
+
+    private drawMapLabels(): void {
+        for (const mapLabel of this._mapLabels) {
+            this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
+            this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";
+            this._mapCanvasCtx.fillText(mapLabel.text, mapLabel.x, mapLabel.y);
         }
     }
 }

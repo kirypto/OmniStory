@@ -21,8 +21,8 @@ export class MapComponent {
         this._imageFetcher.fetchImage("https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ")
             .then(value => {
                 this._mapCanvas.mapImages = [{
-                    x: {low: 10, high: 500},
-                    y: {low: 10, high: 700},
+                    x: {low: 15, high: 700},
+                    y: {low: 15, high: 500},
                     source: value,
                 }];
             });
@@ -90,12 +90,12 @@ export class MapComponent {
     }
 
     private updateMap(): void {
-
-        this._mapCanvas.clear();
         const fontSize = 14;
-        this._mapCanvas.fillText(`latitude: ${JSON.stringify(this._latitude)}`, 15, fontSize * 2, fontSize);
-        this._mapCanvas.fillText(`longitude: ${JSON.stringify(this._longitude)}`, 15, fontSize * 3, fontSize);
-        this._mapCanvas.fillText(`altitude: ${JSON.stringify(this._altitude)}`, 15, fontSize * 4, fontSize);
-        this._mapCanvas.fillText(`continuum: ${JSON.stringify(this._continuum)}`, 15, fontSize * 5, fontSize);
+        this._mapCanvas.mapLabel = [
+            {text: `latitude: ${JSON.stringify(this._latitude)}`, x: 35, y: fontSize * 3, fontSize},
+            {text: `longitude: ${JSON.stringify(this._longitude)}`, x: 35, y: fontSize * 4, fontSize},
+            {text: `altitude: ${JSON.stringify(this._altitude)}`, x: 35, y: fontSize * 5, fontSize},
+            {text: `continuum: ${JSON.stringify(this._continuum)}`, x: 35, y: fontSize * 6, fontSize},
+        ];
     }
 }
