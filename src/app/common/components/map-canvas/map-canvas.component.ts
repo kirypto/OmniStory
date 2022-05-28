@@ -25,9 +25,14 @@ interface MapLabel {
     y: number;
 }
 
-interface ViewArea {
+interface Area {
     x: NumericRange;
     y: NumericRange;
+}
+
+function convertToCanvasRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
+    const inputPercent = (input - inputRange.low) / (inputRange.high - inputRange.low);
+    return (outputRange.high - outputRange.low) * inputPercent + outputRange.low;
 }
 
 @Component({
@@ -41,7 +46,7 @@ export class MapCanvasComponent implements AfterViewInit {
     private _mapCanvasCtx: CanvasRenderingContext2D;
     private _mapImages: MapImage[] = [];
     private _mapLabels: MapLabel[] = [];
-    private _viewArea: ViewArea = {x: {low: 0, high: 100}, y: {low: 0, high: 100}};
+    private _viewArea: Area = {x: {low: 0, high: 100}, y: {low: 0, high: 100}};
 
     public constructor() {
         fromEvent(window, "resize").subscribe(() => this.redraw());
@@ -57,16 +62,22 @@ export class MapCanvasComponent implements AfterViewInit {
         this.redraw();
     }
 
-    public set viewArea(viewArea: ViewArea) {
+    public set viewArea(viewArea: Area) {
         this._viewArea = viewArea;
         this.redraw();
-        console.dir(viewArea);
     }
 
     public ngAfterViewInit(): void {
         this._mapCanvas = this._mapCanvasElement.nativeElement;
         this._mapCanvasCtx = this._mapCanvas.getContext("2d");
         setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
+    }
+
+    private get canvasArea(): Area {
+        return {
+            x: {low: 0, high: this._mapCanvas.offsetWidth},
+            y: {low: 0, high: this._mapCanvas.offsetHeight},
+        };
     }
 
     private redraw(): void {
@@ -83,9 +94,13 @@ export class MapCanvasComponent implements AfterViewInit {
 
     private drawMapImages(): void {
         for (const mapImage of this._mapImages) {
+            const pixelXLow = convertToCanvasRange(this._viewArea.x, mapImage.x.low, this.canvasArea.x);
+            const pixelXHigh = convertToCanvasRange(this._viewArea.x, mapImage.x.high, this.canvasArea.x);
+            const pixelYLow = convertToCanvasRange(this._viewArea.y, mapImage.y.low, this.canvasArea.y);
+            const pixelYHigh = convertToCanvasRange(this._viewArea.y, mapImage.y.high, this.canvasArea.y);
             this._mapCanvasCtx.drawImage(mapImage.source,
-                mapImage.x.low, mapImage.y.low,
-                mapImage.x.high - mapImage.x.low, mapImage.y.high - mapImage.y.low);
+                pixelXLow, pixelYLow,
+                pixelXHigh - pixelXLow, pixelYHigh - pixelYLow);
         }
     }
 

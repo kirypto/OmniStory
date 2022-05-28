@@ -10,12 +10,12 @@ import {ImageFetcherService} from "../../../common/services/image-fetcher.servic
     styleUrls: ["./map.component.scss"],
 })
 export class MapComponent {
-    private readonly _testLimits: NumericRange = {low: 0, high: 100};
+    private readonly _testLimits: NumericRange = {low: 0, high: 1000};
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
-    private _latitude: NumericRange = {low: 5, high: 75};
-    private _longitude: NumericRange = {low: 5, high: 75};
-    private _altitude: NumericRange = {low: 5, high: 75};
-    private _continuum: NumericRange = {low: 5, high: 75};
+    private _latitude: NumericRange = {low: 0, high: 750};
+    private _longitude: NumericRange = {low: 0, high: 750};
+    private _altitude: NumericRange = {low: 0, high: 750};
+    private _continuum: NumericRange = {low: 0, high: 750};
 
     public constructor(private _imageFetcher: ImageFetcherService) {
         this._imageFetcher.fetchImage("https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ")
