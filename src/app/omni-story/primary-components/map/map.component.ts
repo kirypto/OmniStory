@@ -90,6 +90,7 @@ export class MapComponent {
     }
 
     private updateMap(): void {
+        this._mapCanvas.viewArea = {x: this._latitude, y: this._longitude};
         const fontSize = 14;
         this._mapCanvas.mapLabel = [
             {text: `latitude: ${JSON.stringify(this._latitude)}`, x: 35, y: fontSize * 3, fontSize},

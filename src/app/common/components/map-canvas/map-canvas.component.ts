@@ -11,18 +11,23 @@ interface Canvas {
     getContext(ctx: string): CanvasRenderingContext2D;
 }
 
-export interface MapImage {
+interface MapImage {
     source: CanvasImageSource;
     x: NumericRange;
     y: NumericRange;
 }
 
-export interface MapLabel {
+interface MapLabel {
     text: string;
     colour?: string;
     fontSize?: number;
     x: number;
     y: number;
+}
+
+interface ViewArea {
+    x: NumericRange;
+    y: NumericRange;
 }
 
 @Component({
@@ -36,6 +41,7 @@ export class MapCanvasComponent implements AfterViewInit {
     private _mapCanvasCtx: CanvasRenderingContext2D;
     private _mapImages: MapImage[] = [];
     private _mapLabels: MapLabel[] = [];
+    private _viewArea: ViewArea = {x: {low: 0, high: 100}, y: {low: 0, high: 100}};
 
     public constructor() {
         fromEvent(window, "resize").subscribe(() => this.redraw());
@@ -49,6 +55,12 @@ export class MapCanvasComponent implements AfterViewInit {
     public set mapLabel(labels: MapLabel[]) {
         this._mapLabels = labels;
         this.redraw();
+    }
+
+    public set viewArea(viewArea: ViewArea) {
+        this._viewArea = viewArea;
+        this.redraw();
+        console.dir(viewArea);
     }
 
     public ngAfterViewInit(): void {
