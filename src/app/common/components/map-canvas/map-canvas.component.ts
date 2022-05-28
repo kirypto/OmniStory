@@ -11,7 +11,7 @@ interface Canvas {
     getContext(ctx: string): CanvasRenderingContext2D;
 }
 
-interface MapImage {
+export interface MapImage {
     source: CanvasImageSource;
     x: NumericRange;
     y: NumericRange;
