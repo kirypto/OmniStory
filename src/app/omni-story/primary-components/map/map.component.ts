@@ -1,6 +1,7 @@
 import {Component, ViewChild} from "@angular/core";
 import {NumericRange} from "../../../common/simple-types";
 import {MapCanvasComponent} from "../../../common/components/map-canvas/map-canvas.component";
+import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 
 
 @Component({
@@ -16,7 +17,15 @@ export class MapComponent {
     private _altitude: NumericRange = {low: 5, high: 75};
     private _continuum: NumericRange = {low: 5, high: 75};
 
-    public constructor() {
+    public constructor(private _imageFetcher: ImageFetcherService) {
+        this._imageFetcher.fetchImage("https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ")
+            .then(value => {
+                this._mapCanvas.mapImages = [{
+                    x: {low: 10, high: 500},
+                    y: {low: 10, high: 700},
+                    source: value,
+                }];
+            });
     }
 
     public get selections(): string {
@@ -81,6 +90,7 @@ export class MapComponent {
     }
 
     private updateMap(): void {
+
         this._mapCanvas.clear();
         const fontSize = 14;
         this._mapCanvas.fillText(`latitude: ${JSON.stringify(this._latitude)}`, 15, fontSize * 2, fontSize);

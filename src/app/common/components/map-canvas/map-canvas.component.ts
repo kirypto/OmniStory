@@ -44,13 +44,13 @@ export class MapCanvasComponent implements AfterViewInit {
     }
 
     public clear(): void {
-        this._mapCanvasCtx.clearRect(0, 0, this._mapCanvas.width, this._mapCanvas.height);
+        // this._mapCanvasCtx.clearRect(0, 0, this._mapCanvas.width, this._mapCanvas.height);
     }
 
     public fillText(text: string, x: number, y: number, fontSize: number = 20): void {
-        this._mapCanvasCtx.font = `${fontSize}px Arial`;
-        this._mapCanvasCtx.fillStyle = "#d3d3d3";
-        this._mapCanvasCtx.fillText(text, x, y);
+        // this._mapCanvasCtx.font = `${fontSize}px Arial`;
+        // this._mapCanvasCtx.fillStyle = "#d3d3d3";
+        // this._mapCanvasCtx.fillText(text, x, y);
     }
 
     private redraw(): void {
