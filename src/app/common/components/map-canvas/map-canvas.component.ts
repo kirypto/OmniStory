@@ -108,7 +108,9 @@ export class MapCanvasComponent implements AfterViewInit {
         for (const mapLabel of this._mapLabels) {
             this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
             this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";
-            this._mapCanvasCtx.fillText(mapLabel.text, mapLabel.x, mapLabel.y);
+            const pixelX = convertToCanvasRange(this._viewArea.x, mapLabel.x, this.canvasArea.x);
+            const pixelY = convertToCanvasRange(this._viewArea.y, mapLabel.y, this.canvasArea.y);
+            this._mapCanvasCtx.fillText(mapLabel.text, pixelX, pixelY);
         }
     }
 }
