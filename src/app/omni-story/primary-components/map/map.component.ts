@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {NumericRange} from "../../../common/simple-types";
-import {Area, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
+import {Area, CanvasAspectRatio, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 
@@ -9,18 +9,22 @@ interface MapImage2 extends MapImage {
     z: number;
 }
 
-function bestFitForAspectRatio(desiredArea: Area, requiredAspectRatio: number): Area {
+function bestFitForAspectRatio(desiredArea: Area, requiredAspectRatio: CanvasAspectRatio): Area {
     const bestFitArea = deepCopy(desiredArea);
-    const desiredAreaAspectRatio = (desiredArea.x.high - desiredArea.x.low) / (desiredArea.y.high - desiredArea.y.low);
-    const necessaryAspectRatioAdjustment = desiredAreaAspectRatio - requiredAspectRatio;
-    if (necessaryAspectRatioAdjustment > 0) {
+    const desiredHeight = desiredArea.y.high - desiredArea.y.low;
+    const desiredWidth = desiredArea.x.high - desiredArea.x.low;
+    const desiredVerticalUnitsPerHorizontal = desiredHeight / desiredWidth;
+    const needsHorizontalPadding = (desiredVerticalUnitsPerHorizontal - requiredAspectRatio.verticalUnitsPerHorizontal) > 0;
+    if (needsHorizontalPadding) {
         // Need to pad desired area horizontally to match aspect ratio
-        const necessaryPadding = necessaryAspectRatioAdjustment * (desiredArea.x.high - desiredArea.x.low);
+        const necessaryWidth = requiredAspectRatio.horizontalUnitsPerVertical * desiredHeight;
+        const necessaryPadding = necessaryWidth - desiredWidth;
         bestFitArea.x.low -= necessaryPadding / 2;
         bestFitArea.x.high += necessaryPadding / 2;
     } else {
         // Need to pad desired area vertically to match aspect ratio
-        const necessaryPadding = Math.abs(necessaryAspectRatioAdjustment) * (desiredArea.y.high - desiredArea.y.low);
+        const necessaryHeight = requiredAspectRatio.verticalUnitsPerHorizontal * desiredWidth;
+        const necessaryPadding = necessaryHeight - desiredHeight;
         bestFitArea.y.low -= necessaryPadding / 2;
         bestFitArea.y.high += necessaryPadding / 2;
     }
@@ -127,7 +131,7 @@ export class MapComponent implements AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        this._mapCanvas.onPixelAspectRatioChanged.subscribe(pixelAspectRatio => this.handleMapCanvasSizeChange(pixelAspectRatio));
+        this._mapCanvas.onAspectRatioChanged.subscribe(canvasAspectRatio => this.handleMapCanvasSizeChange(canvasAspectRatio));
     }
 
     private updateMap(): void {
@@ -148,13 +152,13 @@ export class MapComponent implements AfterViewInit {
 
     private addMapImage(mapImage: MapImage2): void {
         this._mapImages.add(mapImage);
-        const requiredAspectRatio = this._mapCanvas.pixelAspectRatio;
+        const requiredAspectRatio = this._mapCanvas.aspectRatio;
         this.updateMapLimits(requiredAspectRatio);
         this._latitude = deepCopy(this._latitudeLimits);
         this._longitude = deepCopy(this._longitudeLimits);
     }
 
-    private handleMapCanvasSizeChange(requiredAspectRatio: number): void {
+    private handleMapCanvasSizeChange(requiredAspectRatio: CanvasAspectRatio): void {
         this.updateMapLimits(requiredAspectRatio);
         this._latitude.low = Math.max(this._latitude.low, this._latitudeLimits.low);
         this._latitude.high = Math.min(this._latitude.high, this._latitudeLimits.high);
@@ -162,7 +166,7 @@ export class MapComponent implements AfterViewInit {
         this._longitude.high = Math.min(this._longitude.high, this._longitudeLimits.high);
     }
 
-    private updateMapLimits(requiredAspectRatio: number): void {
+    private updateMapLimits(requiredAspectRatio: CanvasAspectRatio): void {
         if (this._mapImages.size === 0) {
             return;
         }

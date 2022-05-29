@@ -30,6 +30,11 @@ export interface Area {
     y: NumericRange;
 }
 
+export interface CanvasAspectRatio {
+    verticalUnitsPerHorizontal: number;
+    horizontalUnitsPerVertical: number;
+}
+
 function convertToCanvasRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
     const inputPercent = (input - inputRange.low) / (inputRange.high - inputRange.low);
     return (outputRange.high - outputRange.low) * inputPercent + outputRange.low;
@@ -47,12 +52,12 @@ export class MapCanvasComponent implements AfterViewInit {
     private _mapImages: MapImage[] = [];
     private _mapLabels: MapLabel[] = [];
     private _viewArea: Area = {x: {low: 0, high: 100}, y: {low: 0, high: 100}};
-    private _onPixelAspectRatioChanged = new Subject<number>();
+    private _onAspectRatioChanged = new Subject<CanvasAspectRatio>();
 
     public constructor() {
         fromEvent(window, "resize").subscribe(() => {
             this.redraw();
-            this._onPixelAspectRatioChanged.next(this.pixelAspectRatio);
+            this._onAspectRatioChanged.next(this.aspectRatio);
         });
     }
 
@@ -71,12 +76,15 @@ export class MapCanvasComponent implements AfterViewInit {
         this.redraw();
     }
 
-    public get pixelAspectRatio(): number {
-        return this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth;
+    public get aspectRatio(): CanvasAspectRatio {
+        return {
+            verticalUnitsPerHorizontal: this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth,
+            horizontalUnitsPerVertical: this._mapCanvas.offsetWidth / this._mapCanvas.offsetHeight,
+        };
     }
 
-    public get onPixelAspectRatioChanged(): Observable<number> {
-        return this._onPixelAspectRatioChanged;
+    public get onAspectRatioChanged(): Observable<CanvasAspectRatio> {
+        return this._onAspectRatioChanged;
     }
 
     public ngAfterViewInit(): void {
