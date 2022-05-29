@@ -1,4 +1,4 @@
-import {Component, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {NumericRange} from "../../../common/simple-types";
 import {Area, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
@@ -9,13 +9,31 @@ interface MapImage2 extends MapImage {
     z: number;
 }
 
+function bestFitForAspectRatio(desiredArea: Area, requiredAspectRatio: number): Area {
+    const bestFitArea = deepCopy(desiredArea);
+    const desiredAreaAspectRatio = (desiredArea.x.high - desiredArea.x.low) / (desiredArea.y.high - desiredArea.y.low);
+    const necessaryAspectRatioAdjustment = desiredAreaAspectRatio - requiredAspectRatio;
+    if (necessaryAspectRatioAdjustment > 0) {
+        // Need to pad desired area horizontally to match aspect ratio
+        const necessaryPadding = necessaryAspectRatioAdjustment * (desiredArea.x.high - desiredArea.x.low);
+        bestFitArea.x.low -= necessaryPadding / 2;
+        bestFitArea.x.high += necessaryPadding / 2;
+    } else {
+        // Need to pad desired area vertically to match aspect ratio
+        const necessaryPadding = Math.abs(necessaryAspectRatioAdjustment) * (desiredArea.y.high - desiredArea.y.low);
+        bestFitArea.y.low -= necessaryPadding / 2;
+        bestFitArea.y.high += necessaryPadding / 2;
+    }
+    return bestFitArea;
+}
+
 
 @Component({
     selector: "app-map",
     templateUrl: "./map.component.html",
     styleUrls: ["./map.component.scss"],
 })
-export class MapComponent {
+export class MapComponent implements AfterViewInit {
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
     private _latitude: NumericRange = {low: 0, high: 1};
     private _latitudeLimits: NumericRange = {low: 0, high: 1};
@@ -108,6 +126,10 @@ export class MapComponent {
         this.updateMap();
     }
 
+    public ngAfterViewInit(): void {
+        this._mapCanvas.onPixelAspectRatioChanged.subscribe(pixelAspectRatio => this.handleMapCanvasSizeChange(pixelAspectRatio));
+    }
+
     private updateMap(): void {
         this._mapCanvas.viewArea = {x: this._latitude, y: this._longitude};
         const mapImagesOrdered = [...this._mapImages];
@@ -126,12 +148,21 @@ export class MapComponent {
 
     private addMapImage(mapImage: MapImage2): void {
         this._mapImages.add(mapImage);
-        this.updateMapLimits();
+        const requiredAspectRatio = this._mapCanvas.pixelAspectRatio;
+        this.updateMapLimits(requiredAspectRatio);
         this._latitude = deepCopy(this._latitudeLimits);
         this._longitude = deepCopy(this._longitudeLimits);
     }
 
-    private updateMapLimits(): void {
+    private handleMapCanvasSizeChange(requiredAspectRatio: number): void {
+        this.updateMapLimits(requiredAspectRatio);
+        this._latitude.low = Math.max(this._latitude.low, this._latitudeLimits.low);
+        this._latitude.high = Math.min(this._latitude.high, this._latitudeLimits.high);
+        this._longitude.low = Math.max(this._longitude.low, this._longitudeLimits.low);
+        this._longitude.high = Math.min(this._longitude.high, this._longitudeLimits.high);
+    }
+
+    private updateMapLimits(requiredAspectRatio: number): void {
         if (this._mapImages.size === 0) {
             return;
         }
@@ -146,43 +177,8 @@ export class MapComponent {
             mapItemLimits.y.high = Math.max(mapItemLimits.y.high, mapImage.y.high);
         }
 
-        const bestFitMapItemLimits = this.bestFitForAspectRatio(mapItemLimits);
+        const bestFitMapItemLimits = bestFitForAspectRatio(mapItemLimits, requiredAspectRatio);
         this._latitudeLimits = bestFitMapItemLimits.x;
         this._longitudeLimits = bestFitMapItemLimits.y;
-        console.log(`New image added and map limits updated, now are: [${this._latitude.low},${this._latitude.high}] x [${this._longitude.low},${this._longitude.high}]`);
-    }
-
-    private bestFitForAspectRatio(desiredArea: Area): Area {
-        const bestFitArea = deepCopy(desiredArea);
-        const requiredAspectRatio = this._mapCanvas.pixelAspectRatio;
-        const desiredAreaAspectRatio = (desiredArea.x.high - desiredArea.x.low) / (desiredArea.y.high - desiredArea.y.low);
-        const necessaryAspectRatioAdjustment = desiredAreaAspectRatio - requiredAspectRatio;
-        if (necessaryAspectRatioAdjustment > 0) {
-            // Need to pad desired area horizontally to match aspect ratio
-            const necessaryPadding = necessaryAspectRatioAdjustment * (desiredArea.x.high - desiredArea.x.low);
-            console.log(`Need to pad horizontally by ${necessaryPadding}`);
-            console.dir(desiredArea);
-            console.dir(bestFitArea);
-            console.log(`Before ${bestFitArea.x.low}`);
-            bestFitArea.x.low -= necessaryPadding / 2;
-            console.log(`After ${bestFitArea.x.low}`);
-            bestFitArea.x.high += necessaryPadding / 2;
-            console.dir(desiredArea);
-            console.dir(bestFitArea);
-        } else {
-            // Need to pad desired area vertically to match aspect ratio
-            const necessaryPadding = Math.abs(necessaryAspectRatioAdjustment) * (desiredArea.y.high - desiredArea.y.low);
-            console.log(`Need to pad vertically by ${necessaryPadding}`);
-            console.dir(desiredArea);
-            console.dir(bestFitArea);
-            console.log(`Before ${bestFitArea.y.low}`);
-            bestFitArea.y.low -= necessaryPadding / 2;
-            console.log(`After ${bestFitArea.y.low}`);
-            bestFitArea.y.high += necessaryPadding / 2;
-            console.dir(desiredArea);
-            console.dir(bestFitArea);
-        }
-
-        return bestFitArea;
     }
 }

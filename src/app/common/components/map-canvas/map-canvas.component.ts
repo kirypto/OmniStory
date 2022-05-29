@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
-import {fromEvent} from "rxjs";
+import {fromEvent, Observable, Subject} from "rxjs";
 import {NumericRange} from "../../simple-types";
 
 interface Canvas {
@@ -25,7 +25,7 @@ interface MapLabel {
     y: number;
 }
 
-interface Area {
+export interface Area {
     x: NumericRange;
     y: NumericRange;
 }
@@ -47,9 +47,13 @@ export class MapCanvasComponent implements AfterViewInit {
     private _mapImages: MapImage[] = [];
     private _mapLabels: MapLabel[] = [];
     private _viewArea: Area = {x: {low: 0, high: 100}, y: {low: 0, high: 100}};
+    private _onPixelAspectRatioChanged = new Subject<number>();
 
     public constructor() {
-        fromEvent(window, "resize").subscribe(() => this.redraw());
+        fromEvent(window, "resize").subscribe(() => {
+            this.redraw();
+            this._onPixelAspectRatioChanged.next(this.pixelAspectRatio);
+        });
     }
 
     public set mapImages(images: MapImage[]) {
@@ -69,6 +73,10 @@ export class MapCanvasComponent implements AfterViewInit {
 
     public get pixelAspectRatio(): number {
         return this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth;
+    }
+
+    public get onPixelAspectRatioChanged(): Observable<number> {
+        return this._onPixelAspectRatioChanged;
     }
 
     public ngAfterViewInit(): void {
