@@ -67,6 +67,10 @@ export class MapCanvasComponent implements AfterViewInit {
         this.redraw();
     }
 
+    public get pixelAspectRatio(): number {
+        return this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth;
+    }
+
     public ngAfterViewInit(): void {
         this._mapCanvas = this._mapCanvasElement.nativeElement;
         this._mapCanvasCtx = this._mapCanvas.getContext("2d");
