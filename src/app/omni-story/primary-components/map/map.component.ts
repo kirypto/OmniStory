@@ -86,22 +86,12 @@ export class MapComponent implements AfterViewInit {
         return this._latitude;
     }
 
-    public set latitudeSelection(value: NumericRange) {
-        this._latitude = value;
-        this.updateMap();
-    }
-
     public get longitudeLimits(): NumericRange {
         return this._longitudeLimits;
     }
 
     public get longitudeSelection(): NumericRange {
         return this._longitude;
-    }
-
-    public set longitudeSelection(value: NumericRange) {
-        this._longitude = value;
-        this.updateMap();
     }
 
     public get altitudeLimits(): NumericRange {
@@ -127,6 +117,28 @@ export class MapComponent implements AfterViewInit {
 
     public set continuumSelection(value: NumericRange) {
         this._continuum = value;
+        this.updateMap();
+    }
+
+    public setViewArea(viewArea: { latitude?: NumericRange, longitude?: NumericRange }): void {
+        const aspectRatio = this._mapCanvas.aspectRatio;
+        if (viewArea.latitude) {
+            this._latitude = viewArea.latitude;
+            const newLongitudeSize = (viewArea.latitude.high - viewArea.latitude.low) * aspectRatio.verticalUnitsPerHorizontal;
+            const newLongitudeDelta = newLongitudeSize - (this._longitude.high - this._longitude.low);
+            this._longitude = {
+                low: this._longitude.low - newLongitudeDelta / 2,
+                high: this._longitude.high + newLongitudeDelta / 2,
+            };
+        } else if (viewArea.longitude) {
+            this._longitude = viewArea.longitude;
+            const newLatitudeSize = (viewArea.longitude.high - viewArea.longitude.low) * aspectRatio.horizontalUnitsPerVertical;
+            const newLatitudeDelta = newLatitudeSize - (this._latitude.high - this._latitude.low);
+            this._latitude = {
+                low: this._latitude.low - newLatitudeDelta / 2,
+                high: this._latitude.high + newLatitudeDelta / 2,
+            };
+        }
         this.updateMap();
     }
 

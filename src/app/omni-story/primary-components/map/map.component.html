@@ -7,7 +7,8 @@
     </div>
     <div fxFlex="3">
       <!-- LATITUDE RANGE SCROLLBAR-->
-      <app-range-scrollbar scrollDirection="horizontal" [limits]="latitudeLimits" [(selection)]="latitudeSelection"></app-range-scrollbar>
+      <app-range-scrollbar scrollDirection="horizontal" [limits]="latitudeLimits" [selection]="latitudeSelection"
+                           (selectionChange)="setViewArea({latitude: $event})"></app-range-scrollbar>
     </div>
     <div fxFlex="3">
       <!-- CONTINUUM RANGE SCROLLBAR-->
@@ -18,7 +19,8 @@
   <div fxFlex="2" fxLayout="column" fxLayoutAlign="space-between stretch">
     <div fxFlex="92">
       <!-- LONGITUDE RANGE SCROLLBAR-->
-      <app-range-scrollbar scrollDirection="vertical" [limits]="longitudeLimits" [(selection)]="longitudeSelection"></app-range-scrollbar>
+      <app-range-scrollbar scrollDirection="vertical" [limits]="longitudeLimits" [selection]="longitudeSelection"
+                           (selectionChange)="setViewArea({longitude: $event})"></app-range-scrollbar>
     </div>
     <div fxFlex="3"></div>
     <div fxFlex="3"></div>
