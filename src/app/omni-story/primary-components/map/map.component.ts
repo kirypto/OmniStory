@@ -168,6 +168,7 @@ export class MapComponent implements AfterViewInit {
         this.updateMapLimits(requiredAspectRatio);
         this._latitude = deepCopy(this._latitudeLimits);
         this._longitude = deepCopy(this._longitudeLimits);
+        this.updateMap();
     }
 
     private handleMapCanvasSizeChange(requiredAspectRatio: CanvasAspectRatio): void {
