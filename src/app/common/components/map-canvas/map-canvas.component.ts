@@ -105,6 +105,7 @@ export class MapCanvasComponent implements AfterViewInit {
         this._mapCanvasCtx.clearRect(0, 0, this._mapCanvas.width, this._mapCanvas.height);
         this.drawMapImages();
         this.drawMapLabels();
+        this.drawLatLon();
     }
 
     private updateCanvasSize(): void {
@@ -125,6 +126,7 @@ export class MapCanvasComponent implements AfterViewInit {
     }
 
     private drawMapLabels(): void {
+        this._mapCanvasCtx.save();
         for (const mapLabel of this._mapLabels) {
             this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
             this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";
@@ -132,5 +134,22 @@ export class MapCanvasComponent implements AfterViewInit {
             const pixelY = convertToCanvasRange(this._viewArea.y, mapLabel.y, this.canvasArea.y);
             this._mapCanvasCtx.fillText(mapLabel.text, pixelX, pixelY);
         }
+        this._mapCanvasCtx.restore();
+    }
+
+    private drawLatLon(): void {
+        this._mapCanvasCtx.save();
+        this._mapCanvasCtx.font = `12px Arial`;
+        this._mapCanvasCtx.fillStyle = "#FFF";
+        this._mapCanvasCtx.textAlign = "center";
+
+        const lonXPos = this.canvasArea.x.high / 2;
+        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.high - 5);
+
+        const latYPos = this.canvasArea.y.high / 2;
+        this._mapCanvasCtx.rotate(-Math.PI / 2);
+        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high);
+
+        this._mapCanvasCtx.restore();
     }
 }
