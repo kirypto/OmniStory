@@ -13,26 +13,26 @@ interface Canvas {
 
 export interface MapImage {
     source: CanvasImageSource;
-    x: NumericRange;
-    y: NumericRange;
+    latitude: NumericRange;
+    longitude: NumericRange;
 }
 
 interface MapLabel {
     text: string;
     colour?: string;
     fontSize?: number;
-    x: number;
-    y: number;
+    latitude: number;
+    longitude: number;
 }
 
-export interface Area {
-    x: NumericRange;
-    y: NumericRange;
+export interface MapArea {
+    latitude: NumericRange;
+    longitude: NumericRange;
 }
 
 export interface CanvasAspectRatio {
-    verticalUnitsPerHorizontal: number;
-    horizontalUnitsPerVertical: number;
+    latUnitsPerLonUnit: number;
+    lonUnitsPerLatUnit: number;
 }
 
 function convertToCanvasRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
@@ -51,7 +51,7 @@ export class MapCanvasComponent implements AfterViewInit {
     private _mapCanvasCtx: CanvasRenderingContext2D;
     private _mapImages: MapImage[] = [];
     private _mapLabels: MapLabel[] = [];
-    private _viewArea: Area = {x: {low: 0, high: 100}, y: {low: 0, high: 100}};
+    private _viewArea: MapArea = {longitude: {low: 0, high: 100}, latitude: {low: 0, high: 100}};
     private _onAspectRatioChanged = new Subject<CanvasAspectRatio>();
 
     public constructor() {
@@ -71,15 +71,15 @@ export class MapCanvasComponent implements AfterViewInit {
         this.redraw();
     }
 
-    public set viewArea(viewArea: Area) {
+    public set viewArea(viewArea: MapArea) {
         this._viewArea = viewArea;
         this.redraw();
     }
 
     public get aspectRatio(): CanvasAspectRatio {
         return {
-            verticalUnitsPerHorizontal: this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth,
-            horizontalUnitsPerVertical: this._mapCanvas.offsetWidth / this._mapCanvas.offsetHeight,
+            latUnitsPerLonUnit: this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth,
+            lonUnitsPerLatUnit: this._mapCanvas.offsetWidth / this._mapCanvas.offsetHeight,
         };
     }
 
@@ -93,10 +93,10 @@ export class MapCanvasComponent implements AfterViewInit {
         setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
     }
 
-    private get canvasArea(): Area {
+    private get canvasArea(): MapArea {
         return {
-            x: {low: 0, high: this._mapCanvas.offsetWidth},
-            y: {low: 0, high: this._mapCanvas.offsetHeight},
+            longitude: {low: 0, high: this._mapCanvas.offsetWidth},
+            latitude: {low: 0, high: this._mapCanvas.offsetHeight},
         };
     }
 
@@ -115,10 +115,10 @@ export class MapCanvasComponent implements AfterViewInit {
 
     private drawMapImages(): void {
         for (const mapImage of this._mapImages) {
-            const pixelXLow = convertToCanvasRange(this._viewArea.x, mapImage.x.low, this.canvasArea.x);
-            const pixelXHigh = convertToCanvasRange(this._viewArea.x, mapImage.x.high, this.canvasArea.x);
-            const pixelYLow = convertToCanvasRange(this._viewArea.y, mapImage.y.low, this.canvasArea.y);
-            const pixelYHigh = convertToCanvasRange(this._viewArea.y, mapImage.y.high, this.canvasArea.y);
+            const pixelXLow = convertToCanvasRange(this._viewArea.longitude, mapImage.longitude.low, this.canvasArea.longitude);
+            const pixelXHigh = convertToCanvasRange(this._viewArea.longitude, mapImage.longitude.high, this.canvasArea.longitude);
+            const pixelYLow = convertToCanvasRange(this._viewArea.latitude, mapImage.latitude.low, this.canvasArea.latitude);
+            const pixelYHigh = convertToCanvasRange(this._viewArea.latitude, mapImage.latitude.high, this.canvasArea.latitude);
             this._mapCanvasCtx.drawImage(mapImage.source,
                 pixelXLow, pixelYLow,
                 pixelXHigh - pixelXLow, pixelYHigh - pixelYLow);
@@ -130,8 +130,8 @@ export class MapCanvasComponent implements AfterViewInit {
         for (const mapLabel of this._mapLabels) {
             this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
             this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";
-            const pixelX = convertToCanvasRange(this._viewArea.x, mapLabel.x, this.canvasArea.x);
-            const pixelY = convertToCanvasRange(this._viewArea.y, mapLabel.y, this.canvasArea.y);
+            const pixelX = convertToCanvasRange(this._viewArea.longitude, mapLabel.longitude, this.canvasArea.longitude);
+            const pixelY = convertToCanvasRange(this._viewArea.latitude, mapLabel.latitude, this.canvasArea.latitude);
             this._mapCanvasCtx.fillText(mapLabel.text, pixelX, pixelY);
         }
         this._mapCanvasCtx.restore();
@@ -143,12 +143,12 @@ export class MapCanvasComponent implements AfterViewInit {
         this._mapCanvasCtx.fillStyle = "#FFF";
         this._mapCanvasCtx.textAlign = "center";
 
-        const lonXPos = this.canvasArea.x.high / 2;
-        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.high - 5);
+        const lonXPos = this.canvasArea.longitude.high / 2;
+        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.latitude.high - 5);
 
-        const latYPos = this.canvasArea.y.high / 2;
+        const latYPos = this.canvasArea.latitude.high / 2;
         this._mapCanvasCtx.rotate(-Math.PI / 2);
-        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high);
+        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.longitude.high);
 
         this._mapCanvasCtx.restore();
     }

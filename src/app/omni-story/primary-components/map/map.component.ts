@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {NumericRange} from "../../../common/simple-types";
-import {Area, CanvasAspectRatio, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
+import {MapArea, CanvasAspectRatio, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 
@@ -9,24 +9,24 @@ interface MapImage2 extends MapImage {
     z: number;
 }
 
-function bestFitForAspectRatio(desiredArea: Area, requiredAspectRatio: CanvasAspectRatio): Area {
+function bestFitForAspectRatio(desiredArea: MapArea, requiredAspectRatio: CanvasAspectRatio): MapArea {
     const bestFitArea = deepCopy(desiredArea);
-    const desiredHeight = desiredArea.y.high - desiredArea.y.low;
-    const desiredWidth = desiredArea.x.high - desiredArea.x.low;
+    const desiredHeight = desiredArea.latitude.high - desiredArea.latitude.low;
+    const desiredWidth = desiredArea.longitude.high - desiredArea.longitude.low;
     const desiredVerticalUnitsPerHorizontal = desiredHeight / desiredWidth;
-    const needsHorizontalPadding = (desiredVerticalUnitsPerHorizontal - requiredAspectRatio.verticalUnitsPerHorizontal) > 0;
+    const needsHorizontalPadding = (desiredVerticalUnitsPerHorizontal - requiredAspectRatio.latUnitsPerLonUnit) > 0;
     if (needsHorizontalPadding) {
         // Need to pad desired area horizontally to match aspect ratio
-        const necessaryWidth = requiredAspectRatio.horizontalUnitsPerVertical * desiredHeight;
+        const necessaryWidth = requiredAspectRatio.lonUnitsPerLatUnit * desiredHeight;
         const necessaryPadding = necessaryWidth - desiredWidth;
-        bestFitArea.x.low -= necessaryPadding / 2;
-        bestFitArea.x.high += necessaryPadding / 2;
+        bestFitArea.longitude.low -= necessaryPadding / 2;
+        bestFitArea.longitude.high += necessaryPadding / 2;
     } else {
         // Need to pad desired area vertically to match aspect ratio
-        const necessaryHeight = requiredAspectRatio.verticalUnitsPerHorizontal * desiredWidth;
+        const necessaryHeight = requiredAspectRatio.latUnitsPerLonUnit * desiredWidth;
         const necessaryPadding = necessaryHeight - desiredHeight;
-        bestFitArea.y.low -= necessaryPadding / 2;
-        bestFitArea.y.high += necessaryPadding / 2;
+        bestFitArea.latitude.low -= necessaryPadding / 2;
+        bestFitArea.latitude.high += necessaryPadding / 2;
     }
     return bestFitArea;
 }
@@ -52,8 +52,8 @@ export class MapComponent implements AfterViewInit {
         this._imageFetcher.fetchImage("https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ")
             .then(value => {
                 this.addMapImage({
-                    x: {low: 3400, high: 5150},
-                    y: {low: 7400, high: 8600},
+                    latitude: {low: 7400, high: 8600},
+                    longitude: {low: 3400, high: 5150},
                     z: 1,
                     source: value,
                 });
@@ -61,8 +61,8 @@ export class MapComponent implements AfterViewInit {
         this._imageFetcher.fetchImage("https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ")
             .then(value => {
                 this.addMapImage({
-                    x: {low: 0, high: 10000},
-                    y: {low: 0, high: 10000},
+                    latitude: {low: 0, high: 10000},
+                    longitude: {low: 0, high: 10000},
                     z: 0,
                     source: value,
                 });
@@ -124,7 +124,7 @@ export class MapComponent implements AfterViewInit {
         const aspectRatio = this._mapCanvas.aspectRatio;
         if (viewArea.latitude) {
             this._latitude = viewArea.latitude;
-            const newLongitudeSize = (viewArea.latitude.high - viewArea.latitude.low) * aspectRatio.verticalUnitsPerHorizontal;
+            const newLongitudeSize = (viewArea.latitude.high - viewArea.latitude.low) * aspectRatio.latUnitsPerLonUnit;
             const newLongitudeDelta = newLongitudeSize - (this._longitude.high - this._longitude.low);
             this._longitude = {
                 low: this._longitude.low - newLongitudeDelta / 2,
@@ -132,7 +132,7 @@ export class MapComponent implements AfterViewInit {
             };
         } else if (viewArea.longitude) {
             this._longitude = viewArea.longitude;
-            const newLatitudeSize = (viewArea.longitude.high - viewArea.longitude.low) * aspectRatio.horizontalUnitsPerVertical;
+            const newLatitudeSize = (viewArea.longitude.high - viewArea.longitude.low) * aspectRatio.lonUnitsPerLatUnit;
             const newLatitudeDelta = newLatitudeSize - (this._latitude.high - this._latitude.low);
             this._latitude = {
                 low: this._latitude.low - newLatitudeDelta / 2,
@@ -147,7 +147,7 @@ export class MapComponent implements AfterViewInit {
     }
 
     private updateMap(): void {
-        this._mapCanvas.viewArea = {x: this._latitude, y: this._longitude};
+        this._mapCanvas.viewArea = {longitude: this._latitude, latitude: this._longitude};
         const mapImagesOrdered = [...this._mapImages];
         mapImagesOrdered.sort((a: MapImage2, b: MapImage2) => a.z - b.z);
         this._mapCanvas.mapImages = mapImagesOrdered;
@@ -155,10 +155,10 @@ export class MapComponent implements AfterViewInit {
         const fontSize = 14;
         const offset = 150;
         this._mapCanvas.mapLabel = [
-            {text: `latitude: ${JSON.stringify(this._latitude)}`, x: 35, y: offset * 3, fontSize},
-            {text: `longitude: ${JSON.stringify(this._longitude)}`, x: 35, y: offset * 4, fontSize},
-            {text: `altitude: ${JSON.stringify(this._altitude)}`, x: 35, y: offset * 5, fontSize},
-            {text: `continuum: ${JSON.stringify(this._continuum)}`, x: 35, y: offset * 6, fontSize},
+            {text: `latitude: ${JSON.stringify(this._latitude)}`, longitude: 35, latitude: offset * 3, fontSize},
+            {text: `longitude: ${JSON.stringify(this._longitude)}`, longitude: 35, latitude: offset * 4, fontSize},
+            {text: `altitude: ${JSON.stringify(this._altitude)}`, longitude: 35, latitude: offset * 5, fontSize},
+            {text: `continuum: ${JSON.stringify(this._continuum)}`, longitude: 35, latitude: offset * 6, fontSize},
         ];
     }
 
@@ -183,19 +183,19 @@ export class MapComponent implements AfterViewInit {
         if (this._mapImages.size === 0) {
             return;
         }
-        const mapItemLimits: Area = {
-            x: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
-            y: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
+        const mapItemLimits: MapArea = {
+            longitude: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
+            latitude: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
         };
         for (const mapImage of this._mapImages) {
-            mapItemLimits.x.low = Math.min(mapItemLimits.x.low, mapImage.x.low);
-            mapItemLimits.x.high = Math.max(mapItemLimits.x.high, mapImage.x.high);
-            mapItemLimits.y.low = Math.min(mapItemLimits.y.low, mapImage.y.low);
-            mapItemLimits.y.high = Math.max(mapItemLimits.y.high, mapImage.y.high);
+            mapItemLimits.longitude.low = Math.min(mapItemLimits.longitude.low, mapImage.longitude.low);
+            mapItemLimits.longitude.high = Math.max(mapItemLimits.longitude.high, mapImage.longitude.high);
+            mapItemLimits.latitude.low = Math.min(mapItemLimits.latitude.low, mapImage.latitude.low);
+            mapItemLimits.latitude.high = Math.max(mapItemLimits.latitude.high, mapImage.latitude.high);
         }
 
         const bestFitMapItemLimits = bestFitForAspectRatio(mapItemLimits, requiredAspectRatio);
-        this._latitudeLimits = bestFitMapItemLimits.x;
-        this._longitudeLimits = bestFitMapItemLimits.y;
+        this._latitudeLimits = bestFitMapItemLimits.longitude;
+        this._longitudeLimits = bestFitMapItemLimits.latitude;
     }
 }
