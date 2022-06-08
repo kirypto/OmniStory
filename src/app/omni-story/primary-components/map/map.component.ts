@@ -11,22 +11,22 @@ interface MapImage2 extends MapImage {
 
 function bestFitForAspectRatio(desiredArea: MapArea, requiredAspectRatio: CanvasAspectRatio): MapArea {
     const bestFitArea = deepCopy(desiredArea);
-    const desiredHeight = desiredArea.latitude.high - desiredArea.latitude.low;
-    const desiredWidth = desiredArea.longitude.high - desiredArea.longitude.low;
-    const desiredVerticalUnitsPerHorizontal = desiredHeight / desiredWidth;
-    const needsHorizontalPadding = (desiredVerticalUnitsPerHorizontal - requiredAspectRatio.latUnitsPerLonUnit) > 0;
+    const desiredLatitudeSize = desiredArea.latitude.high - desiredArea.latitude.low;
+    const desiredLongitudeSize = desiredArea.longitude.high - desiredArea.longitude.low;
+    const desiredLatUnitsPerLon = desiredLatitudeSize / desiredLongitudeSize;
+    const needsHorizontalPadding = desiredLatUnitsPerLon > requiredAspectRatio.latUnitsPerLonUnit;
     if (needsHorizontalPadding) {
         // Need to pad desired area horizontally to match aspect ratio
-        const necessaryWidth = requiredAspectRatio.lonUnitsPerLatUnit * desiredHeight;
-        const necessaryPadding = necessaryWidth - desiredWidth;
-        bestFitArea.longitude.low -= necessaryPadding / 2;
-        bestFitArea.longitude.high += necessaryPadding / 2;
+        const necessaryLongitudeSize = requiredAspectRatio.lonUnitsPerLatUnit * desiredLatitudeSize;
+        const necessaryLongitudePadding = necessaryLongitudeSize - desiredLongitudeSize;
+        bestFitArea.longitude.low -= necessaryLongitudePadding / 2;
+        bestFitArea.longitude.high += necessaryLongitudePadding / 2;
     } else {
         // Need to pad desired area vertically to match aspect ratio
-        const necessaryHeight = requiredAspectRatio.latUnitsPerLonUnit * desiredWidth;
-        const necessaryPadding = necessaryHeight - desiredHeight;
-        bestFitArea.latitude.low -= necessaryPadding / 2;
-        bestFitArea.latitude.high += necessaryPadding / 2;
+        const necessaryLatitudeSize = requiredAspectRatio.latUnitsPerLonUnit * desiredLongitudeSize;
+        const necessaryLatitudePadding = necessaryLatitudeSize - desiredLatitudeSize;
+        bestFitArea.latitude.low -= necessaryLatitudePadding / 2;
+        bestFitArea.latitude.high += necessaryLatitudePadding / 2;
     }
     return bestFitArea;
 }
@@ -124,7 +124,7 @@ export class MapComponent implements AfterViewInit {
         const aspectRatio = this._mapCanvas.aspectRatio;
         if (viewArea.latitude) {
             this._latitude = viewArea.latitude;
-            const newLongitudeSize = (viewArea.latitude.high - viewArea.latitude.low) * aspectRatio.latUnitsPerLonUnit;
+            const newLongitudeSize = (viewArea.latitude.high - viewArea.latitude.low) * aspectRatio.lonUnitsPerLatUnit;
             const newLongitudeDelta = newLongitudeSize - (this._longitude.high - this._longitude.low);
             this._longitude = {
                 low: this._longitude.low - newLongitudeDelta / 2,
@@ -132,7 +132,7 @@ export class MapComponent implements AfterViewInit {
             };
         } else if (viewArea.longitude) {
             this._longitude = viewArea.longitude;
-            const newLatitudeSize = (viewArea.longitude.high - viewArea.longitude.low) * aspectRatio.lonUnitsPerLatUnit;
+            const newLatitudeSize = (viewArea.longitude.high - viewArea.longitude.low) * aspectRatio.latUnitsPerLonUnit;
             const newLatitudeDelta = newLatitudeSize - (this._latitude.high - this._latitude.low);
             this._latitude = {
                 low: this._latitude.low - newLatitudeDelta / 2,
@@ -147,7 +147,7 @@ export class MapComponent implements AfterViewInit {
     }
 
     private updateMap(): void {
-        this._mapCanvas.viewArea = {longitude: this._latitude, latitude: this._longitude};
+        this._mapCanvas.viewArea = {latitude: this._latitude, longitude: this._longitude};
         const mapImagesOrdered = [...this._mapImages];
         mapImagesOrdered.sort((a: MapImage2, b: MapImage2) => a.z - b.z);
         this._mapCanvas.mapImages = mapImagesOrdered;
@@ -155,10 +155,10 @@ export class MapComponent implements AfterViewInit {
         const fontSize = 14;
         const offset = 150;
         this._mapCanvas.mapLabel = [
-            {text: `latitude: ${JSON.stringify(this._latitude)}`, longitude: 35, latitude: offset * 3, fontSize},
-            {text: `longitude: ${JSON.stringify(this._longitude)}`, longitude: 35, latitude: offset * 4, fontSize},
-            {text: `altitude: ${JSON.stringify(this._altitude)}`, longitude: 35, latitude: offset * 5, fontSize},
-            {text: `continuum: ${JSON.stringify(this._continuum)}`, longitude: 35, latitude: offset * 6, fontSize},
+            {text: `latitude: ${JSON.stringify(this._latitude)}`, latitude: offset * 3, longitude: 35, fontSize},
+            {text: `longitude: ${JSON.stringify(this._longitude)}`, latitude: offset * 4, longitude: 35, fontSize},
+            {text: `altitude: ${JSON.stringify(this._altitude)}`, latitude: offset * 5, longitude: 35, fontSize},
+            {text: `continuum: ${JSON.stringify(this._continuum)}`, latitude: offset * 6, longitude: 35, fontSize},
         ];
     }
 
@@ -195,7 +195,10 @@ export class MapComponent implements AfterViewInit {
         }
 
         const bestFitMapItemLimits = bestFitForAspectRatio(mapItemLimits, requiredAspectRatio);
-        this._latitudeLimits = bestFitMapItemLimits.longitude;
-        this._longitudeLimits = bestFitMapItemLimits.latitude;
+        console.log("1: MapItems, 2: best fit");
+        console.dir(deepCopy(mapItemLimits));
+        console.dir(deepCopy(bestFitMapItemLimits));
+        this._latitudeLimits = bestFitMapItemLimits.latitude;
+        this._longitudeLimits = bestFitMapItemLimits.longitude;
     }
 }
