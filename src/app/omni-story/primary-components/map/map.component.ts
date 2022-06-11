@@ -70,6 +70,8 @@ function applyDeltaToRange(inputRange: NumericRange, desiredDelta: number, limit
     styleUrls: ["./map.component.scss"],
 })
 export class MapComponent implements AfterViewInit {
+    private WHEEL_ZOOM_SCALAR = 0.001;
+
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
     private _latitude: NumericRange = {low: 0, high: 1};
     private _latitudeLimits: NumericRange = {low: 0, high: 1};
@@ -178,8 +180,13 @@ export class MapComponent implements AfterViewInit {
         this.updateMap();
     }
 
-    public handleInteraction(interaction: {wheel?: WheelEvent}): void {
-        console.log(`HandleInteraction: ${interaction.wheel.deltaY}`);
+    public handleInteraction(interaction: { wheel?: WheelEvent }): void {
+        if (interaction.wheel) {
+            const latitudeSize = this._latitude.high - this._latitude.low;
+            const latitudeDelta = latitudeSize * interaction.wheel.deltaY * this.WHEEL_ZOOM_SCALAR;
+            console.log(`Here1: ${interaction.wheel.deltaY}, ${latitudeDelta}, ${interaction.wheel.movementY}`);
+            this.setViewArea({latitude: applyDeltaToRange(this._latitude, latitudeDelta, this._latitudeLimits)});
+        }
     }
 
     private updateMap(): void {
