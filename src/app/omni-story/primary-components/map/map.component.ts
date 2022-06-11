@@ -124,6 +124,10 @@ export class MapComponent implements AfterViewInit {
         this.updateMap();
     }
 
+    public ngAfterViewInit(): void {
+        this._mapCanvas.onAspectRatioChanged.subscribe(canvasAspectRatio => this.handleMapCanvasSizeChange(canvasAspectRatio));
+    }
+
     public setViewArea(viewArea: { latitude?: NumericRange, longitude?: NumericRange }): void {
         const aspectRatio = this._mapCanvas.aspectRatio;
         if (viewArea.latitude) {
@@ -144,10 +148,6 @@ export class MapComponent implements AfterViewInit {
             };
         }
         this.updateMap();
-    }
-
-    public ngAfterViewInit(): void {
-        this._mapCanvas.onAspectRatioChanged.subscribe(canvasAspectRatio => this.handleMapCanvasSizeChange(canvasAspectRatio));
     }
 
     private updateMap(): void {
