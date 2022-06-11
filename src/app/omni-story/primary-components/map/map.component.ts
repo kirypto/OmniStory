@@ -38,7 +38,7 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
     };
 }
 
-function applyDeltaToRange(inputRange: NumericRange, desiredDelta: number, limits: NumericRange): NumericRange {
+function zoomRangeByDelta(inputRange: NumericRange, desiredDelta: number, limits: NumericRange): NumericRange {
     const inputSize = inputRange.high - inputRange.low;
     const limitsSize = limits.high - limits.low;
     const maxDelta = limitsSize - inputSize;
@@ -64,6 +64,16 @@ function applyDeltaToRange(inputRange: NumericRange, desiredDelta: number, limit
     }
 }
 
+function shiftRangeByDelta(inputRange: NumericRange, desiredDelta: number, limits: NumericRange): NumericRange {
+    const maxDelta = limits.high - inputRange.high;
+    const minDelta = limits.low - inputRange.low;
+    const delta = Math.min(maxDelta, Math.max(minDelta, desiredDelta));
+    return {
+        low: inputRange.low + delta,
+        high: inputRange.high + delta,
+    };
+}
+
 @Component({
     selector: "app-map",
     templateUrl: "./map.component.html",
@@ -81,6 +91,8 @@ export class MapComponent implements AfterViewInit {
     private _continuum: NumericRange = {low: 25, high: 75};
 
     private _mapImages: Set<MapImage2> = new Set<MapImage2>();
+
+    private _isPanning = false;
 
     public constructor(private _imageFetcher: ImageFetcherService) {
         this._imageFetcher.fetchImage(
@@ -164,28 +176,48 @@ export class MapComponent implements AfterViewInit {
 
     public setViewArea(viewArea: { latitude?: NumericRange, longitude?: NumericRange }): void {
         const aspectRatio = this._mapCanvas.aspectRatio;
-        if (viewArea.latitude) {
+        if (viewArea.latitude && viewArea.longitude) {
+            const newLatitude = clamp(viewArea.latitude, this._latitudeLimits);
+            const newLongitude = clamp(viewArea.longitude, this._longitudeLimits);
+            this._latitude = newLatitude;
+            this._longitude = newLongitude;
+        } else if (viewArea.latitude) {
             const newLatitude = clamp(viewArea.latitude, this._latitudeLimits);
             this._latitude = newLatitude;
             const newLongitudeSize = (newLatitude.high - newLatitude.low) * aspectRatio.lonUnitsPerLatUnit;
             const newLongitudeDelta = newLongitudeSize - (this._longitude.high - this._longitude.low);
-            this._longitude = applyDeltaToRange(this._longitude, newLongitudeDelta, this._longitudeLimits);
+            this._longitude = zoomRangeByDelta(this._longitude, newLongitudeDelta, this._longitudeLimits);
         } else if (viewArea.longitude) {
             const newLongitude = clamp(viewArea.longitude, this._longitudeLimits);
             this._longitude = newLongitude;
             const newLatitudeSize = (newLongitude.high - newLongitude.low) * aspectRatio.latUnitsPerLonUnit;
             const newLatitudeDelta = newLatitudeSize - (this._latitude.high - this._latitude.low);
-            this._latitude = applyDeltaToRange(this._latitude, newLatitudeDelta, this._latitudeLimits);
+            this._latitude = zoomRangeByDelta(this._latitude, newLatitudeDelta, this._latitudeLimits);
         }
         this.updateMap();
     }
 
-    public handleInteraction(interaction: { wheel?: WheelEvent }): void {
+    public handleInteraction(interaction: {
+        wheel?: WheelEvent; mouseDown?: MouseEvent; mouseMove?: MouseEvent, mouseUp?: MouseEvent
+    }): void {
         if (interaction.wheel) {
             const latitudeSize = this._latitude.high - this._latitude.low;
             const latitudeDelta = latitudeSize * interaction.wheel.deltaY * this.WHEEL_ZOOM_SCALAR;
-            console.log(`Here1: ${interaction.wheel.deltaY}, ${latitudeDelta}, ${interaction.wheel.movementY}`);
-            this.setViewArea({latitude: applyDeltaToRange(this._latitude, latitudeDelta, this._latitudeLimits)});
+            this.setViewArea({latitude: zoomRangeByDelta(this._latitude, latitudeDelta, this._latitudeLimits)});
+        } else if (!this._isPanning && interaction.mouseDown && interaction.mouseDown.button === 0) {
+            this._isPanning = true;
+        } else if (this._isPanning && interaction.mouseMove) {
+            const latitudeSize = this._latitude.high - this._latitude.low;
+            const longitudeSize = this._longitude.high - this._longitude.low;
+            const panScalar = -0.001;
+            const latitudeDelta = latitudeSize * interaction.mouseMove.movementY * panScalar;
+            const longitudeDelta = longitudeSize * interaction.mouseMove.movementX * panScalar;
+            this.setViewArea({
+                latitude: shiftRangeByDelta(this._latitude, latitudeDelta, this._latitudeLimits),
+                longitude: shiftRangeByDelta(this._longitude, longitudeDelta, this._longitudeLimits),
+            });
+        } else if (this._isPanning && interaction.mouseUp && interaction.mouseUp.button === 0) {
+            this._isPanning = false;
         }
     }
 
