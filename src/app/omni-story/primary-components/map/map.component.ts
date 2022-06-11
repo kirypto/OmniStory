@@ -31,6 +31,38 @@ function bestFitForAspectRatio(desiredArea: MapArea, requiredAspectRatio: Canvas
     return bestFitArea;
 }
 
+function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
+    return {
+        low: Math.max(desiredRange.low, limits.low),
+        high: Math.min(desiredRange.high, limits.high),
+    };
+}
+
+function applyDeltaToRange(inputRange: NumericRange, desiredDelta: number, limits: NumericRange): NumericRange {
+    const inputSize = inputRange.high - inputRange.low;
+    const limitsSize = limits.high - limits.low;
+    const maxDelta = limitsSize - inputSize;
+    const minDelta = -1 * inputSize;
+    const delta = Math.max(minDelta, Math.min(maxDelta, desiredDelta));
+    if (inputRange.high + delta / 2 > limits.high) {
+        const remainingDelta = delta - (limits.high - inputRange.high);
+        return {
+            low: inputRange.low - remainingDelta,
+            high: limits.high,
+        };
+    } else if (inputRange.low - delta / 2 < limits.low) {
+        const remainingDelta = delta - (inputRange.low - limits.low);
+        return {
+            low: limits.low,
+            high: inputRange.high + remainingDelta,
+        };
+    } else {
+        return {
+            low: inputRange.low - delta / 2,
+            high: inputRange.high + delta / 2,
+        };
+    }
+}
 
 @Component({
     selector: "app-map",
@@ -51,7 +83,7 @@ export class MapComponent implements AfterViewInit {
     public constructor(private _imageFetcher: ImageFetcherService) {
         this._imageFetcher.fetchImage(
             // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
-            "http://localhost:8000/mainRegion.png"
+            "http://localhost:8000/mainRegion.png",
         ).then(value => {
             this.addMapImage({
                 latitude: {low: 7400, high: 8600},
@@ -62,7 +94,7 @@ export class MapComponent implements AfterViewInit {
         });
         this._imageFetcher.fetchImage(
             // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
-            "http://localhost:8000/supercontinent.jpg"
+            "http://localhost:8000/supercontinent.jpg",
         ).then(value => {
             this.addMapImage({
                 latitude: {low: 0, high: 10000},
@@ -131,21 +163,17 @@ export class MapComponent implements AfterViewInit {
     public setViewArea(viewArea: { latitude?: NumericRange, longitude?: NumericRange }): void {
         const aspectRatio = this._mapCanvas.aspectRatio;
         if (viewArea.latitude) {
-            this._latitude = viewArea.latitude;
-            const newLongitudeSize = (viewArea.latitude.high - viewArea.latitude.low) * aspectRatio.lonUnitsPerLatUnit;
+            const newLatitude = clamp(viewArea.latitude, this._latitudeLimits);
+            this._latitude = newLatitude;
+            const newLongitudeSize = (newLatitude.high - newLatitude.low) * aspectRatio.lonUnitsPerLatUnit;
             const newLongitudeDelta = newLongitudeSize - (this._longitude.high - this._longitude.low);
-            this._longitude = {
-                low: this._longitude.low - newLongitudeDelta / 2,
-                high: this._longitude.high + newLongitudeDelta / 2,
-            };
+            this._longitude = applyDeltaToRange(this._longitude, newLongitudeDelta, this._longitudeLimits);
         } else if (viewArea.longitude) {
-            this._longitude = viewArea.longitude;
-            const newLatitudeSize = (viewArea.longitude.high - viewArea.longitude.low) * aspectRatio.latUnitsPerLonUnit;
+            const newLongitude = clamp(viewArea.longitude, this._longitudeLimits);
+            this._longitude = newLongitude;
+            const newLatitudeSize = (newLongitude.high - newLongitude.low) * aspectRatio.latUnitsPerLonUnit;
             const newLatitudeDelta = newLatitudeSize - (this._latitude.high - this._latitude.low);
-            this._latitude = {
-                low: this._latitude.low - newLatitudeDelta / 2,
-                high: this._latitude.high + newLatitudeDelta / 2,
-            };
+            this._latitude = applyDeltaToRange(this._latitude, newLatitudeDelta, this._latitudeLimits);
         }
         this.updateMap();
     }
