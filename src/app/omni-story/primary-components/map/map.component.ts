@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {NumericRange} from "../../../common/simple-types";
-import {MapArea, CanvasAspectRatio, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
+import {CanvasAspectRatio, MapArea, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 
@@ -148,6 +148,10 @@ export class MapComponent implements AfterViewInit {
             };
         }
         this.updateMap();
+    }
+
+    public handleInteraction(interaction: {wheel?: WheelEvent}): void {
+        console.log(`HandleInteraction: ${interaction.wheel.deltaY}`);
     }
 
     private updateMap(): void {
