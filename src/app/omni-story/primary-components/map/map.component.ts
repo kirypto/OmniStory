@@ -49,24 +49,28 @@ export class MapComponent implements AfterViewInit {
     private _mapImages: Set<MapImage2> = new Set<MapImage2>();
 
     public constructor(private _imageFetcher: ImageFetcherService) {
-        this._imageFetcher.fetchImage("https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ")
-            .then(value => {
-                this.addMapImage({
-                    latitude: {low: 7400, high: 8600},
-                    longitude: {low: 3400, high: 5150},
-                    z: 1,
-                    source: value,
-                });
+        this._imageFetcher.fetchImage(
+            // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
+            "http://localhost:8000/mainRegion.png"
+        ).then(value => {
+            this.addMapImage({
+                latitude: {low: 7400, high: 8600},
+                longitude: {low: 3400, high: 5150},
+                z: 1,
+                source: value,
             });
-        this._imageFetcher.fetchImage("https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ")
-            .then(value => {
-                this.addMapImage({
-                    latitude: {low: 0, high: 10000},
-                    longitude: {low: 0, high: 10000},
-                    z: 0,
-                    source: value,
-                });
+        });
+        this._imageFetcher.fetchImage(
+            // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
+            "http://localhost:8000/supercontinent.jpg"
+        ).then(value => {
+            this.addMapImage({
+                latitude: {low: 0, high: 10000},
+                longitude: {low: 0, high: 10000},
+                z: 0,
+                source: value,
             });
+        });
     }
 
     public get selections(): string {
