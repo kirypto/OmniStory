@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {fromEvent, Observable, Subject} from "rxjs";
-import {NumericRange} from "../../simple-types";
+import {NumericRange} from "../../numeric-range";
 
 interface Canvas {
     width: number;

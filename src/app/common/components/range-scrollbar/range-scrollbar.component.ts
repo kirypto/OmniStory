@@ -14,7 +14,7 @@ import {Required} from "../../util";
 import {CdkDragMove} from "@angular/cdk/drag-drop";
 import {fromEvent} from "rxjs";
 import {debounceTime, throttleTime} from "rxjs/operators";
-import {NumericRange} from "../../simple-types";
+import {NumericRange} from "../../numeric-range";
 
 
 type XY = { x: number, y: number };

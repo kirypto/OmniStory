@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
-import {NumericRange} from "../../../common/simple-types";
+import {NumericRange} from "../../../common/numeric-range";
 import {CanvasAspectRatio, MapArea, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
