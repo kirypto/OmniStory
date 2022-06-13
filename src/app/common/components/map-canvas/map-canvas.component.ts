@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild} from "@angular/core";
 import {fromEvent, Observable, Subject} from "rxjs";
-import {NumericRange} from "../../numeric-range";
+import {NumericRange, sizeOf} from "../../numeric-range";
 
 interface Canvas {
     width: number;
@@ -30,6 +30,11 @@ export interface MapArea {
     longitude: NumericRange;
 }
 
+interface CanvasArea {
+    x: NumericRange;
+    y: NumericRange;
+}
+
 export interface CanvasAspectRatio {
     latUnitsPerLonUnit: number;
     lonUnitsPerLatUnit: number;
@@ -45,9 +50,15 @@ export interface PanEvent {
     longitudeDelta: number;
 }
 
-function convertToCanvasRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
+function convertPositionInRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
     const inputPercent = (input - inputRange.low) / (inputRange.high - inputRange.low);
     return (outputRange.high - outputRange.low) * inputPercent + outputRange.low;
+}
+
+function convertDeltaOfRange(inputRange: NumericRange, inputDelta: number, outputRange: NumericRange): number {
+    const inputRangeSize = sizeOf(inputRange);
+    const inputRangePercent = Math.min(1, Math.max(-1, inputDelta / inputRangeSize));
+    return inputRangePercent * sizeOf(outputRange);
 }
 
 @Component({
@@ -120,21 +131,18 @@ export class MapCanvasComponent implements AfterViewInit {
         } else if (!this._isPanning && interaction.mouseDown && interaction.mouseDown.button === 0) {
             this._isPanning = true;
         } else if (this._isPanning && interaction.mouseMove) {
-            const latitudeSize = this._viewArea.latitude.high - this._viewArea.latitude.low;
-            const longitudeSize = this._viewArea.longitude.high - this._viewArea.longitude.low;
-            const panScalar = -0.001;
-            const latitudeDelta = latitudeSize * interaction.mouseMove.movementY * panScalar;
-            const longitudeDelta = longitudeSize * interaction.mouseMove.movementX * panScalar;
+            const latitudeDelta = convertDeltaOfRange(this.canvasArea.y, interaction.mouseMove.movementY * -1, this._viewArea.latitude);
+            const longitudeDelta = convertDeltaOfRange(this.canvasArea.x, interaction.mouseMove.movementX * -1, this._viewArea.longitude);
             this.pan.emit({latitudeDelta, longitudeDelta});
         } else if (this._isPanning && interaction.mouseUp && interaction.mouseUp.button === 0) {
             this._isPanning = false;
         }
     }
 
-    private get canvasArea(): MapArea {
+    private get canvasArea(): CanvasArea {
         return {
-            longitude: {low: 0, high: this._mapCanvas.offsetWidth},
-            latitude: {low: 0, high: this._mapCanvas.offsetHeight},
+            x: {low: 0, high: this._mapCanvas.offsetWidth},
+            y: {low: 0, high: this._mapCanvas.offsetHeight},
         };
     }
 
@@ -153,10 +161,10 @@ export class MapCanvasComponent implements AfterViewInit {
 
     private drawMapImages(): void {
         for (const mapImage of this._mapImages) {
-            const pixelXLow = convertToCanvasRange(this._viewArea.longitude, mapImage.longitude.low, this.canvasArea.longitude);
-            const pixelXHigh = convertToCanvasRange(this._viewArea.longitude, mapImage.longitude.high, this.canvasArea.longitude);
-            const pixelYLow = convertToCanvasRange(this._viewArea.latitude, mapImage.latitude.low, this.canvasArea.latitude);
-            const pixelYHigh = convertToCanvasRange(this._viewArea.latitude, mapImage.latitude.high, this.canvasArea.latitude);
+            const pixelXLow = convertPositionInRange(this._viewArea.longitude, mapImage.longitude.low, this.canvasArea.x);
+            const pixelXHigh = convertPositionInRange(this._viewArea.longitude, mapImage.longitude.high, this.canvasArea.x);
+            const pixelYLow = convertPositionInRange(this._viewArea.latitude, mapImage.latitude.low, this.canvasArea.y);
+            const pixelYHigh = convertPositionInRange(this._viewArea.latitude, mapImage.latitude.high, this.canvasArea.y);
             this._mapCanvasCtx.drawImage(mapImage.source,
                 pixelXLow, pixelYLow,
                 pixelXHigh - pixelXLow, pixelYHigh - pixelYLow);
@@ -168,8 +176,8 @@ export class MapCanvasComponent implements AfterViewInit {
         for (const mapLabel of this._mapLabels) {
             this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
             this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";
-            const pixelX = convertToCanvasRange(this._viewArea.longitude, mapLabel.longitude, this.canvasArea.longitude);
-            const pixelY = convertToCanvasRange(this._viewArea.latitude, mapLabel.latitude, this.canvasArea.latitude);
+            const pixelX = convertPositionInRange(this._viewArea.longitude, mapLabel.longitude, this.canvasArea.x);
+            const pixelY = convertPositionInRange(this._viewArea.latitude, mapLabel.latitude, this.canvasArea.y);
             this._mapCanvasCtx.fillText(mapLabel.text, pixelX, pixelY);
         }
         this._mapCanvasCtx.restore();
@@ -181,12 +189,12 @@ export class MapCanvasComponent implements AfterViewInit {
         this._mapCanvasCtx.fillStyle = "#FFF";
         this._mapCanvasCtx.textAlign = "center";
 
-        const lonXPos = this.canvasArea.longitude.high / 2;
-        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.latitude.high - 5);
+        const lonXPos = this.canvasArea.x.high / 2;
+        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.high - 5);
 
-        const latYPos = this.canvasArea.latitude.high / 2;
+        const latYPos = this.canvasArea.y.high / 2;
         this._mapCanvasCtx.rotate(-Math.PI / 2);
-        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.longitude.high);
+        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high);
 
         this._mapCanvasCtx.restore();
     }

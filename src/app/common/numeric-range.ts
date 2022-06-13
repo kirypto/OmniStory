@@ -38,3 +38,7 @@ export function shiftRangeByDelta(inputRange: NumericRange, desiredDelta: number
         high: inputRange.high + delta,
     };
 }
+
+export function sizeOf(inputRange: NumericRange): number {
+    return inputRange.high - inputRange.low;
+}
