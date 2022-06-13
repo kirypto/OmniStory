@@ -125,9 +125,15 @@ export class MapCanvasComponent implements AfterViewInit {
     }): void {
         if (interaction.wheel) {
             const latitudeSize = this._viewArea.latitude.high - this._viewArea.latitude.low;
-            const latitudeDelta = latitudeSize * interaction.wheel.deltaY * this.WHEEL_ZOOM_SCALAR;
-            const longitudeDelta = latitudeDelta * this.aspectRatio.lonUnitsPerLatUnit;
-            this.zoom.emit({latitudeDelta, longitudeDelta});
+            const latitudeZoomDelta = latitudeSize * interaction.wheel.deltaY * this.WHEEL_ZOOM_SCALAR;
+            const longitudeZoomDelta = latitudeZoomDelta * this.aspectRatio.lonUnitsPerLatUnit;
+            this.zoom.emit({latitudeDelta: latitudeZoomDelta, longitudeDelta: longitudeZoomDelta});
+
+            const latitudePanRange: NumericRange = {low: latitudeZoomDelta / 2, high: -latitudeZoomDelta / 2};
+            const longitudePanRange: NumericRange = {low: longitudeZoomDelta / 2, high: -longitudeZoomDelta / 2};
+            const latitudePanDelta = convertPositionInRange(this.canvasArea.y, interaction.wheel.offsetY, latitudePanRange);
+            const longitudePanDelta = convertPositionInRange(this.canvasArea.x, interaction.wheel.offsetX, longitudePanRange);
+            this.pan.emit({latitudeDelta: latitudePanDelta, longitudeDelta: longitudePanDelta});
         } else if (!this._isPanning && interaction.mouseDown && interaction.mouseDown.button === 0) {
             this._isPanning = true;
         } else if (this._isPanning && interaction.mouseMove) {
