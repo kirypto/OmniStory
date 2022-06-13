@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild} from "@angular/core";
 import {fromEvent, Observable, Subject} from "rxjs";
 import {NumericRange} from "../../numeric-range";
 
@@ -35,6 +35,16 @@ export interface CanvasAspectRatio {
     lonUnitsPerLatUnit: number;
 }
 
+export interface ZoomEvent {
+    latitudeDelta: number;
+    longitudeDelta: number;
+}
+
+export interface PanEvent {
+    latitudeDelta: number;
+    longitudeDelta: number;
+}
+
 function convertToCanvasRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
     const inputPercent = (input - inputRange.low) / (inputRange.high - inputRange.low);
     return (outputRange.high - outputRange.low) * inputPercent + outputRange.low;
@@ -46,6 +56,8 @@ function convertToCanvasRange(inputRange: NumericRange, input: number, outputRan
     styleUrls: ["./map-canvas.component.css"],
 })
 export class MapCanvasComponent implements AfterViewInit {
+    @Output() public zoom = new EventEmitter<ZoomEvent>();
+    @Output() public pan = new EventEmitter<PanEvent>();
     @ViewChild("mapCanvas") private _mapCanvasElement: ElementRef;
     private _mapCanvas: Canvas;
     private _mapCanvasCtx: CanvasRenderingContext2D;
@@ -53,6 +65,10 @@ export class MapCanvasComponent implements AfterViewInit {
     private _mapLabels: MapLabel[] = [];
     private _viewArea: MapArea = {longitude: {low: 0, high: 100}, latitude: {low: 0, high: 100}};
     private _onAspectRatioChanged = new Subject<CanvasAspectRatio>();
+
+    private _isPanning: boolean;
+
+    private WHEEL_ZOOM_SCALAR = 0.001;
 
     public constructor() {
         fromEvent(window, "resize").subscribe(() => {
@@ -91,6 +107,28 @@ export class MapCanvasComponent implements AfterViewInit {
         this._mapCanvas = this._mapCanvasElement.nativeElement;
         this._mapCanvasCtx = this._mapCanvas.getContext("2d");
         setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
+    }
+
+    public handleEvent(interaction: {
+        wheel?: WheelEvent; mouseDown?: MouseEvent; mouseMove?: MouseEvent, mouseUp?: MouseEvent
+    }): void {
+        if (interaction.wheel) {
+            const latitudeSize = this._viewArea.latitude.high - this._viewArea.latitude.low;
+            const latitudeDelta = latitudeSize * interaction.wheel.deltaY * this.WHEEL_ZOOM_SCALAR;
+            const longitudeDelta = latitudeDelta * this.aspectRatio.lonUnitsPerLatUnit;
+            this.zoom.emit({latitudeDelta, longitudeDelta});
+        } else if (!this._isPanning && interaction.mouseDown && interaction.mouseDown.button === 0) {
+            this._isPanning = true;
+        } else if (this._isPanning && interaction.mouseMove) {
+            const latitudeSize = this._viewArea.latitude.high - this._viewArea.latitude.low;
+            const longitudeSize = this._viewArea.longitude.high - this._viewArea.longitude.low;
+            const panScalar = -0.001;
+            const latitudeDelta = latitudeSize * interaction.mouseMove.movementY * panScalar;
+            const longitudeDelta = longitudeSize * interaction.mouseMove.movementX * panScalar;
+            this.pan.emit({latitudeDelta, longitudeDelta});
+        } else if (this._isPanning && interaction.mouseUp && interaction.mouseUp.button === 0) {
+            this._isPanning = false;
+        }
     }
 
     private get canvasArea(): MapArea {

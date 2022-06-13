@@ -2,13 +2,9 @@
   <div fxFlex="95" fxLayout="column" fxLayoutAlign="space-between stretch">
     <div fxFlex="92" class="map-area">
       <!-- MAIN MAP AREA -->
-      <!--      <canvas fxFlexFill #mapCanvas width="1600" height="900"></canvas>-->
       <app-map-canvas fxFlexFill
-                      (wheel)="handleInteraction({wheel: $event})"
-                      (mousedown)="handleInteraction({mouseDown: $event})"
-                      (mousemove)="handleInteraction({mouseMove: $event})"
-                      (mouseup)="handleInteraction({mouseUp: $event})"
-                      (mouseleave)="handleInteraction({mouseUp: $event})"
+                      (zoom)="handleInteraction({zoom: $event})"
+                      (pan)="handleInteraction({pan: $event})"
       ></app-map-canvas>
     </div>
     <div fxFlex="3">

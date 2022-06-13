@@ -1,6 +1,12 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {NumericRange, shiftRangeByDelta, zoomRangeByDelta} from "../../../common/numeric-range";
-import {CanvasAspectRatio, MapArea, MapCanvasComponent, MapImage} from "../../../common/components/map-canvas/map-canvas.component";
+import {
+    CanvasAspectRatio,
+    MapArea,
+    MapCanvasComponent,
+    MapImage, PanEvent,
+    ZoomEvent,
+} from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 
@@ -44,8 +50,6 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
     styleUrls: ["./map.component.scss"],
 })
 export class MapComponent implements AfterViewInit {
-    private WHEEL_ZOOM_SCALAR = 0.001;
-
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
     private _latitude: NumericRange = {low: 0, high: 1};
     private _latitudeLimits: NumericRange = {low: 0, high: 1};
@@ -55,9 +59,6 @@ export class MapComponent implements AfterViewInit {
     private _continuum: NumericRange = {low: 25, high: 75};
 
     private _mapImages: Set<MapImage2> = new Set<MapImage2>();
-
-    private _isPanning = false;
-
     public constructor(private _imageFetcher: ImageFetcherService) {
         this._imageFetcher.fetchImage(
             // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
@@ -162,26 +163,18 @@ export class MapComponent implements AfterViewInit {
     }
 
     public handleInteraction(interaction: {
-        wheel?: WheelEvent; mouseDown?: MouseEvent; mouseMove?: MouseEvent, mouseUp?: MouseEvent
+        zoom?: ZoomEvent, pan?: PanEvent,
     }): void {
-        if (interaction.wheel) {
-            const latitudeSize = this._latitude.high - this._latitude.low;
-            const latitudeDelta = latitudeSize * interaction.wheel.deltaY * this.WHEEL_ZOOM_SCALAR;
-            this.setViewArea({latitude: zoomRangeByDelta(this._latitude, latitudeDelta, this._latitudeLimits)});
-        } else if (!this._isPanning && interaction.mouseDown && interaction.mouseDown.button === 0) {
-            this._isPanning = true;
-        } else if (this._isPanning && interaction.mouseMove) {
-            const latitudeSize = this._latitude.high - this._latitude.low;
-            const longitudeSize = this._longitude.high - this._longitude.low;
-            const panScalar = -0.001;
-            const latitudeDelta = latitudeSize * interaction.mouseMove.movementY * panScalar;
-            const longitudeDelta = longitudeSize * interaction.mouseMove.movementX * panScalar;
+        if (interaction.zoom) {
             this.setViewArea({
-                latitude: shiftRangeByDelta(this._latitude, latitudeDelta, this._latitudeLimits),
-                longitude: shiftRangeByDelta(this._longitude, longitudeDelta, this._longitudeLimits),
+                latitude: zoomRangeByDelta(this._latitude, interaction.zoom.latitudeDelta, this._latitudeLimits),
+                longitude: zoomRangeByDelta(this._longitude, interaction.zoom.longitudeDelta, this._longitudeLimits),
             });
-        } else if (this._isPanning && interaction.mouseUp && interaction.mouseUp.button === 0) {
-            this._isPanning = false;
+        } else if (interaction.pan) {
+            this.setViewArea({
+                latitude: shiftRangeByDelta(this._latitude, interaction.pan.latitudeDelta, this._latitudeLimits),
+                longitude: shiftRangeByDelta(this._longitude, interaction.pan.longitudeDelta, this._longitudeLimits),
+            });
         }
     }
 
