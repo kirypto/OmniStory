@@ -2,7 +2,7 @@ import {Component, Injectable} from "@angular/core";
 
 import {from} from "rxjs";
 import {filter, mergeMap} from "rxjs/operators";
-import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {TtapiGatewayService, WorldIds} from "../../../timeline-tracker-api/ttapi-gateway.service";
 
 @Component({
     selector: "app-entity-finder",
@@ -41,7 +41,7 @@ export class EntitySearchComponent {
         console.log(`Asked to retrieve ${entityType}, but only worlds retrieval is currently supported`);
         this._entityIds.clear();
         this._ttapiGateway.retrieveWorldIds().pipe(
-            filter((valueArr) => valueArr !== undefined),
+            filter((valueArr: WorldIds) => valueArr !== undefined),
             mergeMap((locationIdsArr) => from(locationIdsArr)),
         ).subscribe((value) => this._entityIds.add(value));
     }
