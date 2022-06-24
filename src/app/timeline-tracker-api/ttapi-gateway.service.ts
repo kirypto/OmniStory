@@ -2,14 +2,13 @@ import {Injectable} from "@angular/core";
 import {Fetcher, Middleware} from "openapi-typescript-fetch";
 
 import {AppConfigService} from "../common/services/app-config/app-config.service";
-import {components, paths} from "./ttapi-schema";
+import {paths} from "./ttapi-schema";
 import {from, Observable} from "rxjs";
 import {handleError} from "../common/util";
 import {catchError, map} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
 import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types";
-
-export type WorldIds = components["schemas"]["WorldIds"];
+import {WorldIds} from "./ttapi-types";
 
 @Injectable({
     providedIn: "root",
