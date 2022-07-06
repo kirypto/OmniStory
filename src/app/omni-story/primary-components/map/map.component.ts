@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {NumericRange, shiftRangeByDelta, zoomRangeByDelta} from "../../../common/numeric-range";
 import {
     CanvasAspectRatio,
@@ -9,6 +9,8 @@ import {
 } from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
+import {ActivatedRoute} from "@angular/router";
+import {WorldId} from "../../../timeline-tracker-api/ttapi-types";
 
 
 interface MapImage2 extends MapImage {
@@ -49,8 +51,10 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
     templateUrl: "./map.component.html",
     styleUrls: ["./map.component.scss"],
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnInit {
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
+    private _worldId: WorldId;
+
     private _latitude: NumericRange = {low: 0, high: 1};
     private _latitudeLimits: NumericRange = {low: 0, high: 1};
     private _longitude: NumericRange = {low: 0, high: 1};
@@ -59,7 +63,8 @@ export class MapComponent implements AfterViewInit {
     private _continuum: NumericRange = {low: 25, high: 75};
 
     private _mapImages: Set<MapImage2> = new Set<MapImage2>();
-    public constructor(private _imageFetcher: ImageFetcherService) {
+
+    public constructor(private _imageFetcher: ImageFetcherService, private _route: ActivatedRoute) {
         this._imageFetcher.fetchImage(
             // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
             "http://localhost:8000/mainRegion.png",
@@ -133,6 +138,10 @@ export class MapComponent implements AfterViewInit {
     public set continuumSelection(value: NumericRange) {
         this._continuum = value;
         this.updateMap();
+    }
+
+    public ngOnInit(): void {
+        this._worldId = this._route.snapshot.paramMap.get("worldId");
     }
 
     public ngAfterViewInit(): void {
