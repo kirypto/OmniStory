@@ -4,13 +4,15 @@ import {
     CanvasAspectRatio,
     MapArea,
     MapCanvasComponent,
-    MapImage, PanEvent,
+    MapImage,
+    PanEvent,
     ZoomEvent,
 } from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 import {ActivatedRoute} from "@angular/router";
 import {WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 
 
 interface MapImage2 extends MapImage {
@@ -51,7 +53,7 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
     templateUrl: "./map.component.html",
     styleUrls: ["./map.component.scss"],
 })
-export class MapComponent implements AfterViewInit, OnInit {
+export class MapComponent extends SubscribingComponent implements AfterViewInit, OnInit {
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
     private _worldId: WorldId;
 
@@ -65,6 +67,7 @@ export class MapComponent implements AfterViewInit, OnInit {
     private _mapImages: Set<MapImage2> = new Set<MapImage2>();
 
     public constructor(private _imageFetcher: ImageFetcherService, private _route: ActivatedRoute) {
+        super();
         this._imageFetcher.fetchImage(
             // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
             "http://localhost:8000/mainRegion.png",
@@ -145,7 +148,8 @@ export class MapComponent implements AfterViewInit, OnInit {
     }
 
     public ngAfterViewInit(): void {
-        this._mapCanvas.onAspectRatioChanged.subscribe(canvasAspectRatio => this.handleMapCanvasSizeChange(canvasAspectRatio));
+        this.newSubscription = this._mapCanvas.onAspectRatioChanged
+            .subscribe(canvasAspectRatio => this.handleMapCanvasSizeChange(canvasAspectRatio));
     }
 
     public setViewArea(viewArea: { latitude?: NumericRange, longitude?: NumericRange }): void {

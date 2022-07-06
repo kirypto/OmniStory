@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild} from "@angular/core";
 import {fromEvent, Observable, Subject} from "rxjs";
 import {NumericRange, sizeOf} from "../../numeric-range";
+import {SubscribingComponent} from "../SubscribingComponent";
 
 interface Canvas {
     width: number;
@@ -66,7 +67,7 @@ function convertDeltaOfRange(inputRange: NumericRange, inputDelta: number, outpu
     templateUrl: "./map-canvas.component.html",
     styleUrls: ["./map-canvas.component.css"],
 })
-export class MapCanvasComponent implements AfterViewInit {
+export class MapCanvasComponent extends SubscribingComponent implements AfterViewInit {
     @Output() public zoom = new EventEmitter<ZoomEvent>();
     @Output() public pan = new EventEmitter<PanEvent>();
     @ViewChild("mapCanvas") private _mapCanvasElement: ElementRef;
@@ -82,7 +83,8 @@ export class MapCanvasComponent implements AfterViewInit {
     private WHEEL_ZOOM_SCALAR = 0.001;
 
     public constructor() {
-        fromEvent(window, "resize").subscribe(() => {
+        super();
+        this.newSubscription = fromEvent(window, "resize").subscribe(() => {
             this.redraw();
             this._onAspectRatioChanged.next(this.aspectRatio);
         });

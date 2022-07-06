@@ -15,6 +15,7 @@ import {CdkDragMove} from "@angular/cdk/drag-drop";
 import {fromEvent} from "rxjs";
 import {debounceTime, throttleTime} from "rxjs/operators";
 import {NumericRange} from "../../numeric-range";
+import {SubscribingComponent} from "../SubscribingComponent";
 
 
 type XY = { x: number, y: number };
@@ -25,7 +26,7 @@ type HandleSizes = { main: number, ends: number };
     templateUrl: "./range-scrollbar.component.html",
     styleUrls: ["./range-scrollbar.component.scss"],
 })
-export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges {
+export class RangeScrollbarComponent extends SubscribingComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() @Required public scrollDirection: string;
     @Input() @Required public limits: NumericRange;
     @Input() public selection: NumericRange;
@@ -46,7 +47,8 @@ export class RangeScrollbarComponent implements OnInit, AfterViewInit, OnChanges
     private _isFullyInitialized = false;
 
     public constructor() {
-        fromEvent(window, "resize").pipe(
+        super();
+        this.newSubscription = fromEvent(window, "resize").pipe(
             throttleTime(25),
             debounceTime(25),
         ).subscribe(() => this.update(true));
