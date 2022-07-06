@@ -2,7 +2,8 @@ import {Component, Injectable} from "@angular/core";
 
 import {from} from "rxjs";
 import {filter, mergeMap} from "rxjs/operators";
-import {TtapiGatewayService, WorldIds} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {WorldIds} from "../../../timeline-tracker-api/ttapi-types";
 
 @Component({
     selector: "app-entity-finder",

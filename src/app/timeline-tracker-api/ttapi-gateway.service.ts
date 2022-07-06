@@ -52,7 +52,12 @@ export class TtapiGatewayService {
 
     private getAuthToken(): Observable<string> {
         return this._authService.getIdTokenClaims().pipe(
-            map(value => value.__raw),
+            map(value => {
+                if (value === null || value === undefined) {
+                    throw new Error("Not logged in!");
+                }
+                return value.__raw;
+            }),
         );
     }
 }
