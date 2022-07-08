@@ -37,7 +37,7 @@ export class TtapiGatewayService {
             ],
         });
 
-        this._getWorlds = this._fetcher.path("/worlds").method("get").create();
+        this._getWorlds = this._fetcher.path("/api/worlds").method("get").create();
     }
 
     public retrieveWorldIds(): Observable<WorldIds> {
