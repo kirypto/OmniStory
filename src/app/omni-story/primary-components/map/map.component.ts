@@ -240,9 +240,6 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         }
 
         const bestFitMapItemLimits = bestFitForAspectRatio(mapItemLimits, requiredAspectRatio);
-        console.log("1: MapItems, 2: best fit");
-        console.dir(deepCopy(mapItemLimits));
-        console.dir(deepCopy(bestFitMapItemLimits));
         this._latitudeLimits = bestFitMapItemLimits.latitude;
         this._longitudeLimits = bestFitMapItemLimits.longitude;
     }
