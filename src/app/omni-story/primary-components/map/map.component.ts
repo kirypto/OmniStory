@@ -13,6 +13,7 @@ import {deepCopy} from "../../../common/util";
 import {ActivatedRoute} from "@angular/router";
 import {WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
+import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
 
 
 interface MapImage2 extends MapImage {
@@ -66,7 +67,11 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
 
     private _mapImages: Set<MapImage2> = new Set<MapImage2>();
 
-    public constructor(private _imageFetcher: ImageFetcherService, private _route: ActivatedRoute) {
+    public constructor(
+        private _imageFetcher: ImageFetcherService,
+        private _route: ActivatedRoute,
+        private _ttapiGateway: TtapiGatewayService,
+    ) {
         super();
         this._imageFetcher.fetchImage(
             // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
