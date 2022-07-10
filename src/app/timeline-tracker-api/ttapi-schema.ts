@@ -628,14 +628,10 @@ export interface components {
       description?: string;
       tags?: components["schemas"]["Tags"];
       attributes?: components["schemas"]["Attributes"];
-    } & {
-      span: unknown;
     };
     ExistingWorld: {
-      id?: components["schemas"]["WorldId"];
-    } & components["schemas"]["NewWorld"] & {
-        id: unknown;
-      };
+      id: components["schemas"]["WorldId"];
+    } & components["schemas"]["NewWorld"];
     ModifiedWorld: components["schemas"]["ExistingWorld"] & {
       /** @example Modified Name */
       name?: string;
@@ -657,10 +653,8 @@ export interface components {
       attributes?: components["schemas"]["Attributes"];
     };
     ExistingLocation: {
-      id?: components["schemas"]["LocationId"];
-    } & components["schemas"]["NewLocation"] & {
-        id: unknown;
-      };
+      id: components["schemas"]["LocationId"];
+    } & components["schemas"]["NewLocation"];
     ModifiedLocation: components["schemas"]["ExistingLocation"] & {
       /** @example Modified Name */
       name?: string;
@@ -676,11 +670,8 @@ export interface components {
       attributes?: components["schemas"]["Attributes"];
     };
     ExistingTraveler: {
-      id?: components["schemas"]["TravelerId"];
-    } & components["schemas"]["NewTraveler"] & {
-        id: unknown;
-        journey: unknown;
-      };
+      id: components["schemas"]["TravelerId"];
+    } & components["schemas"]["NewTraveler"];
     ModifiedTraveler: components["schemas"]["ExistingTraveler"] & {
       /** @example Modified Name */
       name?: string;
@@ -706,10 +697,8 @@ export interface components {
       affected_travelers?: components["schemas"]["TravelerIds"];
     };
     ExistingEvent: {
-      id?: components["schemas"]["EventId"];
-    } & components["schemas"]["NewEvent"] & {
-        id: unknown;
-      };
+      id: components["schemas"]["EventId"];
+    } & components["schemas"]["NewEvent"];
     ModifiedEvent: components["schemas"]["ExistingEvent"] & {
       /** @example Modified Name */
       name?: string;
