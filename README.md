@@ -14,3 +14,6 @@ _At some point this will be moved into another markdown file._
   ```
   npx openapi-typescript .\src\assets\ttapi-specification\apiSpecification.json --output .\src\app\timeline-tracker-api\ttapi-schema.ts
   ```
+- Using `npm-check-updates` to update dependencies in package.json
+  - install by `npm install -g npm-check-updates`
+  - then can `ncu` to see what can be updated, and add `-u` to apply.

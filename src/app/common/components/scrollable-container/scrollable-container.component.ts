@@ -1,5 +1,4 @@
 import {Component, Input} from "@angular/core";
-import {isNumeric} from "rxjs/internal-compatibility";
 
 
 @Component({
@@ -47,4 +46,8 @@ function convert(fxFlexInstruction: number | string): string {
         fxFlexInstructionStr = `${fxFlexInstructionStr}%`;
     }
     return fxFlexInstructionStr;
+}
+
+function isNumeric(value: string | number): boolean {
+    return value !== null && value !== undefined && value !== "" && !isNaN(Number(value.toString()));
 }
