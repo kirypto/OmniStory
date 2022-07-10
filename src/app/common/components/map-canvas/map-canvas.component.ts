@@ -1,6 +1,7 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild} from "@angular/core";
 import {fromEvent, Observable, Subject} from "rxjs";
-import {NumericRange} from "../../simple-types";
+import {NumericRange, sizeOf} from "../../numeric-range";
+import {SubscribingComponent} from "../SubscribingComponent";
 
 interface Canvas {
     width: number;
@@ -13,31 +14,52 @@ interface Canvas {
 
 export interface MapImage {
     source: CanvasImageSource;
-    x: NumericRange;
-    y: NumericRange;
+    latitude: NumericRange;
+    longitude: NumericRange;
 }
 
 interface MapLabel {
     text: string;
     colour?: string;
     fontSize?: number;
-    x: number;
-    y: number;
+    latitude: number;
+    longitude: number;
 }
 
-export interface Area {
+export interface MapArea {
+    latitude: NumericRange;
+    longitude: NumericRange;
+}
+
+interface CanvasArea {
     x: NumericRange;
     y: NumericRange;
 }
 
 export interface CanvasAspectRatio {
-    verticalUnitsPerHorizontal: number;
-    horizontalUnitsPerVertical: number;
+    latUnitsPerLonUnit: number;
+    lonUnitsPerLatUnit: number;
 }
 
-function convertToCanvasRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
+export interface ZoomEvent {
+    latitudeDelta: number;
+    longitudeDelta: number;
+}
+
+export interface PanEvent {
+    latitudeDelta: number;
+    longitudeDelta: number;
+}
+
+function convertPositionInRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
     const inputPercent = (input - inputRange.low) / (inputRange.high - inputRange.low);
     return (outputRange.high - outputRange.low) * inputPercent + outputRange.low;
+}
+
+function convertDeltaOfRange(inputRange: NumericRange, inputDelta: number, outputRange: NumericRange): number {
+    const inputRangeSize = sizeOf(inputRange);
+    const inputRangePercent = Math.min(1, Math.max(-1, inputDelta / inputRangeSize));
+    return inputRangePercent * sizeOf(outputRange);
 }
 
 @Component({
@@ -45,17 +67,24 @@ function convertToCanvasRange(inputRange: NumericRange, input: number, outputRan
     templateUrl: "./map-canvas.component.html",
     styleUrls: ["./map-canvas.component.css"],
 })
-export class MapCanvasComponent implements AfterViewInit {
+export class MapCanvasComponent extends SubscribingComponent implements AfterViewInit {
+    @Output() public zoom = new EventEmitter<ZoomEvent>();
+    @Output() public pan = new EventEmitter<PanEvent>();
     @ViewChild("mapCanvas") private _mapCanvasElement: ElementRef;
     private _mapCanvas: Canvas;
     private _mapCanvasCtx: CanvasRenderingContext2D;
     private _mapImages: MapImage[] = [];
     private _mapLabels: MapLabel[] = [];
-    private _viewArea: Area = {x: {low: 0, high: 100}, y: {low: 0, high: 100}};
+    private _viewArea: MapArea = {longitude: {low: 0, high: 100}, latitude: {low: 0, high: 100}};
     private _onAspectRatioChanged = new Subject<CanvasAspectRatio>();
 
+    private _isPanning: boolean;
+
+    private WHEEL_ZOOM_SCALAR = 0.001;
+
     public constructor() {
-        fromEvent(window, "resize").subscribe(() => {
+        super();
+        this.newSubscription = fromEvent(window, "resize").subscribe(() => {
             this.redraw();
             this._onAspectRatioChanged.next(this.aspectRatio);
         });
@@ -71,15 +100,15 @@ export class MapCanvasComponent implements AfterViewInit {
         this.redraw();
     }
 
-    public set viewArea(viewArea: Area) {
+    public set viewArea(viewArea: MapArea) {
         this._viewArea = viewArea;
         this.redraw();
     }
 
     public get aspectRatio(): CanvasAspectRatio {
         return {
-            verticalUnitsPerHorizontal: this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth,
-            horizontalUnitsPerVertical: this._mapCanvas.offsetWidth / this._mapCanvas.offsetHeight,
+            latUnitsPerLonUnit: this._mapCanvas.offsetHeight / this._mapCanvas.offsetWidth,
+            lonUnitsPerLatUnit: this._mapCanvas.offsetWidth / this._mapCanvas.offsetHeight,
         };
     }
 
@@ -93,7 +122,32 @@ export class MapCanvasComponent implements AfterViewInit {
         setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
     }
 
-    private get canvasArea(): Area {
+    public handleEvent(interaction: {
+        wheel?: WheelEvent; mouseDown?: MouseEvent; mouseMove?: MouseEvent, mouseUp?: MouseEvent
+    }): void {
+        if (interaction.wheel) {
+            const latitudeSize = this._viewArea.latitude.high - this._viewArea.latitude.low;
+            const latitudeZoomDelta = latitudeSize * interaction.wheel.deltaY * this.WHEEL_ZOOM_SCALAR;
+            const longitudeZoomDelta = latitudeZoomDelta * this.aspectRatio.lonUnitsPerLatUnit;
+            this.zoom.emit({latitudeDelta: latitudeZoomDelta, longitudeDelta: longitudeZoomDelta});
+
+            const latitudePanRange: NumericRange = {low: latitudeZoomDelta / 2, high: -latitudeZoomDelta / 2};
+            const longitudePanRange: NumericRange = {low: longitudeZoomDelta / 2, high: -longitudeZoomDelta / 2};
+            const latitudePanDelta = convertPositionInRange(this.canvasArea.y, interaction.wheel.offsetY, latitudePanRange);
+            const longitudePanDelta = convertPositionInRange(this.canvasArea.x, interaction.wheel.offsetX, longitudePanRange);
+            this.pan.emit({latitudeDelta: latitudePanDelta, longitudeDelta: longitudePanDelta});
+        } else if (!this._isPanning && interaction.mouseDown && interaction.mouseDown.button === 0) {
+            this._isPanning = true;
+        } else if (this._isPanning && interaction.mouseMove) {
+            const latitudeDelta = convertDeltaOfRange(this.canvasArea.y, interaction.mouseMove.movementY * -1, this._viewArea.latitude);
+            const longitudeDelta = convertDeltaOfRange(this.canvasArea.x, interaction.mouseMove.movementX * -1, this._viewArea.longitude);
+            this.pan.emit({latitudeDelta, longitudeDelta});
+        } else if (this._isPanning && interaction.mouseUp && interaction.mouseUp.button === 0) {
+            this._isPanning = false;
+        }
+    }
+
+    private get canvasArea(): CanvasArea {
         return {
             x: {low: 0, high: this._mapCanvas.offsetWidth},
             y: {low: 0, high: this._mapCanvas.offsetHeight},
@@ -105,6 +159,7 @@ export class MapCanvasComponent implements AfterViewInit {
         this._mapCanvasCtx.clearRect(0, 0, this._mapCanvas.width, this._mapCanvas.height);
         this.drawMapImages();
         this.drawMapLabels();
+        this.drawLatLon();
     }
 
     private updateCanvasSize(): void {
@@ -114,10 +169,10 @@ export class MapCanvasComponent implements AfterViewInit {
 
     private drawMapImages(): void {
         for (const mapImage of this._mapImages) {
-            const pixelXLow = convertToCanvasRange(this._viewArea.x, mapImage.x.low, this.canvasArea.x);
-            const pixelXHigh = convertToCanvasRange(this._viewArea.x, mapImage.x.high, this.canvasArea.x);
-            const pixelYLow = convertToCanvasRange(this._viewArea.y, mapImage.y.low, this.canvasArea.y);
-            const pixelYHigh = convertToCanvasRange(this._viewArea.y, mapImage.y.high, this.canvasArea.y);
+            const pixelXLow = convertPositionInRange(this._viewArea.longitude, mapImage.longitude.low, this.canvasArea.x);
+            const pixelXHigh = convertPositionInRange(this._viewArea.longitude, mapImage.longitude.high, this.canvasArea.x);
+            const pixelYLow = convertPositionInRange(this._viewArea.latitude, mapImage.latitude.low, this.canvasArea.y);
+            const pixelYHigh = convertPositionInRange(this._viewArea.latitude, mapImage.latitude.high, this.canvasArea.y);
             this._mapCanvasCtx.drawImage(mapImage.source,
                 pixelXLow, pixelYLow,
                 pixelXHigh - pixelXLow, pixelYHigh - pixelYLow);
@@ -125,12 +180,30 @@ export class MapCanvasComponent implements AfterViewInit {
     }
 
     private drawMapLabels(): void {
+        this._mapCanvasCtx.save();
         for (const mapLabel of this._mapLabels) {
             this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
             this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";
-            const pixelX = convertToCanvasRange(this._viewArea.x, mapLabel.x, this.canvasArea.x);
-            const pixelY = convertToCanvasRange(this._viewArea.y, mapLabel.y, this.canvasArea.y);
+            const pixelX = convertPositionInRange(this._viewArea.longitude, mapLabel.longitude, this.canvasArea.x);
+            const pixelY = convertPositionInRange(this._viewArea.latitude, mapLabel.latitude, this.canvasArea.y);
             this._mapCanvasCtx.fillText(mapLabel.text, pixelX, pixelY);
         }
+        this._mapCanvasCtx.restore();
+    }
+
+    private drawLatLon(): void {
+        this._mapCanvasCtx.save();
+        this._mapCanvasCtx.font = `12px Arial`;
+        this._mapCanvasCtx.fillStyle = "#FFF";
+        this._mapCanvasCtx.textAlign = "center";
+
+        const lonXPos = this.canvasArea.x.high / 2;
+        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.high - 5);
+
+        const latYPos = this.canvasArea.y.high / 2;
+        this._mapCanvasCtx.rotate(-Math.PI / 2);
+        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high);
+
+        this._mapCanvasCtx.restore();
     }
 }
