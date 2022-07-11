@@ -8,3 +8,7 @@ Note: After regenerating, "tslint:disable" should be re-added as the first line.
 
 export type WorldIds = components["schemas"]["WorldIds"];
 export type WorldId = components["schemas"]["WorldId"];
+
+export type LocationIds = components["schemas"]["LocationIds"];
+export type LocationId = components["schemas"]["LocationId"];
+export type Location = components["schemas"]["ExistingLocation"];

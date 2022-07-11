@@ -11,12 +11,13 @@ import {
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 import {ActivatedRoute} from "@angular/router";
-import {WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {Location, LocationId, LocationIds, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {mergeMap, tap} from "rxjs/operators";
 
 
-interface MapImage2 extends MapImage {
+interface MapItem extends MapImage {
     z: number;
 }
 
@@ -65,7 +66,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private _altitude: NumericRange = {low: 25, high: 75};
     private _continuum: NumericRange = {low: 25, high: 75};
 
-    private _mapImages: Set<MapImage2> = new Set<MapImage2>();
+    private _mapImages: Set<MapItem> = new Set<MapItem>();
 
     public constructor(
         private _imageFetcher: ImageFetcherService,
@@ -150,6 +151,19 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
 
     public ngOnInit(): void {
         this._worldId = this._route.snapshot.paramMap.get("worldId");
+        this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
+            worldId: this._worldId,
+        }).pipe(
+            tap((locationIds: LocationIds) => console.log(`Fetched locations: '${locationIds}'; (${locationIds.length})`)),
+            mergeMap((locationIds: LocationIds) => locationIds),
+            mergeMap((locationId: LocationId) => this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
+                worldId: this._worldId,
+                locationId,
+            })),
+        ).subscribe((location: Location) => {
+            console.log(`Fetched location: '${location.name}' (${location.id})`);
+            console.dir(deepCopy(location.attributes));
+        });
     }
 
     public ngAfterViewInit(): void {
@@ -199,7 +213,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private updateMap(): void {
         this._mapCanvas.viewArea = {latitude: this._latitude, longitude: this._longitude};
         const mapImagesOrdered = [...this._mapImages];
-        mapImagesOrdered.sort((a: MapImage2, b: MapImage2) => a.z - b.z);
+        mapImagesOrdered.sort((a: MapItem, b: MapItem) => a.z - b.z);
         this._mapCanvas.mapImages = mapImagesOrdered;
 
         const fontSize = 14;
@@ -212,7 +226,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         ];
     }
 
-    private addMapImage(mapImage: MapImage2): void {
+    private addMapImage(mapImage: MapItem): void {
         this._mapImages.add(mapImage);
         const requiredAspectRatio = this._mapCanvas.aspectRatio;
         this.updateMapLimits(requiredAspectRatio);
