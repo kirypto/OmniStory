@@ -14,7 +14,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
-import {AuthHttpInterceptor} from "@auth0/auth0-angular";
+import {AuthHttpInterceptor, AuthModule} from "@auth0/auth0-angular";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 
 import {AppComponent} from "./app.component";
@@ -24,10 +24,8 @@ import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.com
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
 import {AppConfigService} from "./common/services/app-config/app-config.service";
-import {JsonBareWordNumericSymbolTranslator} from "./common/services/json-bare-word-numeric-symbol-translator.service";
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./omni-story/primary-components/entity-search/entity-search.component";
-import {AuthModule} from "@auth0/auth0-angular";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
 import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
 import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
@@ -36,7 +34,6 @@ import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.comp
  * All http interceptor providers in outside-in order
  */
 const httpInterceptorProviders = [
-    {provide: HTTP_INTERCEPTORS, useClass: JsonBareWordNumericSymbolTranslator, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true},
 ];
 
