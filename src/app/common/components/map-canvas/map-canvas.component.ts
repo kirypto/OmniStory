@@ -51,6 +51,11 @@ export interface PanEvent {
     longitudeDelta: number;
 }
 
+export interface MapContextMenuEvent {
+    latitude: number;
+    longitude: number;
+}
+
 function convertPositionInRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
     const inputPercent = (input - inputRange.low) / (inputRange.high - inputRange.low);
     return (outputRange.high - outputRange.low) * inputPercent + outputRange.low;
@@ -70,6 +75,7 @@ function convertDeltaOfRange(inputRange: NumericRange, inputDelta: number, outpu
 export class MapCanvasComponent extends SubscribingComponent implements AfterViewInit {
     @Output() public zoom = new EventEmitter<ZoomEvent>();
     @Output() public pan = new EventEmitter<PanEvent>();
+    @Output() public mapContextMenu = new EventEmitter<MapContextMenuEvent>();
     @ViewChild("mapCanvas") private _mapCanvasElement: ElementRef;
     private _mapCanvas: Canvas;
     private _mapCanvasCtx: CanvasRenderingContext2D;
@@ -123,7 +129,9 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
     }
 
     public handleEvent(interaction: {
-        wheel?: WheelEvent; mouseDown?: MouseEvent; mouseMove?: MouseEvent, mouseUp?: MouseEvent
+        wheel?: WheelEvent,
+        mouseDown?: MouseEvent, mouseMove?: MouseEvent, mouseUp?: MouseEvent,
+        click?: MouseEvent, contextMenu?: MouseEvent,
     }): void {
         if (interaction.wheel) {
             const latitudeSize = this._viewArea.latitude.high - this._viewArea.latitude.low;
@@ -144,6 +152,11 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
             this.pan.emit({latitudeDelta, longitudeDelta});
         } else if (this._isPanning && interaction.mouseUp && interaction.mouseUp.button === 0) {
             this._isPanning = false;
+        } else if (interaction.contextMenu) {
+            const longitude = convertPositionInRange(this.canvasArea.x, interaction.contextMenu.offsetX, this._viewArea.longitude);
+            const latitude = convertPositionInRange(this.canvasArea.y, interaction.contextMenu.offsetY, this._viewArea.latitude);
+            interaction.contextMenu.preventDefault();
+            this.mapContextMenu.emit({latitude, longitude});
         }
     }
 

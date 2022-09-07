@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {NumericRange, shiftRangeByDelta, zoomRangeByDelta} from "../../../common/numeric-range";
 import {
-    CanvasAspectRatio,
+    CanvasAspectRatio, MapContextMenuEvent,
     MapArea,
     MapCanvasComponent,
     MapImage,
@@ -147,7 +147,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     }
 
     public handleInteraction(interaction: {
-        zoom?: ZoomEvent, pan?: PanEvent,
+        zoom?: ZoomEvent, pan?: PanEvent, mapContextMenu?: MapContextMenuEvent,
     }): void {
         if (interaction.zoom) {
             this.setViewArea({
@@ -159,6 +159,8 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                 latitude: shiftRangeByDelta(this._latitude, interaction.pan.latitudeDelta, this._latitudeLimits),
                 longitude: shiftRangeByDelta(this._longitude, interaction.pan.longitudeDelta, this._longitudeLimits),
             });
+        } else if (interaction.mapContextMenu) {
+            console.log(`HERE Context!   ${interaction.mapContextMenu.latitude}  ${interaction.mapContextMenu.longitude}`);
         }
     }
 

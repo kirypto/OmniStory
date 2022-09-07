@@ -1,4 +1,5 @@
 <app-map-canvas fxFlexFill
                 (zoom)="handleInteraction({zoom: $event})"
                 (pan)="handleInteraction({pan: $event})"
+                (mapContextMenu)="handleInteraction({mapContextMenu: $event})"
 ></app-map-canvas>
