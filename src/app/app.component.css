@@ -11,4 +11,8 @@ mat-sidenav {
   width: 42ch;
 }
 
+mat-sidenav-content {
+  overflow: hidden;
+}
+
 /*# sourceMappingURL=app.component.css.map */

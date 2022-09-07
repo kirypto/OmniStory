@@ -10,4 +10,7 @@ mat-sidenav, mat-sidenav-content, mat-sidenav-container {
 mat-sidenav {
     width: 42ch;
 }
+mat-sidenav-content {
+    overflow: hidden;
+}
 

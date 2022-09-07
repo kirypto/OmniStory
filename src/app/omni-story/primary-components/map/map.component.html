@@ -1,40 +1,4 @@
-<div fxFlexFill fxLayout="row" fxLayoutAlign="space-between stretch">
-  <div fxFlex="95" fxLayout="column" fxLayoutAlign="space-between stretch">
-    <div fxFlex="92" class="map-area">
-      <!-- MAIN MAP AREA -->
-      <app-map-canvas fxFlexFill
-                      (zoom)="handleInteraction({zoom: $event})"
-                      (pan)="handleInteraction({pan: $event})"
-      ></app-map-canvas>
-    </div>
-    <div fxFlex="3">
-      <!-- LONGITUDE RANGE SCROLLBAR-->
-      <app-range-scrollbar scrollDirection="horizontal" [limits]="longitudeLimits" [selection]="longitudeSelection"
-                           (selectionChange)="setViewArea({longitude: $event})"></app-range-scrollbar>
-    </div>
-    <div fxFlex="3">
-      <!-- CONTINUUM RANGE SCROLLBAR-->
-      <app-range-scrollbar scrollDirection="horizontal" [limits]="continuumLimits" [(selection)]="continuumSelection"></app-range-scrollbar>
-    </div>
-  </div>
-
-  <div fxFlex="2" fxLayout="column" fxLayoutAlign="space-between stretch">
-    <div fxFlex="92">
-      <!-- LATITUDE RANGE SCROLLBAR-->
-      <app-range-scrollbar scrollDirection="vertical" [limits]="latitudeLimits" [selection]="latitudeSelection"
-                           (selectionChange)="setViewArea({latitude: $event})"></app-range-scrollbar>
-    </div>
-    <div fxFlex="3"></div>
-    <div fxFlex="3"></div>
-  </div>
-
-  <div fxFlex="2" fxLayout="column" fxLayoutAlign="space-between stretch">
-    <div fxFlex="92">
-      <!-- ALTITUDE RANGE SCROLLBAR-->
-      <app-range-scrollbar scrollDirection="vertical" [limits]="altitudeLimits" [(selection)]="altitudeSelection"></app-range-scrollbar>
-    </div>
-    <div fxFlex="3"></div>
-    <div fxFlex="3"></div>
-  </div>
-
-</div>
+<app-map-canvas fxFlexFill
+                (zoom)="handleInteraction({zoom: $event})"
+                (pan)="handleInteraction({pan: $event})"
+></app-map-canvas>

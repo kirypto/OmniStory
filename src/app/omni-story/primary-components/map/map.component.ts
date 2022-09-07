@@ -85,48 +85,6 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         }, null, 4);
     }
 
-    public get latitudeLimits(): NumericRange {
-        return this._latitudeLimits;
-    }
-
-    public get latitudeSelection(): NumericRange {
-        return this._latitude;
-    }
-
-    public get longitudeLimits(): NumericRange {
-        return this._longitudeLimits;
-    }
-
-    public get longitudeSelection(): NumericRange {
-        return this._longitude;
-    }
-
-    public get altitudeLimits(): NumericRange {
-        return {low: 0, high: 100};
-    }
-
-    public get altitudeSelection(): NumericRange {
-        return this._altitude;
-    }
-
-    public set altitudeSelection(value: NumericRange) {
-        this._altitude = value;
-        this.updateMap();
-    }
-
-    public get continuumLimits(): NumericRange {
-        return {low: 0, high: 100};
-    }
-
-    public get continuumSelection(): NumericRange {
-        return this._continuum;
-    }
-
-    public set continuumSelection(value: NumericRange) {
-        this._continuum = value;
-        this.updateMap();
-    }
-
     public ngOnInit(): void {
         this._worldId = this._route.snapshot.paramMap.get("worldId");
         this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
