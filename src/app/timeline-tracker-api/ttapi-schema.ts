@@ -133,7 +133,6 @@ export interface paths {
        * *Notes*
        * - *When POSTing a Location, providing an id is not required as it will
        * be generated. If one is provided it will be ignored.*
-       * - *`-Infinity` and `Infinity` can be provided in place of numbers and will be translated to negative and positive infinity respectively.*
        */
       requestBody: {
         content: {
@@ -677,7 +676,20 @@ export interface components {
       name?: string;
     };
     ExtendedJourneyTraveler: components["schemas"]["ExistingTraveler"] & {
-      /** @example [object Object] */
+      /**
+       * @example [
+       *   {
+       *     "position": {
+       *       "latitude": -5.05,
+       *       "longitude": -2.6,
+       *       "altitude": 3.5,
+       *       "continuum": 11.9,
+       *       "reality": 0
+       *     },
+       *     "movement_type": "immediate"
+       *   }
+       * ]
+       */
       journey?: components["schemas"]["PositionalMove"][];
     };
     /**
@@ -731,12 +743,37 @@ export interface components {
     LocationIds: components["schemas"]["LocationId"][];
     TravelerIds: components["schemas"]["TravelerId"][];
     EventIds: components["schemas"]["EventId"][];
-    /** @example [object Object],event-abad1dea-0000-4000-8000-000000000000 */
+    /**
+     * @example [
+     *   {
+     *     "position": {
+     *       "latitude": -5.05,
+     *       "longitude": -2.6,
+     *       "altitude": 3.5,
+     *       "continuum": 11.9,
+     *       "reality": 0
+     *     },
+     *     "movement_type": "immediate"
+     *   },
+     *   "event-abad1dea-0000-4000-8000-000000000000"
+     * ]
+     */
     TravelerTimeline: components["schemas"]["PositionalMoveOrEventId"][];
     LocationTimeline: components["schemas"]["EventId"][];
     /**
      * @description A sequence of positional transitions.
-     * @example [object Object]
+     * @example [
+     *   {
+     *     "position": {
+     *       "latitude": -5.05,
+     *       "longitude": -2.6,
+     *       "altitude": 3.5,
+     *       "continuum": 11.9,
+     *       "reality": 0
+     *     },
+     *     "movement_type": "immediate"
+     *   }
+     * ]
      */
     Journey: components["schemas"]["PositionalMove"][];
     /** @description A single-dimensional range with a lower and higher value. */
@@ -787,7 +824,10 @@ export interface components {
        * @example 11.9
        */
       continuum: number;
-      /** Format: int */
+      /**
+       * Format: int
+       * @example 0
+       */
       reality: number;
     };
     /**
@@ -808,7 +848,16 @@ export interface components {
      * - Attributes keys must be contain only alphanumeric, underscore, and dash characters.
      * - Attributes values can be any json.
      *
-     * @example [object Object]
+     * @example {
+     *   "key1": "Value A",
+     *   "key2": {
+     *     "key3": "Value B",
+     *     "key4": [
+     *       4.2,
+     *       false
+     *     ]
+     *   }
+     * }
      */
     Attributes: { [key: string]: unknown };
     /**
@@ -823,7 +872,11 @@ export interface components {
     PatchRequest: components["schemas"]["PatchDocument"][];
     /**
      * @description A JSONPatch document as defined by RFC 6902.
-     * @example [object Object]
+     * @example {
+     *   "op": "replace",
+     *   "path": "/name",
+     *   "value": "Modified Name"
+     * }
      */
     PatchDocument: {
       /**

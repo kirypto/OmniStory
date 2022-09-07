@@ -11,11 +11,13 @@ import {
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 import {ActivatedRoute} from "@angular/router";
-import {WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {Location, LocationId, LocationIds, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
+import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {filter, mergeMap, tap} from "rxjs/operators";
 
 
-interface MapImage2 extends MapImage {
+interface MapItem extends MapImage {
     z: number;
 }
 
@@ -64,32 +66,14 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private _altitude: NumericRange = {low: 25, high: 75};
     private _continuum: NumericRange = {low: 25, high: 75};
 
-    private _mapImages: Set<MapImage2> = new Set<MapImage2>();
+    private _mapImages: Set<MapItem> = new Set<MapItem>();
 
-    public constructor(private _imageFetcher: ImageFetcherService, private _route: ActivatedRoute) {
+    public constructor(
+        private _imageFetcher: ImageFetcherService,
+        private _route: ActivatedRoute,
+        private _ttapiGateway: TtapiGatewayService,
+    ) {
         super();
-        this._imageFetcher.fetchImage(
-            // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
-            "http://localhost:8000/mainRegion.png",
-        ).then(value => {
-            this.addMapImage({
-                latitude: {low: 7400, high: 8600},
-                longitude: {low: 3400, high: 5150},
-                z: 1,
-                source: value,
-            });
-        });
-        this._imageFetcher.fetchImage(
-            // "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ"
-            "http://localhost:8000/supercontinent.jpg",
-        ).then(value => {
-            this.addMapImage({
-                latitude: {low: 0, high: 10000},
-                longitude: {low: 0, high: 10000},
-                z: 0,
-                source: value,
-            });
-        });
     }
 
     public get selections(): string {
@@ -145,6 +129,35 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
 
     public ngOnInit(): void {
         this._worldId = this._route.snapshot.paramMap.get("worldId");
+        this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
+            worldId: this._worldId,
+        }).pipe(
+            tap((locationIds: LocationIds) => console.log(`Fetched locations: '${locationIds}'; (${locationIds.length})`)),
+            mergeMap((locationIds: LocationIds) => locationIds),
+            mergeMap((locationId: LocationId) => this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
+                worldId: this._worldId,
+                locationId,
+            })),
+            tap((location: Location) => console.log(`Retrieved location '${location.name}'`)),
+            filter((location: Location) => !!location.attributes.sourceImageHD),
+            mergeMap((location: Location) => {
+                const sourceImageUrl = (location.attributes.sourceImageHD)
+                    ? location.attributes.sourceImageHD as string
+                    : "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ";
+                const promise: Promise<MapItem> = this._imageFetcher.fetchImage(sourceImageUrl).then(sourceImage => {
+                    const mapItem: MapItem = {
+                        latitude: location.span.latitude,
+                        longitude: location.span.longitude,
+                        z: location.span.altitude.low,
+                        source: sourceImage,
+                    };
+                    return mapItem;
+                });
+                return promise;
+            }),
+        ).subscribe((locationAsMapItem: MapItem) => {
+            this.addMapImage(locationAsMapItem);
+        });
     }
 
     public ngAfterViewInit(): void {
@@ -194,7 +207,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private updateMap(): void {
         this._mapCanvas.viewArea = {latitude: this._latitude, longitude: this._longitude};
         const mapImagesOrdered = [...this._mapImages];
-        mapImagesOrdered.sort((a: MapImage2, b: MapImage2) => a.z - b.z);
+        mapImagesOrdered.sort((a: MapItem, b: MapItem) => a.z - b.z);
         this._mapCanvas.mapImages = mapImagesOrdered;
 
         const fontSize = 14;
@@ -207,7 +220,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         ];
     }
 
-    private addMapImage(mapImage: MapImage2): void {
+    private addMapImage(mapImage: MapItem): void {
         this._mapImages.add(mapImage);
         const requiredAspectRatio = this._mapCanvas.aspectRatio;
         this.updateMapLimits(requiredAspectRatio);

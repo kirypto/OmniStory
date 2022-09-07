@@ -41,12 +41,16 @@ export class EntitySearchComponent extends SubscribingComponent {
 
     public findEntities(entityType: string): void {
         // TODO: work in other entity types
-        console.log(`Asked to retrieve ${entityType}, but only worlds retrieval is currently supported`);
+        if (entityType !== "world") {
+            console.log(`Asked to retrieve ${entityType}, but only worlds retrieval is currently supported`);
+        }
         this._entityIds.clear();
-        this.newSubscription = this._ttapiGateway.retrieveWorldIds().pipe(
-            filter((valueArr: WorldIds) => valueArr !== undefined),
-            mergeMap((locationIdsArr) => from(locationIdsArr)),
-        ).subscribe((value) => this._entityIds.add(value));
+        this.newSubscription = this._ttapiGateway
+            .fetch("/api/worlds", "get", {})
+            .pipe(
+                filter((valueArr: WorldIds) => valueArr !== undefined),
+                mergeMap((locationIdsArr) => from(locationIdsArr)),
+            ).subscribe((value) => this._entityIds.add(value));
     }
 }
 

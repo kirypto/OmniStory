@@ -1,4 +1,4 @@
 [submodule "src/assets/ttapi-specification"]
 	path = src/assets/ttapi-specification
 	url = git@github.com:kirypto/TimelineTrackerAPISpec.git
-	branch = v0.4.0-alpha2
+	branch = v0.4.0-alpha3
