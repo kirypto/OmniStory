@@ -1,9 +1,10 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from "@angular/core";
 import {NumericRange, shiftRangeByDelta, zoomRangeByDelta} from "../../../common/numeric-range";
 import {
-    CanvasAspectRatio, MapContextMenuEvent,
+    CanvasAspectRatio,
     MapArea,
     MapCanvasComponent,
+    MapContextMenuEvent,
     MapImage,
     PanEvent,
     ZoomEvent,
@@ -14,7 +15,10 @@ import {ActivatedRoute} from "@angular/router";
 import {Location, LocationId, LocationIds, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
-import {filter, mergeMap, tap} from "rxjs/operators";
+import {filter, mergeMap, take, tap} from "rxjs/operators";
+import {Overlay, OverlayRef} from "@angular/cdk/overlay";
+import {TemplatePortal} from "@angular/cdk/portal";
+import {fromEvent, Subscription} from "rxjs";
 
 
 interface MapItem extends MapImage {
@@ -57,7 +61,10 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
 })
 export class MapComponent extends SubscribingComponent implements AfterViewInit, OnInit {
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
+    @ViewChild("mapContextMenu") private _mapContextMenu: TemplateRef<{ $implicit: { latitude: number, longitude: number } }>;
     private _worldId: WorldId;
+    private _overlayRef: OverlayRef;
+    private _contextMenuSubscription: Subscription;
 
     private _latitude: NumericRange = {low: 0, high: 1};
     private _latitudeLimits: NumericRange = {low: 0, high: 1};
@@ -72,6 +79,8 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         private _imageFetcher: ImageFetcherService,
         private _route: ActivatedRoute,
         private _ttapiGateway: TtapiGatewayService,
+        private _overlay: Overlay,
+        private _viewContainerRef: ViewContainerRef,
     ) {
         super();
     }
@@ -161,6 +170,64 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
             });
         } else if (interaction.mapContextMenu) {
             console.log(`HERE Context!   ${interaction.mapContextMenu.latitude}  ${interaction.mapContextMenu.longitude}`);
+            this.openMapContextMenu(interaction.mapContextMenu);
+        }
+    }
+
+    public handleContextMenuPositionClick(): void {
+        this.closeMapContextMenu();
+        alert("Copying position is not yet implemented.");
+    }
+
+    public handleContextMenuWhatHereClick(): void {
+        this.closeMapContextMenu();
+        alert("What's Here? functionality has not been implemented yet.");
+    }
+
+    private openMapContextMenu(mapContextMenuEvent: MapContextMenuEvent): void {
+        this.closeMapContextMenu();
+        const positionStrategy = this._overlay.position()
+            .flexibleConnectedTo({x: mapContextMenuEvent.x, y: mapContextMenuEvent.y})
+            .withPositions([
+                {
+                    originX: "end",
+                    originY: "bottom",
+                    overlayX: "end",
+                    overlayY: "top",
+                },
+            ]);
+
+        this._overlayRef = this._overlay.create({
+            positionStrategy,
+            scrollStrategy: this._overlay.scrollStrategies.close(),
+        });
+
+        const position: { longitude, latitude } = {
+            longitude: mapContextMenuEvent.longitude,
+            latitude: mapContextMenuEvent.latitude,
+        };
+
+        this._overlayRef.attach(new TemplatePortal(this._mapContextMenu, this._viewContainerRef, {
+            $implicit: position,
+        }));
+
+        this._contextMenuSubscription = fromEvent<MouseEvent>(document, "click")
+            .pipe(
+                filter((event: MouseEvent) => {
+                    const clickTarget = event.target as HTMLElement;
+                    return !!this._overlayRef && !this._overlayRef.overlayElement.contains(clickTarget);
+                }),
+                take(1),
+            ).subscribe(() => this.closeMapContextMenu());
+    }
+
+    private closeMapContextMenu(): void {
+        if (this._contextMenuSubscription) {
+            this._contextMenuSubscription.unsubscribe();
+        }
+        if (this._overlayRef) {
+            this._overlayRef.dispose();
+            this._overlayRef = null;
         }
     }
 

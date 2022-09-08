@@ -52,6 +52,8 @@ export interface PanEvent {
 }
 
 export interface MapContextMenuEvent {
+    x: number;
+    y: number;
     latitude: number;
     longitude: number;
 }
@@ -156,7 +158,7 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
             const longitude = convertPositionInRange(this.canvasArea.x, interaction.contextMenu.offsetX, this._viewArea.longitude);
             const latitude = convertPositionInRange(this.canvasArea.y, interaction.contextMenu.offsetY, this._viewArea.latitude);
             interaction.contextMenu.preventDefault();
-            this.mapContextMenu.emit({latitude, longitude});
+            this.mapContextMenu.emit({latitude, longitude, x: interaction.contextMenu.x, y: interaction.contextMenu.y});
         }
     }
 

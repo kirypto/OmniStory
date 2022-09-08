@@ -3,4 +3,26 @@
   height: 100%;
 }
 
+.map-context-menu {
+  background-color: #00000044;
+  border-radius: 0.5ch;
+}
+
+.map-context-menu > div {
+  padding: 0.5ch 1ch;
+  border-radius: 0.5ch;
+}
+
+.map-context-menu > div:first-child {
+  padding-top: 1ch;
+}
+
+.map-context-menu > div:last-child {
+  padding-bottom: 1ch;
+}
+
+.map-context-menu > div:hover {
+  background-color: #00000088;
+}
+
 /*# sourceMappingURL=map.component.css.map */
