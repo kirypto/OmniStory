@@ -22,7 +22,9 @@ import {fromEvent, Subscription} from "rxjs";
 
 
 interface MapItem extends MapImage {
-    z: number;
+    altitude: NumericRange;
+    name: string;
+    id: string;
 }
 
 function bestFitForAspectRatio(desiredArea: MapArea, requiredAspectRatio: CanvasAspectRatio): MapArea {
@@ -115,8 +117,10 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                     const mapItem: MapItem = {
                         latitude: location.span.latitude,
                         longitude: location.span.longitude,
-                        z: location.span.altitude.low,
+                        altitude: location.span.altitude,
                         source: sourceImage,
+                        name: location.name,
+                        id: location.id,
                     };
                     return mapItem;
                 });
@@ -234,7 +238,13 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private updateMap(): void {
         this._mapCanvas.viewArea = {latitude: this._latitude, longitude: this._longitude};
         const mapImagesOrdered = [...this._mapImages];
-        mapImagesOrdered.sort((a: MapItem, b: MapItem) => a.z - b.z);
+        mapImagesOrdered.sort((a: MapItem, b: MapItem) => {
+            if (a.altitude.low !== b.altitude.low) {
+                return a.altitude.low - b.altitude.low;
+            } else {
+                return a.altitude.high - b.altitude.high;
+            }
+        });
         this._mapCanvas.mapImages = mapImagesOrdered;
 
         const fontSize = 14;
