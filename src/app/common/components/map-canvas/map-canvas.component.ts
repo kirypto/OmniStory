@@ -127,6 +127,11 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
     public ngAfterViewInit(): void {
         this._mapCanvas = this._mapCanvasElement.nativeElement;
         this._mapCanvasCtx = this._mapCanvas.getContext("2d");
+
+        // // Modify drawing context so origin (x=0;y=0) is at bottom left corner and so y increases upwards.
+        // this._mapCanvasCtx.translate(0, this._mapCanvas.height);
+        // this._mapCanvasCtx.scale(0, -1);
+
         setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
     }
 
@@ -165,7 +170,7 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
     private get canvasArea(): CanvasArea {
         return {
             x: {low: 0, high: this._mapCanvas.offsetWidth},
-            y: {low: 0, high: this._mapCanvas.offsetHeight},
+            y: {low: this._mapCanvas.offsetHeight, high: 0},
         };
     }
 
@@ -208,16 +213,16 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
 
     private drawLatLon(): void {
         this._mapCanvasCtx.save();
-        this._mapCanvasCtx.font = `12px Arial`;
+        this._mapCanvasCtx.font = `14px Arial`;
         this._mapCanvasCtx.fillStyle = "#FFF";
         this._mapCanvasCtx.textAlign = "center";
 
         const lonXPos = this.canvasArea.x.high / 2;
-        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.high - 5);
+        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.low - 7);
 
-        const latYPos = this.canvasArea.y.high / 2;
+        const latYPos = this.canvasArea.y.low / 2;
         this._mapCanvasCtx.rotate(-Math.PI / 2);
-        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high);
+        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high - 5);
 
         this._mapCanvasCtx.restore();
     }
