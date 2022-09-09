@@ -57,6 +57,11 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
     };
 }
 
+enum ContextMenuAction {
+    copyPosition,
+    whatIsHere,
+}
+
 @Component({
     selector: "app-map",
     templateUrl: "./map.component.html",
@@ -95,6 +100,10 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
             altitude: this._altitude,
             continuum: this._continuum,
         }, null, 4);
+    }
+
+    public get contextMenuActions(): typeof ContextMenuAction{
+        return ContextMenuAction;
     }
 
     public ngOnInit(): void {
@@ -175,14 +184,16 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         }
     }
 
-    public handleContextMenuPositionClick(): void {
+    public handleContextMenuInteraction(interaction: ContextMenuAction): void {
         this.closeMapContextMenu();
-        alert("Copying position is not yet implemented.");
-    }
-
-    public handleContextMenuWhatHereClick(): void {
-        this.closeMapContextMenu();
-        alert("What's Here? functionality has not been implemented yet.");
+        switch (interaction) {
+            case ContextMenuAction.copyPosition:
+                alert("Copying position is not yet implemented.");
+                break;
+            case ContextMenuAction.whatIsHere:
+                alert("What's Here? functionality has not been implemented yet.");
+                break;
+        }
     }
 
     private openMapContextMenu(mapContextMenuEvent: MapContextMenuEvent): void {

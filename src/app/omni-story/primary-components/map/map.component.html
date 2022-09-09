@@ -5,7 +5,7 @@
 ></app-map-canvas>
 <ng-template #mapContextMenu let-position>
   <div class="map-context-menu">
-    <div (click)="handleContextMenuPositionClick()">{{position.latitude}} {{position.longitude}}</div>
-    <div (click)="handleContextMenuWhatHereClick()">What's Here?</div>
+    <div (click)="handleContextMenuInteraction(contextMenuActions.copyPosition)">{{position.latitude}} {{position.longitude}}</div>
+    <div (click)="handleContextMenuInteraction(contextMenuActions.whatIsHere)">What's Here?</div>
   </div>
 </ng-template>
