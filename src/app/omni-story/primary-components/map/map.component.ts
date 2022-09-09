@@ -16,7 +16,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Location, LocationId, LocationIds, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
-import {filter, mergeMap, take, tap} from "rxjs/operators";
+import {filter, mergeMap, take} from "rxjs/operators";
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {TemplatePortal} from "@angular/cdk/portal";
 import {fromEvent, Subscription} from "rxjs";
@@ -102,18 +102,15 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
             worldId: this._worldId,
         }).pipe(
-            tap((locationIds: LocationIds) => console.log(`Fetched locations: '${locationIds}'; (${locationIds.length})`)),
             mergeMap((locationIds: LocationIds) => locationIds),
             mergeMap((locationId: LocationId) => this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
                 worldId: this._worldId,
                 locationId,
             })),
-            tap((location: Location) => console.log(`Retrieved location '${location.name}'`)),
+            // TODO kirypto 2022-Sep-09: Handle displaying locations that don't have an associated image.
             filter((location: Location) => !!location.attributes.sourceImageHD),
             mergeMap((location: Location) => {
-                const sourceImageUrl = (location.attributes.sourceImageHD)
-                    ? location.attributes.sourceImageHD as string
-                    : "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ";
+                const sourceImageUrl = location.attributes.sourceImageHD as string;
                 const promise: Promise<MapItem> = this._imageFetcher.fetchImage(sourceImageUrl).then(sourceImage => {
                     const mapItem: MapItem = {
                         latitude: location.span.latitude,
@@ -174,7 +171,6 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                 longitude: shiftRangeByDelta(this._longitude, interaction.pan.longitudeDelta, this._longitudeLimits),
             });
         } else if (interaction.mapContextMenu) {
-            console.log(`HERE Context!   ${interaction.mapContextMenu.latitude}  ${interaction.mapContextMenu.longitude}`);
             this.openMapContextMenu(interaction.mapContextMenu);
         }
     }
