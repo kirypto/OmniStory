@@ -58,6 +58,30 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
     };
 }
 
+function insertOrderedMapItem(array: MapItem[], item: MapItem): void {
+    let low = 0;
+    let high = array.length;
+
+    function isCorrectlyOrdered(a: MapItem, b: MapItem): boolean {
+        if (a.altitude.low !== b.altitude.low) {
+            return a.altitude.low < b.altitude.low;
+        } else {
+            return a.altitude.high < b.altitude.high;
+        }
+    }
+
+    while (low < high) {
+        const mid = low + Math.floor((high - low) / 2);
+        if (isCorrectlyOrdered(array[mid], item)) {
+            low = mid + 1;
+        } else {
+            high = mid;
+        }
+    }
+
+    array.splice(low, 0, item);
+}
+
 enum ContextMenuAction {
     copyPosition,
     whatIsHere,
@@ -82,7 +106,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private _altitude: NumericRange = {low: 25, high: 75};
     private _continuum: NumericRange = {low: 25, high: 75};
 
-    private _mapImages: Set<MapItem> = new Set<MapItem>();
+    private readonly _mapItemsOrdered: MapItem[] = [];
 
     public constructor(
         private _imageFetcher: ImageFetcherService,
@@ -104,7 +128,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         }, null, 4);
     }
 
-    public get contextMenuActions(): typeof ContextMenuAction{
+    public get contextMenuActions(): typeof ContextMenuAction {
         return ContextMenuAction;
     }
 
@@ -248,18 +272,10 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
 
     private updateMap(): void {
         this._mapCanvas.viewArea = {latitude: this._latitude, longitude: this._longitude};
-        const mapImagesOrdered = [...this._mapImages];
-        mapImagesOrdered.sort((a: MapItem, b: MapItem) => {
-            if (a.altitude.low !== b.altitude.low) {
-                return a.altitude.low - b.altitude.low;
-            } else {
-                return a.altitude.high - b.altitude.high;
-            }
-        });
-        this._mapCanvas.mapImages = mapImagesOrdered;
+        this._mapCanvas.mapImages = [...this._mapItemsOrdered];
 
         const mapItemLabels: MapLabel[] = [];
-        for (const mapItem of mapImagesOrdered) {
+        for (const mapItem of this._mapItemsOrdered) {
             mapItemLabels.push({
                 latitude: mapItem.latitude.high, longitude: (mapItem.longitude.high + mapItem.longitude.low) / 2, text: mapItem.name,
                 colour: "white", fontSize: this.determineFontSize(mapItem),
@@ -274,8 +290,8 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         return (mapItemLatitudeLength / visibleLatitudeLength) * 200; // Scalar determined by experimentation
     }
 
-    private addMapImage(mapImage: MapItem): void {
-        this._mapImages.add(mapImage);
+    private addMapImage(mapItem: MapItem): void {
+        insertOrderedMapItem(this._mapItemsOrdered, mapItem);
         const requiredAspectRatio = this._mapCanvas.aspectRatio;
         this.updateMapLimits(requiredAspectRatio);
         this._latitude = deepCopy(this._latitudeLimits);
@@ -292,18 +308,18 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     }
 
     private updateMapLimits(requiredAspectRatio: CanvasAspectRatio): void {
-        if (this._mapImages.size === 0) {
+        if (this._mapItemsOrdered.length === 0) {
             return;
         }
         const mapItemLimits: MapArea = {
             longitude: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
             latitude: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
         };
-        for (const mapImage of this._mapImages) {
-            mapItemLimits.longitude.low = Math.min(mapItemLimits.longitude.low, mapImage.longitude.low);
-            mapItemLimits.longitude.high = Math.max(mapItemLimits.longitude.high, mapImage.longitude.high);
-            mapItemLimits.latitude.low = Math.min(mapItemLimits.latitude.low, mapImage.latitude.low);
-            mapItemLimits.latitude.high = Math.max(mapItemLimits.latitude.high, mapImage.latitude.high);
+        for (const mapItem of this._mapItemsOrdered) {
+            mapItemLimits.longitude.low = Math.min(mapItemLimits.longitude.low, mapItem.longitude.low);
+            mapItemLimits.longitude.high = Math.max(mapItemLimits.longitude.high, mapItem.longitude.high);
+            mapItemLimits.latitude.low = Math.min(mapItemLimits.latitude.low, mapItem.latitude.low);
+            mapItemLimits.latitude.high = Math.max(mapItemLimits.latitude.high, mapItem.latitude.high);
         }
 
         const bestFitMapItemLimits = bestFitForAspectRatio(mapItemLimits, requiredAspectRatio);
