@@ -20,6 +20,7 @@ import {filter, mergeMap, take} from "rxjs/operators";
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {TemplatePortal} from "@angular/cdk/portal";
 import {fromEvent, Subscription} from "rxjs";
+import {Clipboard} from "@angular/cdk/clipboard";
 
 
 interface MapItem extends MapImage {
@@ -69,7 +70,7 @@ enum ContextMenuAction {
 })
 export class MapComponent extends SubscribingComponent implements AfterViewInit, OnInit {
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
-    @ViewChild("mapContextMenu") private _mapContextMenu: TemplateRef<{ $implicit: { latitude: number, longitude: number } }>;
+    @ViewChild("mapContextMenu") private _mapContextMenu: TemplateRef<{ $implicit: MapContextMenuEvent }>;
     private _worldId: WorldId;
     private _overlayRef: OverlayRef;
     private _contextMenuSubscription: Subscription;
@@ -89,6 +90,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         private _ttapiGateway: TtapiGatewayService,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
+        private _clipboard: Clipboard,
     ) {
         super();
     }
@@ -184,14 +186,18 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         }
     }
 
-    public handleContextMenuInteraction(interaction: ContextMenuAction): void {
+    public handleContextMenuInteraction(interaction: ContextMenuAction, options?: {
+        mapContextMenuEvent?: MapContextMenuEvent
+    }): void {
         this.closeMapContextMenu();
         switch (interaction) {
             case ContextMenuAction.copyPosition:
-                alert("Copying position is not yet implemented.");
+                this._clipboard.copy(`${options.mapContextMenuEvent.latitude}, ${options.mapContextMenuEvent.longitude}`);
+                setTimeout(() => alert("Copied to clipboard!"));
                 break;
             case ContextMenuAction.whatIsHere:
-                alert("What's Here? functionality has not been implemented yet.");
+                // TODO kirypto 2022-Sep-09: implement What's Here? functionality
+                setTimeout(() => alert("{What's Here?} functionality has not been implemented yet."));
                 break;
         }
     }
@@ -215,13 +221,8 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
             scrollStrategy: this._overlay.scrollStrategies.close(),
         });
 
-        const position: { longitude, latitude } = {
-            longitude: mapContextMenuEvent.longitude,
-            latitude: mapContextMenuEvent.latitude,
-        };
-
         this._overlayRef.attach(new TemplatePortal(this._mapContextMenu, this._viewContainerRef, {
-            $implicit: position,
+            $implicit: mapContextMenuEvent,
         }));
 
         this._contextMenuSubscription = fromEvent<MouseEvent>(document, "click")

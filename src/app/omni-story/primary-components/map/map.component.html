@@ -3,9 +3,11 @@
                 (pan)="handleInteraction({pan: $event})"
                 (mapContextMenu)="handleInteraction({mapContextMenu: $event})"
 ></app-map-canvas>
-<ng-template #mapContextMenu let-position>
+<ng-template #mapContextMenu let-mapContextMenuEvent>
   <div class="map-context-menu">
-    <div (click)="handleContextMenuInteraction(contextMenuActions.copyPosition)">{{position.latitude}} {{position.longitude}}</div>
+    <div (click)="handleContextMenuInteraction(contextMenuActions.copyPosition, {mapContextMenuEvent})">
+      {{mapContextMenuEvent.latitude}} {{mapContextMenuEvent.longitude}}
+    </div>
     <div (click)="handleContextMenuInteraction(contextMenuActions.whatIsHere)">What's Here?</div>
   </div>
 </ng-template>
