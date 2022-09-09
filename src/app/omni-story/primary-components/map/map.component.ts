@@ -186,7 +186,8 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     }
 
     private openMapContextMenu(mapContextMenuEvent: MapContextMenuEvent): void {
-        this.closeMapContextMenu();
+        this.closeMapContextMenu(); // Close the existing context menu if it exists
+
         const positionStrategy = this._overlay.position()
             .flexibleConnectedTo({x: mapContextMenuEvent.x, y: mapContextMenuEvent.y})
             .withPositions([
@@ -220,6 +221,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                 }),
                 take(1),
             ).subscribe(() => this.closeMapContextMenu());
+        this.newSubscription = this._contextMenuSubscription; // Also add the subscription to the tracked list for cleanup in ngOnDestroy
     }
 
     private closeMapContextMenu(): void {
