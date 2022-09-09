@@ -18,7 +18,7 @@ export interface MapImage {
     longitude: NumericRange;
 }
 
-interface MapLabel {
+export interface MapLabel {
     text: string;
     colour?: string;
     fontSize?: number;
@@ -201,6 +201,7 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
 
     private drawMapLabels(): void {
         this._mapCanvasCtx.save();
+        this._mapCanvasCtx.textAlign = "center";
         for (const mapLabel of this._mapLabels) {
             this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
             this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";

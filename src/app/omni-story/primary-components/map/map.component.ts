@@ -1,11 +1,12 @@
 import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from "@angular/core";
-import {NumericRange, shiftRangeByDelta, zoomRangeByDelta} from "../../../common/numeric-range";
+import {NumericRange, shiftRangeByDelta, sizeOf, zoomRangeByDelta} from "../../../common/numeric-range";
 import {
     CanvasAspectRatio,
     MapArea,
     MapCanvasComponent,
     MapContextMenuEvent,
     MapImage,
+    MapLabel,
     PanEvent,
     ZoomEvent,
 } from "../../../common/components/map-canvas/map-canvas.component";
@@ -247,14 +248,20 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         });
         this._mapCanvas.mapImages = mapImagesOrdered;
 
-        const fontSize = 14;
-        const offset = 150;
-        this._mapCanvas.mapLabel = [
-            {text: `latitude: ${JSON.stringify(this._latitude)}`, latitude: offset * 3, longitude: 35, fontSize},
-            {text: `longitude: ${JSON.stringify(this._longitude)}`, latitude: offset * 4, longitude: 35, fontSize},
-            {text: `altitude: ${JSON.stringify(this._altitude)}`, latitude: offset * 5, longitude: 35, fontSize},
-            {text: `continuum: ${JSON.stringify(this._continuum)}`, latitude: offset * 6, longitude: 35, fontSize},
-        ];
+        const mapItemLabels: MapLabel[] = [];
+        for (const mapItem of mapImagesOrdered) {
+            mapItemLabels.push({
+                latitude: mapItem.latitude.high, longitude: (mapItem.longitude.high + mapItem.longitude.low) / 2, text: mapItem.name,
+                colour: "white", fontSize: this.determineFontSize(mapItem),
+            });
+        }
+        this._mapCanvas.mapLabel = mapItemLabels;
+    }
+
+    private determineFontSize(mapItem: MapItem): number {
+        const visibleLatitudeLength = sizeOf(this._latitude);
+        const mapItemLatitudeLength = sizeOf(mapItem.latitude);
+        return (mapItemLatitudeLength / visibleLatitudeLength) * 200; // Scalar determined by experimentation
     }
 
     private addMapImage(mapImage: MapItem): void {
