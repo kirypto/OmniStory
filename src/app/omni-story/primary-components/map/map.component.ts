@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from "@angular/core";
-import {NumericRange, shiftRangeByDelta, sizeOf, zoomRangeByDelta} from "../../../common/numeric-range";
+import {includes, NumericRange, shiftRangeByDelta, sizeOf, zoomRangeByDelta} from "../../../common/numeric-range";
 import {
     CanvasAspectRatio,
     MapArea,
@@ -222,8 +222,16 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                 setTimeout(() => alert("Copied to clipboard!"));
                 break;
             case ContextMenuAction.whatIsHere:
+                const itemsAtLocation: MapItem[] = [];
+                for (const mapItem of this._mapItemsOrdered) {
+                    if (includes(mapItem.latitude, options.mapContextMenuEvent.latitude)
+                        && includes(mapItem.longitude, options.mapContextMenuEvent.longitude)) {
+                        itemsAtLocation.push(mapItem);
+                    }
+                }
                 // TODO kirypto 2022-Sep-09: implement What's Here? functionality
-                setTimeout(() => alert("{What's Here?} functionality has not been implemented yet."));
+                setTimeout(() => alert(
+                    `The following are located at this position:\n${itemsAtLocation.map((item: MapItem) => item.name).join("\n")}`));
                 break;
         }
     }

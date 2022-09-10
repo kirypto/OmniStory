@@ -8,6 +8,6 @@
     <div (click)="handleContextMenuInteraction(contextMenuActions.copyPosition, {mapContextMenuEvent})">
       {{mapContextMenuEvent.latitude}} {{mapContextMenuEvent.longitude}}
     </div>
-    <div (click)="handleContextMenuInteraction(contextMenuActions.whatIsHere)">What's Here?</div>
+    <div (click)="handleContextMenuInteraction(contextMenuActions.whatIsHere, {mapContextMenuEvent})">What's Here?</div>
   </div>
 </ng-template>
