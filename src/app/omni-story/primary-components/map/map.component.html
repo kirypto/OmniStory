@@ -4,10 +4,23 @@
                 (mapContextMenu)="handleInteraction({mapContextMenu: $event})"
 ></app-map-canvas>
 <ng-template #mapContextMenu let-mapContextMenuEvent>
-  <div class="map-context-menu">
-    <div (click)="handleContextMenuInteraction(contextMenuActions.copyPosition, {mapContextMenuEvent})">
+  <div fxLayout="column" class="map-context-menu">
+    <button mat-button (click)="handleContextMenuInteraction(contextMenuActions.copyPosition, {mapContextMenuEvent})">
       {{mapContextMenuEvent.latitude}} {{mapContextMenuEvent.longitude}}
-    </div>
-    <div (click)="handleContextMenuInteraction(contextMenuActions.whatIsHere, {mapContextMenuEvent})">What's Here?</div>
+    </button>
+    <button mat-button
+            (click)="handleContextMenuInteraction(contextMenuActions.whatIsHere, {mapContextMenuEvent})"
+            [matMenuTriggerFor]="animals">
+      What's Here?
+    </button>
+<!--    <button mat-button [matMenuTriggerFor]="animals">-->
+<!--      Test-->
+<!--    </button>-->
   </div>
 </ng-template>
+
+<mat-menu #animals="matMenu">
+  <button mat-menu-item *ngFor="let nameIdPair of locationsUnderCursor" (click)="editEntity(nameIdPair.id)">
+    {{nameIdPair.name}}
+  </button>
+</mat-menu>

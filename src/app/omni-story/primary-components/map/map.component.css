@@ -8,20 +8,20 @@
   border-radius: 0.5ch;
 }
 
-.map-context-menu > div {
+.map-context-menu > button {
   padding: 0.5ch 1ch;
   border-radius: 0.5ch;
 }
 
-.map-context-menu > div:first-child {
+.map-context-menu > button:first-child {
   padding-top: 1ch;
 }
 
-.map-context-menu > div:last-child {
+.map-context-menu > button:last-child {
   padding-bottom: 1ch;
 }
 
-.map-context-menu > div:hover {
+.map-context-menu > button:hover {
   background-color: #00000088;
 }
 

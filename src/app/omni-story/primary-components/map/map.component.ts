@@ -29,6 +29,11 @@ interface MapItem extends MapImage {
     id: string;
 }
 
+interface NameIdPair {
+    id: string;
+    name: string;
+}
+
 function bestFitForAspectRatio(desiredArea: MapArea, requiredAspectRatio: CanvasAspectRatio): MapArea {
     const bestFitArea = deepCopy(desiredArea);
     const desiredLatitudeSize = desiredArea.latitude.high - desiredArea.latitude.low;
@@ -107,6 +112,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private _continuum: NumericRange = {low: 25, high: 75};
 
     private readonly _mapItemsOrdered: MapItem[] = [];
+    private readonly _whatIsHereLocations: Set<NameIdPair> = new Set<NameIdPair>();
 
     public constructor(
         private _imageFetcher: ImageFetcherService,
@@ -130,6 +136,10 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
 
     public get contextMenuActions(): typeof ContextMenuAction {
         return ContextMenuAction;
+    }
+
+    public get locationsUnderCursor(): Set<NameIdPair> {
+        return this._whatIsHereLocations;
     }
 
     public ngOnInit(): void {
@@ -215,25 +225,26 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     public handleContextMenuInteraction(interaction: ContextMenuAction, options?: {
         mapContextMenuEvent?: MapContextMenuEvent
     }): void {
-        this.closeMapContextMenu();
         switch (interaction) {
             case ContextMenuAction.copyPosition:
                 this._clipboard.copy(`${options.mapContextMenuEvent.latitude}, ${options.mapContextMenuEvent.longitude}`);
                 setTimeout(() => alert("Copied to clipboard!"));
+                this.closeMapContextMenu();
                 break;
             case ContextMenuAction.whatIsHere:
-                const itemsAtLocation: MapItem[] = [];
+                this._whatIsHereLocations.clear();
                 for (const mapItem of this._mapItemsOrdered) {
                     if (includes(mapItem.latitude, options.mapContextMenuEvent.latitude)
                         && includes(mapItem.longitude, options.mapContextMenuEvent.longitude)) {
-                        itemsAtLocation.push(mapItem);
+                        this._whatIsHereLocations.add(mapItem);
                     }
                 }
-                // TODO kirypto 2022-Sep-09: implement What's Here? functionality
-                setTimeout(() => alert(
-                    `The following are located at this position:\n${itemsAtLocation.map((item: MapItem) => item.name).join("\n")}`));
                 break;
         }
+    }
+
+    public editEntity(entityId: string): void {
+        setTimeout(() => alert(`Cannot edit entity '${entityId}': functionality not yet implemented.`));
     }
 
     private openMapContextMenu(mapContextMenuEvent: MapContextMenuEvent): void {
