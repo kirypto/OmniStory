@@ -42,3 +42,7 @@ export function shiftRangeByDelta(inputRange: NumericRange, desiredDelta: number
 export function sizeOf(inputRange: NumericRange): number {
     return inputRange.high - inputRange.low;
 }
+
+export function includes(inputRange: NumericRange, value: number): boolean {
+    return inputRange.low <= value && value <= inputRange.high;
+}
