@@ -1,10 +1,12 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {NumericRange, shiftRangeByDelta, zoomRangeByDelta} from "../../../common/numeric-range";
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from "@angular/core";
+import {includes, NumericRange, shiftRangeByDelta, sizeOf, zoomRangeByDelta} from "../../../common/numeric-range";
 import {
     CanvasAspectRatio,
     MapArea,
     MapCanvasComponent,
+    MapContextMenuEvent,
     MapImage,
+    MapLabel,
     PanEvent,
     ZoomEvent,
 } from "../../../common/components/map-canvas/map-canvas.component";
@@ -14,11 +16,22 @@ import {ActivatedRoute} from "@angular/router";
 import {Location, LocationId, LocationIds, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
-import {filter, mergeMap, tap} from "rxjs/operators";
+import {filter, mergeMap, take} from "rxjs/operators";
+import {Overlay, OverlayRef} from "@angular/cdk/overlay";
+import {TemplatePortal} from "@angular/cdk/portal";
+import {fromEvent, Subscription} from "rxjs";
+import {Clipboard} from "@angular/cdk/clipboard";
 
 
 interface MapItem extends MapImage {
-    z: number;
+    altitude: NumericRange;
+    name: string;
+    id: string;
+}
+
+interface NameIdPair {
+    id: string;
+    name: string;
 }
 
 function bestFitForAspectRatio(desiredArea: MapArea, requiredAspectRatio: CanvasAspectRatio): MapArea {
@@ -50,6 +63,35 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
     };
 }
 
+function insertOrderedMapItem(array: MapItem[], item: MapItem): void {
+    let low = 0;
+    let high = array.length;
+
+    function isCorrectlyOrdered(a: MapItem, b: MapItem): boolean {
+        if (a.altitude.low !== b.altitude.low) {
+            return a.altitude.low < b.altitude.low;
+        } else {
+            return a.altitude.high < b.altitude.high;
+        }
+    }
+
+    while (low < high) {
+        const mid = low + Math.floor((high - low) / 2);
+        if (isCorrectlyOrdered(array[mid], item)) {
+            low = mid + 1;
+        } else {
+            high = mid;
+        }
+    }
+
+    array.splice(low, 0, item);
+}
+
+enum ContextMenuAction {
+    copyPosition,
+    whatIsHere,
+}
+
 @Component({
     selector: "app-map",
     templateUrl: "./map.component.html",
@@ -57,7 +99,10 @@ function clamp(desiredRange: NumericRange, limits: NumericRange): NumericRange {
 })
 export class MapComponent extends SubscribingComponent implements AfterViewInit, OnInit {
     @ViewChild(MapCanvasComponent) private _mapCanvas: MapCanvasComponent;
+    @ViewChild("mapContextMenu") private _mapContextMenu: TemplateRef<{ $implicit: MapContextMenuEvent }>;
     private _worldId: WorldId;
+    private _overlayRef: OverlayRef;
+    private _contextMenuSubscription: Subscription;
 
     private _latitude: NumericRange = {low: 0, high: 1};
     private _latitudeLimits: NumericRange = {low: 0, high: 1};
@@ -66,12 +111,16 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private _altitude: NumericRange = {low: 25, high: 75};
     private _continuum: NumericRange = {low: 25, high: 75};
 
-    private _mapImages: Set<MapItem> = new Set<MapItem>();
+    private readonly _mapItemsOrdered: MapItem[] = [];
+    private readonly _whatIsHereLocations: Set<NameIdPair> = new Set<NameIdPair>();
 
     public constructor(
         private _imageFetcher: ImageFetcherService,
         private _route: ActivatedRoute,
         private _ttapiGateway: TtapiGatewayService,
+        private _overlay: Overlay,
+        private _viewContainerRef: ViewContainerRef,
+        private _clipboard: Clipboard,
     ) {
         super();
     }
@@ -85,46 +134,12 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         }, null, 4);
     }
 
-    public get latitudeLimits(): NumericRange {
-        return this._latitudeLimits;
+    public get contextMenuActions(): typeof ContextMenuAction {
+        return ContextMenuAction;
     }
 
-    public get latitudeSelection(): NumericRange {
-        return this._latitude;
-    }
-
-    public get longitudeLimits(): NumericRange {
-        return this._longitudeLimits;
-    }
-
-    public get longitudeSelection(): NumericRange {
-        return this._longitude;
-    }
-
-    public get altitudeLimits(): NumericRange {
-        return {low: 0, high: 100};
-    }
-
-    public get altitudeSelection(): NumericRange {
-        return this._altitude;
-    }
-
-    public set altitudeSelection(value: NumericRange) {
-        this._altitude = value;
-        this.updateMap();
-    }
-
-    public get continuumLimits(): NumericRange {
-        return {low: 0, high: 100};
-    }
-
-    public get continuumSelection(): NumericRange {
-        return this._continuum;
-    }
-
-    public set continuumSelection(value: NumericRange) {
-        this._continuum = value;
-        this.updateMap();
+    public get locationsUnderCursor(): Set<NameIdPair> {
+        return this._whatIsHereLocations;
     }
 
     public ngOnInit(): void {
@@ -132,24 +147,25 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
             worldId: this._worldId,
         }).pipe(
-            tap((locationIds: LocationIds) => console.log(`Fetched locations: '${locationIds}'; (${locationIds.length})`)),
+            take(10),
             mergeMap((locationIds: LocationIds) => locationIds),
             mergeMap((locationId: LocationId) => this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
                 worldId: this._worldId,
                 locationId,
             })),
-            tap((location: Location) => console.log(`Retrieved location '${location.name}'`)),
-            filter((location: Location) => !!location.attributes.sourceImageHD),
+            // TODO kirypto 2022-Sep-09: Handle displaying locations that don't have an associated image.
+            filter((location: Location) => !!location.attributes.sourceImageLD),
+            take(3),
             mergeMap((location: Location) => {
-                const sourceImageUrl = (location.attributes.sourceImageHD)
-                    ? location.attributes.sourceImageHD as string
-                    : "https://i.picsum.photos/id/199/200/300.jpg?hmac=GOJRy6ngeR2kvgwCS-aTH8bNUTZuddrykqXUW6AF2XQ";
+                const sourceImageUrl = location.attributes.sourceImageLD as string;
                 const promise: Promise<MapItem> = this._imageFetcher.fetchImage(sourceImageUrl).then(sourceImage => {
                     const mapItem: MapItem = {
                         latitude: location.span.latitude,
                         longitude: location.span.longitude,
-                        z: location.span.altitude.low,
+                        altitude: location.span.altitude,
                         source: sourceImage,
+                        name: location.name,
+                        id: location.id,
                     };
                     return mapItem;
                 });
@@ -189,7 +205,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     }
 
     public handleInteraction(interaction: {
-        zoom?: ZoomEvent, pan?: PanEvent,
+        zoom?: ZoomEvent, pan?: PanEvent, mapContextMenu?: MapContextMenuEvent,
     }): void {
         if (interaction.zoom) {
             this.setViewArea({
@@ -201,27 +217,102 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                 latitude: shiftRangeByDelta(this._latitude, interaction.pan.latitudeDelta, this._latitudeLimits),
                 longitude: shiftRangeByDelta(this._longitude, interaction.pan.longitudeDelta, this._longitudeLimits),
             });
+        } else if (interaction.mapContextMenu) {
+            this.openMapContextMenu(interaction.mapContextMenu);
+        }
+    }
+
+    public handleContextMenuInteraction(interaction: ContextMenuAction, options?: {
+        mapContextMenuEvent?: MapContextMenuEvent
+    }): void {
+        switch (interaction) {
+            case ContextMenuAction.copyPosition:
+                this._clipboard.copy(`${options.mapContextMenuEvent.latitude}, ${options.mapContextMenuEvent.longitude}`);
+                setTimeout(() => alert("Copied to clipboard!"));
+                this.closeMapContextMenu();
+                break;
+            case ContextMenuAction.whatIsHere:
+                this._whatIsHereLocations.clear();
+                for (const mapItem of this._mapItemsOrdered) {
+                    if (includes(mapItem.latitude, options.mapContextMenuEvent.latitude)
+                        && includes(mapItem.longitude, options.mapContextMenuEvent.longitude)) {
+                        this._whatIsHereLocations.add(mapItem);
+                    }
+                }
+                break;
+        }
+    }
+
+    public editEntity(entityId: string): void {
+        setTimeout(() => alert(`Cannot edit entity '${entityId}': functionality not yet implemented.`));
+    }
+
+    private openMapContextMenu(mapContextMenuEvent: MapContextMenuEvent): void {
+        this.closeMapContextMenu(); // Close the existing context menu if it exists
+
+        const positionStrategy = this._overlay.position()
+            .flexibleConnectedTo({x: mapContextMenuEvent.x, y: mapContextMenuEvent.y})
+            .withPositions([
+                {
+                    originX: "end",
+                    originY: "bottom",
+                    overlayX: "end",
+                    overlayY: "top",
+                },
+            ]);
+
+        this._overlayRef = this._overlay.create({
+            positionStrategy,
+            scrollStrategy: this._overlay.scrollStrategies.close(),
+        });
+
+        this._overlayRef.attach(new TemplatePortal(this._mapContextMenu, this._viewContainerRef, {
+            $implicit: mapContextMenuEvent,
+        }));
+
+        this._contextMenuSubscription = fromEvent<MouseEvent>(document, "click")
+            .pipe(
+                filter((event: MouseEvent) => {
+                    const clickTarget = event.target as HTMLElement;
+                    return !!this._overlayRef && !this._overlayRef.overlayElement.contains(clickTarget);
+                }),
+                take(1),
+            ).subscribe(() => this.closeMapContextMenu());
+        this.newSubscription = this._contextMenuSubscription; // Also add the subscription to the tracked list for cleanup in ngOnDestroy
+    }
+
+    private closeMapContextMenu(): void {
+        if (this._contextMenuSubscription) {
+            this._contextMenuSubscription.unsubscribe();
+        }
+        if (this._overlayRef) {
+            this._overlayRef.dispose();
+            this._overlayRef = null;
         }
     }
 
     private updateMap(): void {
         this._mapCanvas.viewArea = {latitude: this._latitude, longitude: this._longitude};
-        const mapImagesOrdered = [...this._mapImages];
-        mapImagesOrdered.sort((a: MapItem, b: MapItem) => a.z - b.z);
-        this._mapCanvas.mapImages = mapImagesOrdered;
+        this._mapCanvas.mapImages = [...this._mapItemsOrdered];
 
-        const fontSize = 14;
-        const offset = 150;
-        this._mapCanvas.mapLabel = [
-            {text: `latitude: ${JSON.stringify(this._latitude)}`, latitude: offset * 3, longitude: 35, fontSize},
-            {text: `longitude: ${JSON.stringify(this._longitude)}`, latitude: offset * 4, longitude: 35, fontSize},
-            {text: `altitude: ${JSON.stringify(this._altitude)}`, latitude: offset * 5, longitude: 35, fontSize},
-            {text: `continuum: ${JSON.stringify(this._continuum)}`, latitude: offset * 6, longitude: 35, fontSize},
-        ];
+        const mapItemLabels: MapLabel[] = [];
+        for (const mapItem of this._mapItemsOrdered) {
+            mapItemLabels.push({
+                latitude: mapItem.latitude.high, longitude: (mapItem.longitude.high + mapItem.longitude.low) / 2, text: mapItem.name,
+                colour: "white", fontSize: this.determineFontSize(mapItem),
+            });
+        }
+        this._mapCanvas.mapLabel = mapItemLabels;
     }
 
-    private addMapImage(mapImage: MapItem): void {
-        this._mapImages.add(mapImage);
+    private determineFontSize(mapItem: MapItem): number {
+        const visibleLatitudeLength = sizeOf(this._latitude);
+        const mapItemLatitudeLength = sizeOf(mapItem.latitude);
+        return (mapItemLatitudeLength / visibleLatitudeLength) * 200; // Scalar determined by experimentation
+    }
+
+    private addMapImage(mapItem: MapItem): void {
+        insertOrderedMapItem(this._mapItemsOrdered, mapItem);
         const requiredAspectRatio = this._mapCanvas.aspectRatio;
         this.updateMapLimits(requiredAspectRatio);
         this._latitude = deepCopy(this._latitudeLimits);
@@ -238,18 +329,18 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     }
 
     private updateMapLimits(requiredAspectRatio: CanvasAspectRatio): void {
-        if (this._mapImages.size === 0) {
+        if (this._mapItemsOrdered.length === 0) {
             return;
         }
         const mapItemLimits: MapArea = {
             longitude: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
             latitude: {low: Number.MAX_VALUE, high: Number.MIN_VALUE},
         };
-        for (const mapImage of this._mapImages) {
-            mapItemLimits.longitude.low = Math.min(mapItemLimits.longitude.low, mapImage.longitude.low);
-            mapItemLimits.longitude.high = Math.max(mapItemLimits.longitude.high, mapImage.longitude.high);
-            mapItemLimits.latitude.low = Math.min(mapItemLimits.latitude.low, mapImage.latitude.low);
-            mapItemLimits.latitude.high = Math.max(mapItemLimits.latitude.high, mapImage.latitude.high);
+        for (const mapItem of this._mapItemsOrdered) {
+            mapItemLimits.longitude.low = Math.min(mapItemLimits.longitude.low, mapItem.longitude.low);
+            mapItemLimits.longitude.high = Math.max(mapItemLimits.longitude.high, mapItem.longitude.high);
+            mapItemLimits.latitude.low = Math.min(mapItemLimits.latitude.low, mapItem.latitude.low);
+            mapItemLimits.latitude.high = Math.max(mapItemLimits.latitude.high, mapItem.latitude.high);
         }
 
         const bestFitMapItemLimits = bestFitForAspectRatio(mapItemLimits, requiredAspectRatio);

@@ -49,8 +49,7 @@ export class TtapiGatewayService {
     ): Observable<TReturn> {
         return from((async () => {
             const fetcher = this._fetcher.path(path).method(method).create();
-            const {status, data} = await fetcher(args);
-            console.log(`Fetched ${data}, status code ${status}`);
+            const {data} = await fetcher(args);
             return data as TReturn;
         })());
     }

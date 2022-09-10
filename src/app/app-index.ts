@@ -29,6 +29,7 @@ import {EntitySearchComponent} from "./omni-story/primary-components/entity-sear
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
 import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
 import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
+import {MatMenuModule} from "@angular/material/menu";
 
 /**
  * All http interceptor providers in outside-in order
@@ -84,6 +85,7 @@ export const applicationImports = [
     MatDatepickerModule,
     MatNativeDateModule,
     DragDropModule,
+    MatMenuModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
     AuthModule.forRoot({

@@ -2,3 +2,20 @@
   width: 100%;
   height: 100%;
 }
+.map-context-menu {
+  background-color: #00000044;
+  border-radius: 0.5ch;
+}
+.map-context-menu > button {
+  padding: 0.5ch 1ch;
+  border-radius: 0.5ch;
+}
+.map-context-menu > button:first-child {
+  padding-top: 1ch;
+}
+.map-context-menu > button:last-child {
+  padding-bottom: 1ch;
+}
+.map-context-menu > button:hover {
+  background-color: #00000088;
+}

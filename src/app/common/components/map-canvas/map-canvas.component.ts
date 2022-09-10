@@ -18,7 +18,7 @@ export interface MapImage {
     longitude: NumericRange;
 }
 
-interface MapLabel {
+export interface MapLabel {
     text: string;
     colour?: string;
     fontSize?: number;
@@ -51,6 +51,13 @@ export interface PanEvent {
     longitudeDelta: number;
 }
 
+export interface MapContextMenuEvent {
+    x: number;
+    y: number;
+    latitude: number;
+    longitude: number;
+}
+
 function convertPositionInRange(inputRange: NumericRange, input: number, outputRange: NumericRange): number {
     const inputPercent = (input - inputRange.low) / (inputRange.high - inputRange.low);
     return (outputRange.high - outputRange.low) * inputPercent + outputRange.low;
@@ -70,6 +77,7 @@ function convertDeltaOfRange(inputRange: NumericRange, inputDelta: number, outpu
 export class MapCanvasComponent extends SubscribingComponent implements AfterViewInit {
     @Output() public zoom = new EventEmitter<ZoomEvent>();
     @Output() public pan = new EventEmitter<PanEvent>();
+    @Output() public mapContextMenu = new EventEmitter<MapContextMenuEvent>();
     @ViewChild("mapCanvas") private _mapCanvasElement: ElementRef;
     private _mapCanvas: Canvas;
     private _mapCanvasCtx: CanvasRenderingContext2D;
@@ -119,11 +127,18 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
     public ngAfterViewInit(): void {
         this._mapCanvas = this._mapCanvasElement.nativeElement;
         this._mapCanvasCtx = this._mapCanvas.getContext("2d");
+
+        // // Modify drawing context so origin (x=0;y=0) is at bottom left corner and so y increases upwards.
+        // this._mapCanvasCtx.translate(0, this._mapCanvas.height);
+        // this._mapCanvasCtx.scale(0, -1);
+
         setTimeout(() => this.updateCanvasSize(), 1); // update canvas size as soon as element size settles
     }
 
     public handleEvent(interaction: {
-        wheel?: WheelEvent; mouseDown?: MouseEvent; mouseMove?: MouseEvent, mouseUp?: MouseEvent
+        wheel?: WheelEvent,
+        mouseDown?: MouseEvent, mouseMove?: MouseEvent, mouseUp?: MouseEvent,
+        click?: MouseEvent, contextMenu?: MouseEvent,
     }): void {
         if (interaction.wheel) {
             const latitudeSize = this._viewArea.latitude.high - this._viewArea.latitude.low;
@@ -144,13 +159,18 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
             this.pan.emit({latitudeDelta, longitudeDelta});
         } else if (this._isPanning && interaction.mouseUp && interaction.mouseUp.button === 0) {
             this._isPanning = false;
+        } else if (interaction.contextMenu) {
+            const longitude = convertPositionInRange(this.canvasArea.x, interaction.contextMenu.offsetX, this._viewArea.longitude);
+            const latitude = convertPositionInRange(this.canvasArea.y, interaction.contextMenu.offsetY, this._viewArea.latitude);
+            interaction.contextMenu.preventDefault();
+            this.mapContextMenu.emit({latitude, longitude, x: interaction.contextMenu.x, y: interaction.contextMenu.y});
         }
     }
 
     private get canvasArea(): CanvasArea {
         return {
             x: {low: 0, high: this._mapCanvas.offsetWidth},
-            y: {low: 0, high: this._mapCanvas.offsetHeight},
+            y: {low: this._mapCanvas.offsetHeight, high: 0},
         };
     }
 
@@ -181,6 +201,7 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
 
     private drawMapLabels(): void {
         this._mapCanvasCtx.save();
+        this._mapCanvasCtx.textAlign = "center";
         for (const mapLabel of this._mapLabels) {
             this._mapCanvasCtx.font = `${mapLabel.fontSize || 12}px Arial`;
             this._mapCanvasCtx.fillStyle = mapLabel.colour || "#000";
@@ -193,16 +214,16 @@ export class MapCanvasComponent extends SubscribingComponent implements AfterVie
 
     private drawLatLon(): void {
         this._mapCanvasCtx.save();
-        this._mapCanvasCtx.font = `12px Arial`;
+        this._mapCanvasCtx.font = `14px Arial`;
         this._mapCanvasCtx.fillStyle = "#FFF";
         this._mapCanvasCtx.textAlign = "center";
 
         const lonXPos = this.canvasArea.x.high / 2;
-        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.high - 5);
+        this._mapCanvasCtx.fillText("-  longitude  +", lonXPos, this.canvasArea.y.low - 7);
 
-        const latYPos = this.canvasArea.y.high / 2;
+        const latYPos = this.canvasArea.y.low / 2;
         this._mapCanvasCtx.rotate(-Math.PI / 2);
-        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high);
+        this._mapCanvasCtx.fillText("-  latitude  +", -latYPos, this.canvasArea.x.high - 5);
 
         this._mapCanvasCtx.restore();
     }
