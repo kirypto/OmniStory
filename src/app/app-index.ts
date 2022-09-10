@@ -16,20 +16,20 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule, Routes} from "@angular/router";
 import {AuthHttpInterceptor, AuthModule} from "@auth0/auth0-angular";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {MatMenuModule} from "@angular/material/menu";
 
 import {AppComponent} from "./app.component";
-import {HomeComponent} from "./omni-story/primary-components/home/home.component";
-import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
-import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
-import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
+import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
+import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
 import {AppConfigService} from "./common/services/app-config/app-config.service";
 import {RoutePaths} from "./common/types/route-paths";
 import {EntitySearchComponent} from "./omni-story/primary-components/entity-search/entity-search.component";
+import {HomeComponent} from "./omni-story/primary-components/home/home.component";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
-import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
-import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
-import {MatMenuModule} from "@angular/material/menu";
+import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
+import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
+import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
 
 /**
  * All http interceptor providers in outside-in order
