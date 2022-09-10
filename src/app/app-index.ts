@@ -24,6 +24,7 @@ import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
 import {AppConfigService} from "./common/services/app-config/app-config.service";
 import {RoutePaths} from "./common/types/route-paths";
+import {EntityComponent} from "./omni-story/primary-components/edit-entity/entity.component";
 import {EntitySearchComponent} from "./omni-story/primary-components/entity-search/entity-search.component";
 import {HomeComponent} from "./omni-story/primary-components/home/home.component";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
@@ -62,6 +63,7 @@ const routes: Routes = [
     {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.entitySearch, component: EntitySearchComponent},
     {path: RoutePaths.map, component: MapComponent},
+    {path: RoutePaths.entity, component: EntityComponent},
     {path: "**", component: NotFoundComponent},
 ];
 
@@ -108,4 +110,5 @@ export const applicationDeclarations = [
     MapComponent,
     RangeScrollbarComponent,
     MapCanvasComponent,
+    EntityComponent,
 ];
