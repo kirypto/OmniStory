@@ -142,6 +142,10 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         return this._whatIsHereLocations;
     }
 
+    public get worldId(): string {
+        return this._worldId;
+    }
+
     public ngOnInit(): void {
         this._worldId = this._route.snapshot.paramMap.get("worldId");
         this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {

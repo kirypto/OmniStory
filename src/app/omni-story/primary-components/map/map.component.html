@@ -10,17 +10,16 @@
     </button>
     <button mat-button
             (click)="handleContextMenuInteraction(contextMenuActions.whatIsHere, {mapContextMenuEvent})"
-            [matMenuTriggerFor]="animals">
+            [matMenuTriggerFor]="mapContextSubmenuWhatIsHere">
       What's Here?
     </button>
-<!--    <button mat-button [matMenuTriggerFor]="animals">-->
-<!--      Test-->
-<!--    </button>-->
   </div>
 </ng-template>
 
-<mat-menu #animals="matMenu">
-  <button mat-menu-item *ngFor="let nameIdPair of locationsUnderCursor" (click)="editEntity(nameIdPair.id)">
+<mat-menu #mapContextSubmenuWhatIsHere>
+  <button mat-menu-item
+          *ngFor="let nameIdPair of locationsUnderCursor"
+          routerLink="/entity/{{worldId}}/{{nameIdPair.id}}">
     {{nameIdPair.name}}
   </button>
 </mat-menu>
