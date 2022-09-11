@@ -151,17 +151,15 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
             worldId: this._worldId,
         }).pipe(
-            take(10),
             mergeMap((locationIds: LocationIds) => locationIds),
             mergeMap((locationId: LocationId) => this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
                 worldId: this._worldId,
                 locationId,
             })),
             // TODO kirypto 2022-Sep-09: Handle displaying locations that don't have an associated image.
-            filter((location: Location) => !!location.attributes.sourceImageLD),
-            take(3),
+            filter((location: Location) => !!location.attributes.sourceImageHD),
             mergeMap((location: Location) => {
-                const sourceImageUrl = location.attributes.sourceImageLD as string;
+                const sourceImageUrl = location.attributes.sourceImageHD as string;
                 const promise: Promise<MapItem> = this._imageFetcher.fetchImage(sourceImageUrl).then(sourceImage => {
                     const mapItem: MapItem = {
                         latitude: location.span.latitude,
