@@ -30,10 +30,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     }
 
     public get name(): string {
-        if (!this._entity) {
-            return "";
-        }
-        return this._entity.name;
+        return this._entity?.name || "";
     }
 
     public get entityData(): string {
@@ -41,6 +38,40 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             return "";
         }
         return JSON.stringify(this._entity, null, 4);
+    }
+
+    public get entity(): Location {
+        return this._entity;
+    }
+
+    public get span(): string {
+        return this._entity ? JSON.stringify(this._entity.span, null, 4) : "";
+    }
+
+    public set span(value: string) {
+        if (this._entity) {
+            this._entity.span = JSON.parse(value);
+        }
+    }
+
+    public get tags(): string {
+        return this._entity ? JSON.stringify(this._entity.tags, null, 4) : "";
+    }
+
+    public set tags(value: string) {
+        if (this._entity) {
+            this._entity.tags = JSON.parse(value);
+        }
+    }
+
+    public get attributes(): string {
+        return this._entity ? JSON.stringify(this._entity.attributes, null, 4) : "";
+    }
+
+    public set attributes(value: string) {
+        if (this._entity) {
+            this._entity.attributes = JSON.parse(value);
+        }
     }
 
     public ngOnInit(): void {
@@ -61,5 +92,4 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             locationId: this._entityId,
         }).subscribe((value: Location) => this._entity = value);
     }
-
 }

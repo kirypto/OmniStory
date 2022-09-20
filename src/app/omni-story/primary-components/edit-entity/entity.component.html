@@ -1,5 +1,27 @@
 <button mat-button routerLink="/map/{{worldId}}">Return To The Map</button>
 <h2>{{name}}</h2>
+<div *ngIf="entity" fxLayout="column" fxLayoutAlign="space-evenly stretch">
+  <mat-form-field color="accent">
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Name" [(ngModel)]="entity.name" name="name">
+  </mat-form-field>
+  <mat-form-field color="accent">
+    <mat-label>Description</mat-label>
+    <textarea matInput cdkTextareaAutosize placeholder="Description" [(ngModel)]="entity.description" name="description"></textarea>
+  </mat-form-field>
+  <mat-form-field color="accent">
+    <mat-label>Span</mat-label>
+    <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="span" name="span"></textarea>
+  </mat-form-field>
+  <mat-form-field color="accent">
+    <mat-label>Tags</mat-label>
+    <textarea matInput cdkTextareaAutosize placeholder="Tags" [(ngModel)]="tags" name="tags"></textarea>
+  </mat-form-field>
+  <mat-form-field color="accent">
+    <mat-label>Attributes</mat-label>
+    <textarea matInput cdkTextareaAutosize placeholder="Attributes" [(ngModel)]="attributes" name="attributes"></textarea>
+  </mat-form-field>
+</div>
 <pre>
   {{entityData}}
 </pre>
