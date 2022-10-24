@@ -122,6 +122,8 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
 
         let fetchObservable: Observable<Entity>;
         if (this._entityId.startsWith("world")) {
+            // TODO: Currently the routing does not support only providing a world id, ex '.../entity/world-123'. It would be nice to
+            //  support this.
             fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}", "get", {
                 worldId: this._worldId,
             });
