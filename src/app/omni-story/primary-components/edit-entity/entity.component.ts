@@ -1,12 +1,13 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {Entity, EntityId, Journey, Span, WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {Entity, EntityId, Journey, PatchRequest, Span, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
 import {filter} from "rxjs/operators";
 import {deepEqual} from "json-joy/esm/json-equal/deepEqual";
 import {deepCopy} from "../../../common/util";
+import {arrayRequestBody} from "openapi-typescript-fetch";
 
 @Component({
     selector: "app-entity",
@@ -131,8 +132,49 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     }
 
     public saveEntity(): void {
-        console.log("Save called. Diff:");
-        console.log(this.constructDiffPatch());
+        const entityPatch = this.constructDiffPatch();
+        console.log(`Save called. PATCH is: ${JSON.stringify(entityPatch)}`);
+
+        this._entity = undefined;
+        this._entityOrig = undefined;
+        let fetchObservable: Observable<Entity>;
+        if (this._entityId.startsWith("world")) {
+            // TODO: Currently the routing does not support only providing a world id, ex '.../entity/world-123'. It would be nice to
+            //  support this.
+            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}", "patch", arrayRequestBody(
+                entityPatch,
+                {
+                    worldId: this._worldId,
+                }));
+        } else if (this._entityId.startsWith("location")) {
+            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "patch", arrayRequestBody(
+                entityPatch,
+                {
+                    worldId: this._worldId,
+                    locationId: this._entityId,
+                }));
+        } else if (this._entityId.startsWith("traveler")) {
+            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}", "patch", arrayRequestBody(
+                entityPatch,
+                {
+                    worldId: this._worldId,
+                    travelerId: this._entityId,
+                }));
+        } else if (this._entityId.startsWith("event")) {
+            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/event/{eventId}", "patch", arrayRequestBody(
+                entityPatch,
+                {
+                    worldId: this._worldId,
+                    eventId: this._entityId,
+                }));
+        } else {
+            throw new Error(`Cannot edit entity '${this._entityId}', unknown entity type`);
+        }
+        this.newSubscription = fetchObservable.subscribe((value: Entity) => {
+            console.log(`Returned from save PATCH, received: ${JSON.stringify(value)}`);
+            this._entity = value;
+            this._entityOrig = deepCopy(value);
+        });
     }
 
     private loadEntity(): void {
@@ -142,7 +184,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         const paramMap = this._route.snapshot.paramMap;
         this._worldId = paramMap.get("worldId");
         this._entityId = paramMap.get("entityId");
-        console.log(`Editing ${this._worldId} -> ${this._entityId}`);
+        console.log(`Loaded entity ${this._worldId} -> ${this._entityId}`);
 
 
         let fetchObservable: Observable<Entity>;
@@ -176,7 +218,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         });
     }
 
-    private constructDiffPatch(): string {
+    private constructDiffPatch(): PatchRequest {
         if (!this.isLoaded) {
             throw new Error("Cannot construct diff when no entity is loaded.");
         }
@@ -203,6 +245,6 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             !deepEqual((this._entityOrig as { span: Span }).span, asSpanningEntity.span)) {
             entityPatch.push({op: "replace", path: "/span", value: asSpanningEntity.span});
         }
-        return JSON.stringify(entityPatch);
+        return entityPatch;
     }
 }

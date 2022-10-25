@@ -25,3 +25,5 @@ export type Entity = World | Location | Traveler | Event;
 
 export type Span = components["schemas"]["PositionalRange"];
 export type Journey = components["schemas"]["Journey"];
+
+export type PatchRequest = components["schemas"]["PatchRequest"];
