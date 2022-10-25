@@ -1,4 +1,7 @@
-<button mat-button routerLink="/map/{{worldId}}">Return To The Map</button>
+<div fxLayout="row" fxLayoutAlign="space-between">
+  <button mat-raised-button color="primary" routerLink="/map/{{worldId}}">Return To The Map</button>
+  <button mat-raised-button color="accent" [disabled]="!readyForSave" (click)="saveEntity()">Save</button>
+</div>
 <h2>{{name}}</h2>
 <div *ngIf="isLoaded" fxLayout="column" fxLayoutAlign="space-evenly stretch">
   <mat-form-field color="accent">

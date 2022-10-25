@@ -5,6 +5,8 @@ import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.s
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
 import {filter} from "rxjs/operators";
+import {deepEqual} from "json-joy/esm/json-equal/deepEqual";
+import {deepCopy} from "../../../common/util";
 
 @Component({
     selector: "app-entity",
@@ -15,6 +17,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     private _worldId: WorldId;
     private _entityId: EntityId;
     private _entity: Entity;
+    private _entityOrig: Entity;
 
     public constructor(
         private _route: ActivatedRoute,
@@ -26,6 +29,14 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
 
     public get isLoaded(): boolean {
         return this._entity !== undefined;
+    }
+
+    public get readyForSave(): boolean {
+        try {
+            return this.isLoaded && !deepEqual(this._entityOrig, this._entity);
+        } catch {
+            return false;
+        }
     }
 
     public get worldId(): string {
@@ -119,8 +130,14 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         ).subscribe(() => this.loadEntity());
     }
 
+    public saveEntity(): void {
+        console.log("Save called. Diff:");
+        console.log(this.constructDiffPatch());
+    }
+
     private loadEntity(): void {
         this._entity = undefined;
+        this._entityOrig = undefined;
 
         const paramMap = this._route.snapshot.paramMap;
         this._worldId = paramMap.get("worldId");
@@ -153,6 +170,39 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         } else {
             throw new Error(`Cannot edit entity '${this._entityId}', unknown entity type`);
         }
-        this.newSubscription = fetchObservable.subscribe((value: Entity) => this._entity = value);
+        this.newSubscription = fetchObservable.subscribe((value: Entity) => {
+            this._entity = value;
+            this._entityOrig = deepCopy(value);
+        });
+    }
+
+    private constructDiffPatch(): string {
+        if (!this.isLoaded) {
+            throw new Error("Cannot construct diff when no entity is loaded.");
+        }
+        const entityPatch = [];
+        if (this._entityOrig.name !== this._entity.name) {
+            entityPatch.push({op: "replace", path: "/name", value: this._entity.name});
+        }
+        if (this._entityOrig.description !== this._entity.description) {
+            entityPatch.push({op: "replace", path: "/description", value: this._entity.description});
+        }
+        if (!deepEqual(this._entityOrig.tags, this._entity.tags)) {
+            entityPatch.push({op: "replace", path: "/tags", value: this._entity.tags});
+        }
+        if (!deepEqual(this._entityOrig.attributes, this._entity.attributes)) {
+            entityPatch.push({op: "replace", path: "/attributes", value: this._entity.attributes});
+        }
+        const asJourneyingEntity = this._entity as { journey: Journey };
+        if (asJourneyingEntity && asJourneyingEntity.journey &&
+            !deepEqual((this._entityOrig as { journey: Journey }).journey, asJourneyingEntity.journey)) {
+            entityPatch.push({op: "replace", path: "/journey", value: asJourneyingEntity.journey});
+        }
+        const asSpanningEntity = this._entity as { span: Span };
+        if (asSpanningEntity && asSpanningEntity.span &&
+            !deepEqual((this._entityOrig as { span: Span }).span, asSpanningEntity.span)) {
+            entityPatch.push({op: "replace", path: "/span", value: asSpanningEntity.span});
+        }
+        return JSON.stringify(entityPatch);
     }
 }
