@@ -1,9 +1,10 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Entity, EntityId, Journey, Span, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
+import {filter} from "rxjs/operators";
 
 @Component({
     selector: "app-entity",
@@ -18,11 +19,9 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     public constructor(
         private _route: ActivatedRoute,
         private _ttapiGateway: TtapiGatewayService,
-        private router: Router,
+        private _router: Router,
     ) {
         super();
-        // force route reload whenever params change;
-        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     }
 
     public get isLoaded(): boolean {
@@ -114,6 +113,15 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.loadEntity();
+        this.newSubscription = this._router.events.pipe(
+            filter(event => event instanceof NavigationEnd),
+        ).subscribe(() => this.loadEntity());
+    }
+
+    private loadEntity(): void {
+        this._entity = undefined;
+
         const paramMap = this._route.snapshot.paramMap;
         this._worldId = paramMap.get("worldId");
         this._entityId = paramMap.get("entityId");
