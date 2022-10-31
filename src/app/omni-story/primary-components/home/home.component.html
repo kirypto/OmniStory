@@ -1,29 +1,49 @@
 <div fxLayout="row" fxLayoutAlign="space-between stretch" style="height: 100%">
-  <div fxFlex="15">
+  <div fxFlex="9">
     <h3 *ngIf="worlds.size > 0"> Worlds </h3>
     <div *ngFor="let worldEntry of worlds | keyvalue">
-      <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldEntry.key, entityId: worldEntry.key})}}">
+      <button mat-button class="world-side-link"
+              routerLink="{{constructPath(RoutePaths.entity, {worldId: worldEntry.key, entityId: worldEntry.key})}}">
         {{worldEntry.value.name}}
       </button>
+      <button mat-button class="world-side-content"
+              routerLink="{{constructPath(RoutePaths.map, {worldId: worldEntry.key})}}">
+        World Map
+      </button>
+      <button mat-button class="world-side-content" (click)="view(worldEntry.key, 'Location')">Locations</button>
+      <button mat-button class="world-side-content" (click)="view(worldEntry.key, 'Traveler')">Travelers</button>
+      <button mat-button class="world-side-content" (click)="view(worldEntry.key, 'Event')">Events</button>
+      <div class="world-side-spacer"></div>
     </div>
   </div>
-  <div fxFlex="1px" style="background-color: #9c27b0">
+
+  <div fxFlex="1px" class="side-bar-separator">
 
   </div>
-  <div fxFlex="80">
-    <h1> Welcome to Timeline Tracker API </h1>
-
-    <ul>
-      <li> To search for entities, use the <a routerLink="{{RoutePaths.entitySearch}}">Entity Search</a> page.</li>
-      <ng-container *ngIf="user | async as user; else notLoggedIn">
-        <li>{{ user.email }}</li>
-        <li><img src="{{user.picture}}" alt="profile image"/></li>
-      </ng-container>
-      <ng-template #notLoggedIn>
-        <li>Not logged in.</li>
-      </ng-template>
-    </ul>
-    <p></p>
+  <div fxFlex="90">
+    <div *ngIf="entities.size == 0">
+      <h1> Welcome to Timeline Tracker API </h1>
+      <ul>
+        <li> To search for entities, use the <a routerLink="{{RoutePaths.entitySearch}}">Entity Search</a> page.</li>
+        <ng-container *ngIf="user | async as user; else notLoggedIn">
+          <li>{{ user.email }}</li>
+          <li><img src="{{user.picture}}" alt="profile image"/></li>
+        </ng-container>
+        <ng-template #notLoggedIn>
+          <li>Not logged in.</li>
+        </ng-template>
+      </ul>
+    </div>
+    <div fxFlexFill fxLayout="column" fxLayoutAlign="space-between stretch" *ngIf="entities.size > 0">
+      <div fxFlex="4" class="entities-title"> {{worldName}} - {{selectedType}}s </div>
+      <div fxFlex="95" class="entities-container">
+        <div *ngFor="let entityEntry of entities | keyvalue">
+          <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: entityEntry.key})}}">
+            {{entityEntry.value.name}}
+          </button>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>

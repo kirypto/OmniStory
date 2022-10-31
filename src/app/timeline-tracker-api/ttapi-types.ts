@@ -14,9 +14,11 @@ export type LocationIds = components["schemas"]["LocationIds"];
 export type LocationId = components["schemas"]["LocationId"];
 export type Location = components["schemas"]["ExistingLocation"];
 
+export type TravelerIds = components["schemas"]["TravelerIds"];
 export type TravelerId = components["schemas"]["TravelerId"];
 export type Traveler = components["schemas"]["ExistingTraveler"];
 
+export type EventIds = components["schemas"]["EventIds"];
 export type EventId = components["schemas"]["EventId"];
 export type Event = components["schemas"]["ExistingEvent"];
 
