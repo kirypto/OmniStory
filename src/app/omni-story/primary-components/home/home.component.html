@@ -1,13 +1,29 @@
-<h1> Welcome to Timeline Tracker API </h1>
+<div fxLayout="row" fxLayoutAlign="space-between stretch" style="height: 100%">
+  <div fxFlex="15">
+    <h3 *ngIf="worlds.size > 0"> Worlds </h3>
+    <div *ngFor="let worldEntry of worlds | keyvalue">
+      <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldEntry.key, entityId: worldEntry.key})}}">
+        {{worldEntry.value.name}}
+      </button>
+    </div>
+  </div>
+  <div fxFlex="1px" style="background-color: #9c27b0">
 
-<ul>
-  <li> To search for entities, use the <a routerLink="{{RoutePaths.entitySearch}}">Entity Search</a> page.</li>
-  <ng-container *ngIf="user | async as user; else notLoggedIn">
-    <li>{{ user.email }}</li>
-    <li><img src="{{user.picture}}" alt="profile image"/></li>
-  </ng-container>
-  <ng-template #notLoggedIn>
-    <li>Not logged in.</li>
-  </ng-template>
-</ul>
-<p></p>
+  </div>
+  <div fxFlex="80">
+    <h1> Welcome to Timeline Tracker API </h1>
+
+    <ul>
+      <li> To search for entities, use the <a routerLink="{{RoutePaths.entitySearch}}">Entity Search</a> page.</li>
+      <ng-container *ngIf="user | async as user; else notLoggedIn">
+        <li>{{ user.email }}</li>
+        <li><img src="{{user.picture}}" alt="profile image"/></li>
+      </ng-container>
+      <ng-template #notLoggedIn>
+        <li>Not logged in.</li>
+      </ng-template>
+    </ul>
+    <p></p>
+
+  </div>
+</div>
