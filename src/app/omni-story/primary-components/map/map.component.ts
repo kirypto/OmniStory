@@ -108,9 +108,6 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     private _latitudeLimits: NumericRange = {low: 0, high: 1};
     private _longitude: NumericRange = {low: 0, high: 1};
     private _longitudeLimits: NumericRange = {low: 0, high: 1};
-    private _altitude: NumericRange = {low: 25, high: 75};
-    private _continuum: NumericRange = {low: 25, high: 75};
-
     private readonly _mapItemsOrdered: MapItem[] = [];
     private readonly _whatIsHereLocations: Set<NameIdPair> = new Set<NameIdPair>();
 
@@ -123,15 +120,6 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         private _clipboard: Clipboard,
     ) {
         super();
-    }
-
-    public get selections(): string {
-        return JSON.stringify({
-            latitude: this._latitude,
-            longitude: this._longitude,
-            altitude: this._altitude,
-            continuum: this._continuum,
-        }, null, 4);
     }
 
     public get contextMenuActions(): typeof ContextMenuAction {
@@ -243,10 +231,6 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                 }
                 break;
         }
-    }
-
-    public editEntity(entityId: string): void {
-        setTimeout(() => alert(`Cannot edit entity '${entityId}': functionality not yet implemented.`));
     }
 
     private openMapContextMenu(mapContextMenuEvent: MapContextMenuEvent): void {
