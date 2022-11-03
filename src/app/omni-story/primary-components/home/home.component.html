@@ -34,12 +34,20 @@
         </ng-template>
       </ul>
     </div>
-    <div fxFlexFill fxLayout="column" fxLayoutAlign="space-between stretch" *ngIf="entities.size > 0">
-      <div fxFlex="4" class="entities-title"> {{worldName}} - {{selectedType}}s </div>
-      <div fxFlex="95" class="entities-container">
-        <div *ngFor="let entityEntry of entities | keyvalue">
-          <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: entityEntry.key})}}">
-            {{entityEntry.value.name}}
+    <div *ngIf="entities.size > 0" fxFlexFill fxLayout="column" fxLayoutAlign="space-between stretch">
+      <div fxFlex="4" class="entities-title"> {{worldName}} - {{selectedType}}s</div>
+      <div fxFlex="95" fxLayout="row" fxLayoutAlign="space-around stretch">
+        <div fxFlex="80" class="entities-container">
+          <div *ngFor="let entityEntry of entities | keyvalue">
+            <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: entityEntry.key})}}">
+              {{entityEntry.value.name}}
+            </button>
+          </div>
+        </div>
+        <div fxFlex="18" fxLayout="column" fxLayoutAlign="start end">
+          <button mat-raised-button color="accent"
+                  routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: 'new' + selectedType})}}">
+            New {{selectedType}}
           </button>
         </div>
       </div>
