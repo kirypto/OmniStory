@@ -31,6 +31,7 @@ import {MapComponent} from "./omni-story/primary-components/map/map.component";
 import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
 import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 /**
  * All http interceptor providers in outside-in order
@@ -88,6 +89,7 @@ export const applicationImports = [
     MatNativeDateModule,
     DragDropModule,
     MatMenuModule,
+    MatTooltipModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
     AuthModule.forRoot({

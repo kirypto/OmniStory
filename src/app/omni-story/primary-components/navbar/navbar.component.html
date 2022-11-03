@@ -1,17 +1,18 @@
-<mat-toolbar color="primary">
-  <div fxHide.gt-xs>
-    <button mat-icon-button (click)="onToggleSidenav()" onclick="this.blur()">
-      <mat-icon>menu</mat-icon>
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between stretch">
+  <div fxFlex="40" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1ch">
+    <button *ngIf="isLoggedIn" mat-icon-button routerLink="{{RoutePaths.home}}">
+      <mat-icon matTooltip="Home">home</mat-icon>
     </button>
   </div>
-  <div>
-    <a routerLink="{{RoutePaths.home}}">Home</a>
-  </div>
-  <div fxFlex fxLayoutAlign="end" fxHide.xs>
-    <mat-nav-list fxLayout="row" fxLayoutGap="2ch">
-      <a routerLink="{{RoutePaths.entitySearch}}">Search</a>
-      <button mat-icon-button (click)="doLogin()" onclick="this.blur()">Login</button>
-      <button mat-icon-button (click)="doLogout()" onclick="this.blur()">Logout</button>
-    </mat-nav-list>
+  <div fxFlex="40" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1ch">
+    <button *ngIf="!isLoggedIn" mat-icon-button (click)="doLogin()">
+      <mat-icon matTooltip="Login">login</mat-icon>
+    </button>
+    <button *ngIf="isLoggedIn" mat-icon-button (click)="doLogout()">
+      <mat-icon matTooltip="Logout">logout</mat-icon>
+    </button>
+    <ng-container *ngIf="user | async as user">
+      <img src="{{user.picture}}" alt="Profile Image" class="profile-image"/>
+    </ng-container>
   </div>
 </mat-toolbar>

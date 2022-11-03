@@ -18,4 +18,9 @@ mat-nav-list {
   padding: 0;
 }
 
+.profile-image {
+  height: 80%;
+  border-radius: 50%;
+}
+
 /*# sourceMappingURL=navbar.component.css.map */
