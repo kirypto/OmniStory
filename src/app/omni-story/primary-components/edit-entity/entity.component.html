@@ -1,8 +1,16 @@
-<div fxLayout="row" fxLayoutAlign="space-between">
-  <button mat-raised-button color="primary" routerLink="/map/{{worldId}}">Return To The Map</button>
-  <button mat-raised-button color="accent" [disabled]="!readyForSave" (click)="saveEntity()">Save</button>
+<div fxLayout="row" fxLayoutAlign="space-around">
+  <div fxFlex="65" fxLayout="row">
+    <h2>{{name}}</h2>
+  </div>
+  <div fxFlex="20" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="1ch">
+    <button mat-fab color="accent" [disabled]="!readyForSave" (click)="saveEntity()">
+      <mat-icon>{{readyForSave ? "cloud_upload" : "cloud_done"}}</mat-icon>
+    </button>
+    <button mat-fab color="warn" (click)="deleteEntity()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </div>
-<h2>{{name}}</h2>
 <div *ngIf="isLoaded" fxLayout="column" fxLayoutAlign="space-evenly stretch">
   <mat-form-field color="accent">
     <mat-label>Name</mat-label>

@@ -25,7 +25,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         private _route: ActivatedRoute,
         private _ttapiGateway: TtapiGatewayService,
         private _router: Router,
-        private _location: AngularLocation
+        private _location: AngularLocation,
     ) {
         super();
     }
@@ -182,6 +182,10 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             this._entityOrig = deepCopy(value);
             this._location.replaceState(`/entity/${this._worldId}/${this._entityId}`);
         });
+    }
+
+    public deleteEntity(): void {
+        alert("Delete Not Implemented");
     }
 
     private loadEntity(): void {
