@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Output} from "@angular/core";
 import {RoutingComponent} from "../../../common/components/RoutingComponent";
 import {AuthService} from "@auth0/auth0-angular";
+import {Router} from "@angular/router";
 
 @Component({
     selector: "app-navbar",
@@ -10,7 +11,7 @@ import {AuthService} from "@auth0/auth0-angular";
 export class NavbarComponent extends RoutingComponent {
     @Output() public sidenavToggle = new EventEmitter();
 
-    public constructor(private _authService: AuthService) {
+    public constructor(private _authService: AuthService, private _router: Router) {
         super();
     }
 
@@ -19,7 +20,9 @@ export class NavbarComponent extends RoutingComponent {
     }
 
     public doLogin(): void {
-        this._authService.loginWithRedirect();
+        this._authService.loginWithRedirect({
+            appState: {target: this._router.url},
+        });
     }
 
     public doLogout(): void {
