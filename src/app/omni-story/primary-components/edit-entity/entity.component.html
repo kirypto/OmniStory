@@ -4,10 +4,10 @@
   </div>
   <div fxFlex="20" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="1ch">
     <button mat-fab color="accent" [disabled]="!readyForSave" (click)="saveEntity()">
-      <mat-icon>{{readyForSave ? "cloud_upload" : "cloud_done"}}</mat-icon>
+      <mat-icon matTooltip="Save">{{readyForSave ? "cloud_upload" : "cloud_done"}}</mat-icon>
     </button>
-    <button mat-fab color="warn" (click)="deleteEntity()">
-      <mat-icon>delete</mat-icon>
+    <button mat-fab color="warn" [disabled]="!readyForDelete" (click)="deleteEntity()">
+      <mat-icon matTooltip="Delete">delete</mat-icon>
     </button>
   </div>
 </div>

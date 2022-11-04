@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Location as AngularLocation} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {Entity, EntityId, Journey, Location, PatchRequest, Span, Traveler, WorldId, Event} from "../../../timeline-tracker-api/ttapi-types";
+import {Entity, EntityId, Event, Journey, Location, PatchRequest, Span, Traveler, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
@@ -9,6 +9,7 @@ import {filter} from "rxjs/operators";
 import {deepEqual} from "json-joy/esm/json-equal/deepEqual";
 import {deepCopy} from "../../../common/util";
 import {arrayRequestBody} from "openapi-typescript-fetch";
+import {RoutePaths} from "../../../common/types/route-paths";
 
 @Component({
     selector: "app-entity",
@@ -40,6 +41,10 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         } catch {
             return false;
         }
+    }
+
+    public get readyForDelete(): boolean {
+        return this._entityId !== undefined && !this._entityId.startsWith("new");
     }
 
     public get worldId(): string {
@@ -218,7 +223,29 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     }
 
     public deleteEntity(): void {
-        alert("Delete Not Implemented");
+        let deleteObservable: Observable<unknown>;
+        if (this._entityId.startsWith("location")) {
+            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "delete", {
+                worldId: this._worldId,
+                locationId: this._entityId,
+            });
+        } else if (this._entityId.startsWith("traveler")) {
+            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}", "delete", {
+                worldId: this._worldId,
+                travelerId: this._entityId,
+            });
+        } else if (this._entityId.startsWith("event")) {
+            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/event/{eventId}", "delete", {
+                worldId: this._worldId,
+                eventId: this._entityId,
+            });
+        } else {
+            throw new Error(`Cannot delete entity '${this._entityId}', unknown type.`);
+        }
+        deleteObservable.subscribe(() => {
+            this._router.navigate([RoutePaths.home])
+                .then(() => console.log(`Deleted ${this._entityId}, returned home.`));
+        });
     }
 
     private loadEntity(): void {
