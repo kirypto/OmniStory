@@ -18,6 +18,7 @@ import {
 } from "../../../timeline-tracker-api/ttapi-types";
 import {Router} from "@angular/router";
 import {filter} from "rxjs/operators";
+import {KeyValue} from "@angular/common";
 
 @Component({
     selector: "app-home-page",
@@ -75,6 +76,10 @@ export class HomeComponent extends RoutingComponent implements OnInit {
                 worldId,
             })),
         ).subscribe((world: World) => this._worlds.set(world.id, world));
+    }
+
+    public valueAscOrder(a: KeyValue<EntityId, Entity>, b: KeyValue<EntityId, Entity>): number {
+        return a.value.name.localeCompare(b.value.name);
     }
 
     public view(worldId: WorldId, selection: "Location" | "Traveler" | "Event"): void {

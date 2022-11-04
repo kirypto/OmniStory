@@ -52,7 +52,7 @@
         </button>
       </div>
       <div fxFlex="93" fxLayout="column" fxLayoutAlign="start stretch" class="entities-container">
-        <div *ngFor="let entityEntry of entities | keyvalue">
+        <div *ngFor="let entityEntry of entities | keyvalue: valueAscOrder">
           <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: entityEntry.key})}}">
             {{entityEntry.value.name}}
           </button>
