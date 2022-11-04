@@ -111,11 +111,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     public get journey(): string {
         // Only applicable for Traveler
         const asJourneyingEntity = this._entity as { journey: Journey };
-        let journey = "";
-        if (this.isLoaded && asJourneyingEntity?.journey) {
-            journey = JSON.stringify(asJourneyingEntity.journey, null, 4);
-        }
-        return journey;
+        return this.isLoaded && asJourneyingEntity?.journey ? JSON.stringify(asJourneyingEntity.journey, null, 4) : "";
     }
 
     public set journey(value: string) {
@@ -123,6 +119,34 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         const asJourneyingEntity = this._entity as { journey: Journey };
         if (this.isLoaded && asJourneyingEntity?.journey) {
             asJourneyingEntity.journey = JSON.parse(value);
+        }
+    }
+
+    public get affectedLocations(): string {
+        // Only applicable for Event
+        const asEvent = this._entity as Event;
+        return this.isLoaded && asEvent?.affected_locations ? JSON.stringify(asEvent?.affected_locations, null, 4) : "";
+    }
+
+    public set affectedLocations(value: string) {
+        // Only applicable for Event
+        const asEvent = this._entity as Event;
+        if (this.isLoaded && asEvent?.affected_locations) {
+            asEvent.affected_locations = JSON.parse(value);
+        }
+    }
+
+    public get affectedTravelers(): string {
+        // Only applicable for Event
+        const asEvent = this._entity as Event;
+        return this.isLoaded && asEvent?.affected_travelers ? JSON.stringify(asEvent?.affected_travelers, null, 4) : "";
+    }
+
+    public set affectedTravelers(value: string) {
+        // Only applicable for Event
+        const asEvent = this._entity as Event;
+        if (this.isLoaded && asEvent?.affected_travelers) {
+            asEvent.affected_travelers = JSON.parse(value);
         }
     }
 
@@ -292,6 +316,15 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         if (asSpanningEntity && asSpanningEntity.span &&
             !deepEqual((this._entityOrig as { span: Span }).span, asSpanningEntity.span)) {
             entityPatch.push({op: "replace", path: "/span", value: asSpanningEntity.span});
+        }
+        const asEvent = this._entity as Event;
+        if (asEvent && asEvent.affected_locations
+            && !deepEqual((this._entityOrig as Event).affected_locations, asEvent.affected_locations)) {
+            entityPatch.push({op: "replace", path: "/affected_locations", value: asEvent.affected_locations});
+        }
+        if (asEvent && asEvent.affected_travelers
+            && !deepEqual((this._entityOrig as Event).affected_travelers, asEvent.affected_travelers)) {
+            entityPatch.push({op: "replace", path: "/affected_travelers", value: asEvent.affected_travelers});
         }
         return entityPatch;
     }

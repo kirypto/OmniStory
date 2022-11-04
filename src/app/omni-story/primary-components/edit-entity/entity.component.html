@@ -29,6 +29,14 @@
       <mat-label>Journey</mat-label>
       <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="journey" name="journey"></textarea>
     </mat-form-field>
+    <mat-form-field *ngIf="affectedLocations" color="accent">
+      <mat-label>Affected Locations</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Affected Locations" [(ngModel)]="affectedLocations" name="affected locations"></textarea>
+    </mat-form-field>
+    <mat-form-field *ngIf="affectedTravelers" color="accent">
+      <mat-label>Affected Travelers</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Affected Travelers" [(ngModel)]="affectedTravelers" name="affected travelers"></textarea>
+    </mat-form-field>
     <mat-form-field color="accent">
       <mat-label>Tags</mat-label>
       <textarea matInput cdkTextareaAutosize placeholder="Tags" [(ngModel)]="tags" name="tags"></textarea>
