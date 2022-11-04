@@ -11,29 +11,31 @@
     </button>
   </div>
 </div>
-<div *ngIf="isLoaded" fxLayout="column" fxLayoutAlign="space-evenly stretch">
-  <mat-form-field color="accent">
-    <mat-label>Name</mat-label>
-    <input matInput placeholder="Name" [(ngModel)]="name" name="name">
-  </mat-form-field>
-  <mat-form-field color="accent">
-    <mat-label>Description</mat-label>
-    <textarea matInput cdkTextareaAutosize placeholder="Description" [(ngModel)]="description" name="description"></textarea>
-  </mat-form-field>
-  <mat-form-field *ngIf="span" color="accent">
-    <mat-label>Span</mat-label>
-    <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="span" name="span"></textarea>
-  </mat-form-field>
-  <mat-form-field *ngIf="journey" color="accent">
-    <mat-label>Journey</mat-label>
-    <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="journey" name="journey"></textarea>
-  </mat-form-field>
-  <mat-form-field color="accent">
-    <mat-label>Tags</mat-label>
-    <textarea matInput cdkTextareaAutosize placeholder="Tags" [(ngModel)]="tags" name="tags"></textarea>
-  </mat-form-field>
-  <mat-form-field color="accent">
-    <mat-label>Attributes</mat-label>
-    <textarea matInput cdkTextareaAutosize placeholder="Attributes" [(ngModel)]="attributes" name="attributes"></textarea>
-  </mat-form-field>
+<div *ngIf="isLoaded" fxLayout="row" fxLayoutAlign="space-around">
+  <div fxFlex="97" fxLayout="column" fxLayoutAlign="space-evenly stretch">
+    <mat-form-field color="accent">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" [(ngModel)]="name" name="name">
+    </mat-form-field>
+    <mat-form-field color="accent">
+      <mat-label>Description</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Description" [(ngModel)]="description" name="description"></textarea>
+    </mat-form-field>
+    <mat-form-field *ngIf="span" color="accent">
+      <mat-label>Span</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="span" name="span"></textarea>
+    </mat-form-field>
+    <mat-form-field *ngIf="journey" color="accent">
+      <mat-label>Journey</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="journey" name="journey"></textarea>
+    </mat-form-field>
+    <mat-form-field color="accent">
+      <mat-label>Tags</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Tags" [(ngModel)]="tags" name="tags"></textarea>
+    </mat-form-field>
+    <mat-form-field color="accent">
+      <mat-label>Attributes</mat-label>
+      <textarea matInput cdkTextareaAutosize placeholder="Attributes" [(ngModel)]="attributes" name="attributes"></textarea>
+    </mat-form-field>
+  </div>
 </div>
