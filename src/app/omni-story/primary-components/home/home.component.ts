@@ -54,6 +54,10 @@ export class HomeComponent extends RoutingComponent implements OnInit {
         return this._worldId === undefined ? "" : this._worlds.get(this._worldId).name;
     }
 
+    public get showEntities(): boolean {
+        return this._selectedType !== undefined;
+    }
+
     public get entities(): Map<EntityId, Entity> {
         return this._entities;
     }
@@ -76,6 +80,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
     public view(worldId: WorldId, selection: "Location" | "Traveler" | "Event"): void {
         this._worldId = worldId;
         this._selectedType = selection;
+        this._entities.clear();
         let entityRetrievalObservable: Observable<Entity>;
 
         switch (selection) {

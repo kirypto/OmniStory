@@ -3,17 +3,17 @@
   height: 100%;
 }
 
-.world-side-link {
-  width: 100%;
+.world-side-header {
+  font-size: x-large;
+  padding-left: 1ch;
+}
+
+.world-side-content button {
   text-align: left;
 }
 
-.world-side-content {
-  width: 100%;
-}
-
-.world-side-spacer {
-  height: 4ch;
+.world-side-content button.indent {
+  padding-left: 5ch;
 }
 
 .side-bar-separator {
