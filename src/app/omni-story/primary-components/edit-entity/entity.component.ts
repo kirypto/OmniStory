@@ -223,6 +223,9 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
     }
 
     public deleteEntity(): void {
+        if (!confirm(`Delete ${this.name}?`)) {
+            return;
+        }
         let deleteObservable: Observable<unknown>;
         if (this._entityId.startsWith("location")) {
             deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "delete", {
