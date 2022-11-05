@@ -12,7 +12,7 @@ import {
 } from "../../../common/components/map-canvas/map-canvas.component";
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Location, LocationId, LocationIds, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
@@ -114,6 +114,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
     public constructor(
         private _imageFetcher: ImageFetcherService,
         private _route: ActivatedRoute,
+        private _router: Router,
         private _ttapiGateway: TtapiGatewayService,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
@@ -136,6 +137,14 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
 
     public ngOnInit(): void {
         this._worldId = this._route.snapshot.paramMap.get("worldId");
+        let reality: number;
+        if (this._route.snapshot.queryParamMap.has("reality")) {
+            reality = parseInt(this._route.snapshot.queryParamMap.get("reality"), 10);
+        } else {
+            reality = 0;
+            this.updateQueryParams({reality: 0});
+        }
+        console.log(`Rendering map for reality ${reality}`);
         this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
             worldId: this._worldId,
         }).pipe(
@@ -144,6 +153,7 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
                 worldId: this._worldId,
                 locationId,
             })),
+            filter((location: Location) => location.span.reality.some(lReality => lReality === reality)),
             // TODO kirypto 2022-Sep-09: Handle displaying locations that don't have an associated image.
             filter((location: Location) => !!location.attributes.sourceImageHD),
             mergeMap((location: Location) => {
@@ -332,5 +342,15 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         const bestFitMapItemLimits = bestFitForAspectRatio(mapItemLimits, requiredAspectRatio);
         this._latitudeLimits = bestFitMapItemLimits.latitude;
         this._longitudeLimits = bestFitMapItemLimits.longitude;
+    }
+
+    private updateQueryParams(queryParams: { reality: number }): void {
+        this._router.navigate(
+            [],
+            {
+                relativeTo: this._route,
+                queryParams,
+                queryParamsHandling: "merge",
+            }).then(() => console.log("Updated URL query params"));
     }
 }
