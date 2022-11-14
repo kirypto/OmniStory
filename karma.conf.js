@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/TimelineTrackerUI'),
+      dir: require('path').join(__dirname, './coverage/OmniStory'),
       subdir: '.',
       reporters: [
         { type: 'html' },

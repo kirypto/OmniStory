@@ -15,9 +15,9 @@ describe("AppComponent", () => {
         expect(app).toBeTruthy();
     });
 
-    it(`should have as title 'Timeline Tracker UI'`, () => {
+    it(`should have as title 'OmniStory'`, () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
-        expect(app.title).toEqual("Timeline Tracker UI");
+        expect(app.title).toEqual("OmniStory");
     });
 });

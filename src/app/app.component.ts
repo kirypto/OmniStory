@@ -9,7 +9,7 @@ import {MatIconRegistry} from "@angular/material/icon";
 })
 @Injectable({providedIn: "root"})
 export class AppComponent implements OnInit {
-    private _title = "Timeline Tracker UI";
+    private _title = "OmniStory";
 
     constructor(
         private _titleService: Title,
