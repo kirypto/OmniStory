@@ -3,9 +3,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {applicationDeclarations, applicationImports} from "./app-index";
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
-import {APP_INITIALIZER, Provider} from "@angular/core";
-import {AppConfigService} from "./common/services/app-config/app-config.service";
-import {sampleApplicationConfig} from "./common/services/app-config/app-config.service.spec";
+import {Provider} from "@angular/core";
 
 
 describe("Workaround to have this considered as a test only file", () => {
@@ -37,9 +35,5 @@ function getTestImports(): any[] {
 
 function getTestProviders(): Provider[] {
     return [
-        {
-            provide: APP_INITIALIZER, multi: true, deps: [AppConfigService],
-            useFactory: (appConfigService: AppConfigService) => (() => (appConfigService as any).initialize(sampleApplicationConfig)),
-        },
     ];
 }

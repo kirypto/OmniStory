@@ -1,5 +1,5 @@
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {APP_INITIALIZER, Provider} from "@angular/core";
+import {Provider} from "@angular/core";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
@@ -22,7 +22,6 @@ import {AppComponent} from "./app.component";
 import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
 import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
-import {AppConfigService} from "./common/services/app-config/app-config.service";
 import {RoutePaths} from "./common/types/route-paths";
 import {EntityComponent} from "./omni-story/primary-components/edit-entity/entity.component";
 import {HomeComponent} from "./omni-story/primary-components/home/home.component";
@@ -40,19 +39,10 @@ const httpInterceptorProviders = [
 ];
 
 /**
- * App config provider, ensuring config is loaded before constructing any dependant classes
- */
-const appConfigProvider: Provider = {
-    provide: APP_INITIALIZER, multi: true, deps: [AppConfigService],
-    useFactory: (appConfigService: AppConfigService) => (() => appConfigService.loadApplicationConfig()),
-};
-
-/**
  * All Application Providers
  */
 export const applicationProviders: Provider[] = [
     httpInterceptorProviders,
-    appConfigProvider,
     MatDatepickerModule,
 ];
 

@@ -1,14 +1,13 @@
 import {Injectable} from "@angular/core";
+import {AuthService} from "@auth0/auth0-angular";
+import {Router} from "@angular/router";
 import {Fetcher, Middleware, OpArgType, OpReturnType} from "openapi-typescript-fetch";
-
-import {AppConfigService} from "../common/services/app-config/app-config.service";
-import {paths} from "./ttapi-schema";
+import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types";
 import {catchError, EMPTY, firstValueFrom, from, Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {AuthService} from "@auth0/auth0-angular";
-import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types";
+import {paths} from "./ttapi-schema";
 import {WorldIds} from "./ttapi-types";
-import {Router} from "@angular/router";
+import {ttapiConfig} from "../../environments/environment";
 
 class NotLoggedInError extends Error {
 }
@@ -24,7 +23,6 @@ export class TtapiGatewayService {
     constructor(
         private _authService: AuthService,
         private _router: Router,
-        appConfigService: AppConfigService,
     ) {
         const addAuthenticationTokenMiddleware: Middleware = async (url: string, init: CustomRequestInit, next: Fetch) => {
             init.headers.set("Authorization", `Bearer ${await firstValueFrom(this.getAuthToken())}`);
@@ -32,7 +30,7 @@ export class TtapiGatewayService {
         };
         this._fetcher = Fetcher.for<paths>();
         this._fetcher.configure({
-            baseUrl: appConfigService.ttapiConfig.baseUrl,
+            baseUrl: ttapiConfig.baseUrl,
             init: {
                 headers: {},
             },
