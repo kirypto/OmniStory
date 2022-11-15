@@ -1,7 +1,18 @@
 import {Component, OnInit} from "@angular/core";
 import {Location as AngularLocation} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {Entity, EntityId, Event, Journey, Location, PatchRequest, Span, Traveler, WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {
+    Entity,
+    EntityId,
+    Event,
+    Journey,
+    Location,
+    PatchRequest,
+    Span,
+    Traveler,
+    World,
+    WorldId,
+} from "../../../timeline-tracker-api/ttapi-types";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
@@ -166,7 +177,12 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         const entityPatch = this.constructDiffPatch();
 
         let fetchObservable: Observable<Entity>;
-        if (this._entityId === "newLocation") {
+        if (this._worldId === "new" && this._entityId === "world") {
+            const args = {
+                ...(this._entity as World),
+            };
+            fetchObservable = this._ttapiGateway.fetch("/api/world", "post", args);
+        } else if (this._entityId === "newLocation") {
             const args = {
                 worldId: this.worldId, ...(this._entity as Location),
             };
@@ -215,6 +231,9 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         }
         this.newSubscription = fetchObservable.subscribe((value: Entity) => {
             console.log(`Returned from save, received: ${JSON.stringify(value)}`);
+            if (value.id.startsWith("world")) {
+                this._worldId = value.id;
+            }
             this._entityId = value.id;
             this._entity = value;
             this._entityOrig = deepCopy(value);
@@ -227,7 +246,11 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             return;
         }
         let deleteObservable: Observable<unknown>;
-        if (this._entityId.startsWith("location")) {
+        if (this._entityId.startsWith("world")) {
+            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}", "delete", {
+                worldId: this._worldId,
+            });
+        } else if (this._entityId.startsWith("location")) {
             deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "delete", {
                 worldId: this._worldId,
                 locationId: this._entityId,
@@ -243,7 +266,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
                 eventId: this._entityId,
             });
         } else {
-            throw new Error(`Cannot delete entity '${this._entityId}', unknown type.`);
+            throw new Error(`Cannot delete entity '${this._entityId}', unsupported type.`);
         }
         deleteObservable.subscribe(() => {
             this._router.navigate([RoutePaths.home])
@@ -259,7 +282,13 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         this._worldId = paramMap.get("worldId");
         this._entityId = paramMap.get("entityId");
 
-        if (this._entityId === "newLocation") {
+        if (this._worldId === "new" && this._entityId === "world") {
+            const world: World = {
+                id: "", name: "", description: "", tags: [], attributes: {},
+            };
+            this._entity = world;
+            this._entityOrig = deepCopy(world);
+        } else if (this._entityId === "newLocation") {
             const location: Location = {
                 id: "", name: "", description: "", span: {
                     latitude: {low: 0, high: 0}, longitude: {low: 0, high: 0}, altitude: {low: 0, high: 0},

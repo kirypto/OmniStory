@@ -1,6 +1,12 @@
 <div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
   <div fxFlex="15" fxFlex.lt-md="25" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="1em">
-    <div *ngIf="worlds.size > 0" class="world-side-header"> Worlds</div>
+    <div *ngIf="worlds.size > 0" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1ch">
+      <div fxFlexOffset="1ch" class="world-side-header">Worlds</div>
+      <button mat-icon-button
+              routerLink="{{constructPath(RoutePaths.entity, {worldId: 'new', entityId: 'world'})}}">
+        <mat-icon matTooltip="New {{selectedType}}">add_circle</mat-icon>
+      </button>
+    </div>
     <div *ngFor="let worldEntry of worlds | keyvalue" fxLayout="column" class="world-side-content">
       <button mat-button
               routerLink="{{constructPath(RoutePaths.entity, {worldId: worldEntry.key, entityId: worldEntry.key})}}">
