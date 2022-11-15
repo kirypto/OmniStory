@@ -14,4 +14,9 @@ export const environment = {
 export const ttapiConfig = {
   baseUrl: "http://localhost:5000",
 };
+
+export const auth0Config = {
+    domain: "<domain>.us.auth0.com",
+    clientId: "<clientId>",
+};
 ```

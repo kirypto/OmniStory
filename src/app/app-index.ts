@@ -17,6 +17,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {AuthHttpInterceptor, AuthModule} from "@auth0/auth0-angular";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatMenuModule} from "@angular/material/menu";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 import {AppComponent} from "./app.component";
 import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
@@ -29,7 +30,7 @@ import {MapComponent} from "./omni-story/primary-components/map/map.component";
 import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
 import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
-import {MatTooltipModule} from "@angular/material/tooltip";
+import {auth0Config} from "../environments/environment";
 
 /**
  * All http interceptor providers in outside-in order
@@ -80,10 +81,7 @@ export const applicationImports = [
     MatTooltipModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
-    AuthModule.forRoot({
-        domain: "dev-80z7621b.us.auth0.com",
-        clientId: "I1aVHsO0Y92ecGY5TZGyTGIFinuUec2I",
-    }),
+    AuthModule.forRoot(auth0Config),
 ];
 
 /**
