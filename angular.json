@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "TimelineTrackerUI": {
+    "OmniStory": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/TimelineTrackerUI",
+            "outputPath": "dist/OmniStory",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -67,18 +67,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "TimelineTrackerUI:build"
+            "browserTarget": "OmniStory:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "TimelineTrackerUI:build:production"
+              "browserTarget": "OmniStory:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "TimelineTrackerUI:build"
+            "browserTarget": "OmniStory:build"
           }
         },
         "test": {
@@ -102,16 +102,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "TimelineTrackerUI:serve"
+            "devServerTarget": "OmniStory:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "TimelineTrackerUI:serve:production"
+              "devServerTarget": "OmniStory:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "TimelineTrackerUI"
+  "defaultProject": "OmniStory"
 }
