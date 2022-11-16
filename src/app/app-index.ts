@@ -30,6 +30,7 @@ import {MapComponent} from "./omni-story/primary-components/map/map.component";
 import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
 import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
+import {StoryComponent} from "./omni-story/primary-components/story/story.component";
 import {auth0Config} from "../environments/environment";
 
 /**
@@ -54,6 +55,7 @@ const routes: Routes = [
     {path: RoutePaths.home, component: HomeComponent},
     {path: RoutePaths.map, component: MapComponent},
     {path: RoutePaths.entity, component: EntityComponent},
+    {path: RoutePaths.story, component: StoryComponent},
     {path: "**", component: NotFoundComponent},
 ];
 
@@ -98,4 +100,5 @@ export const applicationDeclarations = [
     RangeScrollbarComponent,
     MapCanvasComponent,
     EntityComponent,
+    StoryComponent
 ];
