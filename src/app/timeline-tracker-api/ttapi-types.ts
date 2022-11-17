@@ -29,3 +29,10 @@ export type Span = components["schemas"]["PositionalRange"];
 export type Journey = components["schemas"]["Journey"];
 
 export type PatchRequest = components["schemas"]["PatchRequest"];
+
+export type PositionalMove = components["schemas"]["PositionalMove"];
+
+export type LocationTimeline = components["schemas"]["LocationTimeline"];
+export type TravelerTimeline = components["schemas"]["TravelerTimeline"];
+export type Timeline = LocationTimeline | TravelerTimeline;
+export type TimelineItem = PositionalMove | EventId;

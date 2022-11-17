@@ -1,2 +1,16 @@
-<div>The Story of {{entityId}}</div>
-<div>({{worldId}})</div>
+<div *ngIf="name" fxLayout="row" fxLayoutAlign="center center">
+  <div class="story-title">The Story of {{name}}</div>
+</div>
+<div fxLayout="column" fxLayoutGap="2ch">
+  <div *ngFor="let timelineItem of timeline" fxLayout="column" fxLayoutAlign="start stretch">
+    <div fxLayout="row" fxLayoutAlign="space-evenly center">
+      <div fxFlex="2"><mat-icon>{{timelineItem.type === "event" ? "event" : "directions_run"}}</mat-icon></div>
+      <div fxFlex="90" class="item-title">{{timelineItem.title}}</div>
+    </div>
+    <div *ngIf="timelineItem.details" fxLayout="row" fxLayoutAlign="center center">
+      <div fxFlex="85" fxLayout="row">
+        {{timelineItem.details}}
+      </div>
+    </div>
+  </div>
+</div>
