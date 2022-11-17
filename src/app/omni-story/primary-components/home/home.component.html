@@ -62,6 +62,10 @@
           <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: entityEntry.key})}}">
             {{entityEntry.value.name}}
           </button>
+          <button mat-icon-button *ngIf="entityEntry.key.startsWith('location') || entityEntry.key.startsWith('traveler')"
+            routerLink="{{constructPath(RoutePaths.story, {worldId: worldId, entityId: entityEntry.key})}}">
+            <mat-icon matTooltip="View Timeline">route</mat-icon>
+          </button>
         </div>
       </div>
     </div>
