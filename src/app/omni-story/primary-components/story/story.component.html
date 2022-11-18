@@ -4,8 +4,15 @@
 <div fxLayout="column" fxLayoutGap="2ch">
   <div *ngFor="let timelineItem of timeline" fxLayout="column" fxLayoutAlign="start stretch">
     <div fxLayout="row" fxLayoutAlign="space-evenly center">
-      <div fxFlex="2"><mat-icon>{{timelineItem.type === "event" ? "event" : "directions_run"}}</mat-icon></div>
-      <div fxFlex="90" class="item-title">{{timelineItem.title}}</div>
+      <div fxFlex="2">
+        <mat-icon>{{timelineItem.type === "event" ? "event" : "directions_run"}}</mat-icon>
+      </div>
+      <div fxFlex="93" class="item-title">
+        <button *ngIf="timelineItem.type === 'event'; else movementTitle" mat-button
+            routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: timelineItem.eventId})}}">
+          {{timelineItem.title}}</button>
+        <ng-template #movementTitle><div>{{timelineItem.title}}</div></ng-template>
+      </div>
     </div>
     <div *ngIf="timelineItem.details" fxLayout="row" fxLayoutAlign="center center">
       <div fxFlex="85" fxLayout="row">

@@ -7,6 +7,9 @@
   font-size: xx-large;
 }
 
-.item-title {
+.item-title > * {
   font-size: x-large;
+}
+.item-title > div {
+  padding: 0.1ch 1.2ch;
 }

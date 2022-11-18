@@ -1,10 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
 import {filter, mergeMap} from "rxjs/operators";
-import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
-import {Entity, EntityId, Event, EventId, PositionalMove, Timeline, TimelineItem, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {from, Observable} from "rxjs";
+
+import {Entity, EntityId, Event, EventId, PositionalMove, Timeline, TimelineItem, WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {RoutingComponent} from "../../../common/components/RoutingComponent";
 
 function isPositionalMove(timelineItem: TimelineItem): boolean {
     const itemAsPositionalMove = timelineItem as PositionalMove;
@@ -15,6 +16,7 @@ interface DetailedTimelineItem {
     type: "movement" | "event";
     title: string;
     details?: string;
+    eventId?: EventId;
 }
 
 @Component({
@@ -22,7 +24,7 @@ interface DetailedTimelineItem {
     templateUrl: "./story.component.html",
     styleUrls: ["./story.component.scss"],
 })
-export class StoryComponent extends SubscribingComponent implements OnInit {
+export class StoryComponent extends RoutingComponent implements OnInit {
     private _worldId: WorldId;
     private _name: EntityId;
     private _entity: Entity;
@@ -37,6 +39,10 @@ export class StoryComponent extends SubscribingComponent implements OnInit {
         private _router: Router,
     ) {
         super();
+    }
+
+    public get worldId(): string {
+        return this._worldId;
     }
 
     public get name(): string {
@@ -96,7 +102,9 @@ export class StoryComponent extends SubscribingComponent implements OnInit {
                 const positionalMove = timelineElement as PositionalMove;
                 this._detailedTimeline.push({
                     type: "movement",
-                    title: `Traveled to ${positionalMove.position.latitude} lat ${positionalMove.position.longitude} lon (${positionalMove.movement_type})`,
+                    title: `Traveled to (${positionalMove.position.latitude}, ${positionalMove.position.longitude})
+                            on day ${positionalMove.position.continuum}
+                            ${positionalMove.movement_type === "immediate" ? "(via instantaneous transport)" : ""}`,
                 });
             } else {
                 const eventId = timelineElement as EventId;
@@ -106,6 +114,7 @@ export class StoryComponent extends SubscribingComponent implements OnInit {
                         type: "event",
                         title: `${event.name}`,
                         details: event.description,
+                        eventId,
                     });
                 }
             }
