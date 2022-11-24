@@ -1,6 +1,5 @@
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {Provider} from "@angular/core";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatNativeDateModule} from "@angular/material/core";
@@ -69,7 +68,6 @@ export const applicationImports = [
     FormsModule,
     MatButtonModule,
     MatSlideToggleModule,
-    FlexLayoutModule,
     MatInputModule,
     BrowserAnimationsModule,
     MatIconModule,
