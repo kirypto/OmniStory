@@ -21,7 +21,6 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {AppComponent} from "./app.component";
 import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
 import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
-import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
 import {RoutePaths} from "./common/types/route-paths";
 import {EntityComponent} from "./omni-story/primary-components/edit-entity/entity.component";
 import {HomeComponent} from "./omni-story/primary-components/home/home.component";
@@ -93,7 +92,6 @@ export const applicationDeclarations = [
     NotFoundComponent,
     NavbarComponent,
     NavbarOverlayComponent,
-    ScrollableContainerComponent,
     MapComponent,
     RangeScrollbarComponent,
     MapCanvasComponent,
