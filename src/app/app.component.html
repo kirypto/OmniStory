@@ -1,2 +1,12 @@
-<app-navbar-overlay></app-navbar-overlay>
-<router-outlet></router-outlet>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav role="navigation">
+    <app-navbar-overlay (sidenavClose)="sidenav.close()"></app-navbar-overlay>
+  </mat-sidenav>
+  <mat-sidenav-content fxLayout="column">
+    <app-navbar fxFlex="0 0 calc(1.5em + 2vh)" (sidenavToggle)="sidenav.toggle()"></app-navbar>
+    <div fxFlex="1 1 1vh"></div>
+    <div fxFlex="1 1 calc(97vh - 1.5em)" fxLayout="row">
+      <router-outlet></router-outlet> <!-- RouterOutlet dynamically inserts components depending on route -->
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
