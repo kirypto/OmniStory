@@ -1,0 +1,24 @@
+// TODO: figure out how to get these from the global theme
+$primary: rgb(156, 39, 176);
+$accent: rgb(105, 240, 174);
+$warn: rgb(244, 67, 54);
+
+$default-padding: 1.5%;
+
+
+:host {
+  height: 100%;
+  width: 100%;
+}
+
+.container {
+  display: grid;
+  height: 100%;
+  grid-template-rows: $default-padding [content-row-start] auto [content-row-end] $default-padding;
+  grid-template-columns: $default-padding [content-column-start] auto [content-column-end] $default-padding;
+}
+.content {
+  grid-row: content-row-start / content-row-end;
+  grid-column: content-column-start / content-column-end;
+  overflow: auto;
+}
