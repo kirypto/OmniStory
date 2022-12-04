@@ -20,7 +20,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 
 import {AppComponent} from "./app.component";
 import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
-import {RoutePaths} from "./common/types/route-paths";
+import {RoutePaths} from "./omni-story/route-paths";
 import {EntityComponent} from "./omni-story/primary-components/edit-entity/entity.component";
 import {HomeComponent} from "./omni-story/primary-components/home/home.component";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";

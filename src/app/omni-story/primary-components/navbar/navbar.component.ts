@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Output} from "@angular/core";
-import {RoutingComponent} from "../../../common/components/RoutingComponent";
+import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";

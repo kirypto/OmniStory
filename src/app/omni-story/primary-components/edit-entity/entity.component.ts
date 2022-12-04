@@ -20,7 +20,7 @@ import {filter} from "rxjs/operators";
 import {deepEqual} from "json-joy/esm/json-equal/deepEqual";
 import {deepCopy} from "../../../common/util";
 import {arrayRequestBody} from "openapi-typescript-fetch";
-import {RoutePaths} from "../../../common/types/route-paths";
+import {RoutePaths} from "../../route-paths";
 
 @Component({
     selector: "app-entity",

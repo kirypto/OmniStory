@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {RoutingComponent} from "../../../common/components/RoutingComponent";
+import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {mergeMap, Observable, tap} from "rxjs";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";

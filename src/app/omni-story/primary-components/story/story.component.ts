@@ -5,7 +5,7 @@ import {from, Observable} from "rxjs";
 
 import {Entity, EntityId, Event, EventId, PositionalMove, Timeline, TimelineItem, WorldId} from "../../../timeline-tracker-api/ttapi-types";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
-import {RoutingComponent} from "../../../common/components/RoutingComponent";
+import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 
 function isPositionalMove(timelineItem: TimelineItem): boolean {
     const itemAsPositionalMove = timelineItem as PositionalMove;
