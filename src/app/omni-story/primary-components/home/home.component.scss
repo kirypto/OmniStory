@@ -11,7 +11,7 @@
 }
 .sidebar {
   flex-grow: 0;
-  width: 50ch;
+  width: 30ch;
 }
 .spacer {
   flex-grow: 0;
@@ -21,24 +21,39 @@
 .contents {
   flex-grow: 1;
 }
-//
-//.world-side-header {
-//  font-size: x-large;
-//}
-//.world-side-content button {
-//  text-align: left;
-//}
-//.world-side-content button.indent {
-//  padding-left: 5ch;
-//}
-//
-//.side-bar-separator {
-//  background-color: #9c27b0;
-//}
-//
-//.entities-title {
-//  font-size: x-large;
-//}
-//.entities-container {
-//  overflow-y: auto;
-//}
+
+.worlds-header {
+  display: flex;
+  align-items: center;
+}
+.worlds-header > span {
+  font-size: x-large;
+}
+.worlds-content {
+  display: grid;
+  grid-template-columns: 15% 85%;
+  grid-template-areas:
+    "world world"
+    ".      map"
+    ".      locations"
+    ".      travelers"
+    ".      events";
+}
+.worlds-content > * {
+  justify-content: flex-start;
+}
+.worlds-content > .world {
+  grid-area: world;
+}
+.worlds-content > .map {
+  grid-area: map;
+}
+.worlds-content > .locations {
+  grid-area: locations;
+}
+.worlds-content > .travelers {
+  grid-area: travelers;
+}
+.worlds-content > .events {
+  grid-area: events;
+}

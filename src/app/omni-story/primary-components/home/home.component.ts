@@ -28,7 +28,7 @@ import {KeyValue} from "@angular/common";
 export class HomeComponent extends RoutingComponent implements OnInit {
     private _worlds: Map<WorldId, World> = new Map<WorldId, World>();
     private _entities: Map<EntityId, Entity> = new Map<EntityId, Entity>();
-    private _worldId: WorldId | undefined;
+    private _worldId: WorldId;
     private _selectedType: "Location" | "Traveler" | "Event";
 
     public constructor(

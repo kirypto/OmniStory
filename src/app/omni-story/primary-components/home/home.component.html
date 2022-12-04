@@ -1,11 +1,36 @@
 <div class="sidebar-and-contents-container">
-  <app-scrollable-container class="sidebar" flexPadTop="1vh" flexPadRight="1ch">
-    <div style="font-size: x-large">Foo</div>
-    <div style="font-size: x-large">Foo</div>
-    <div style="font-size: x-large">Foo</div>
-    <div style="font-size: x-large">Foo</div>
-    <div style="font-size: x-large">Foo</div>
-    <div style="font-size: x-large">Foo</div>
+  <app-scrollable-container class="sidebar" flexPadTop="1vh" flexPadLR="1ch">
+    <div *ngIf="worlds.size > 0" class="worlds-header">
+      <span>Worlds</span>
+      <button mat-icon-button color="accent"
+              routerLink="{{constructPath(RoutePaths.entity, {worldId: 'new', entityId: 'world'})}}">
+        <mat-icon matTooltip="New {{selectedType}}">add_circle</mat-icon>
+      </button>
+    </div>
+    <div *ngFor="let worldEntry of worlds | keyvalue" class="worlds-content">
+      <button mat-button class="world"
+              routerLink="{{constructPath(RoutePaths.entity, {worldId: worldEntry.key, entityId: worldEntry.key})}}">
+        <mat-icon>public</mat-icon>
+        {{worldEntry.value.name}}
+      </button>
+
+      <button mat-button class="map" routerLink="{{constructPath(RoutePaths.map, {worldId: worldEntry.key})}}">
+        <mat-icon>map</mat-icon>
+        World Map
+      </button>
+      <button mat-button class="locations" (click)="view(worldEntry.key, 'Location')">
+        <mat-icon>location_city</mat-icon>
+        Locations
+      </button>
+      <button mat-button class="travelers" (click)="view(worldEntry.key, 'Traveler')">
+        <mat-icon>hiking</mat-icon>
+        Travelers
+      </button>
+      <button mat-button class="events" (click)="view(worldEntry.key, 'Event')">
+        <mat-icon>event</mat-icon>
+        Events
+      </button>
+    </div>
   </app-scrollable-container>
   <div class="spacer"></div>
   <app-scrollable-container class="contents" flexPadTop="1vh" flexPadLeft="1ch">
@@ -31,37 +56,6 @@
 
 <!--<div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">-->
 <!--  <div fxFlex="15" fxFlex.lt-md="25" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="1em">-->
-<!--    <div *ngIf="worlds.size > 0" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1ch">-->
-<!--      <div fxFlexOffset="1ch" class="world-side-header">Worlds</div>-->
-<!--      <button mat-icon-button-->
-<!--              routerLink="{{constructPath(RoutePaths.entity, {worldId: 'new', entityId: 'world'})}}">-->
-<!--        <mat-icon matTooltip="New {{selectedType}}">add_circle</mat-icon>-->
-<!--      </button>-->
-<!--    </div>-->
-<!--    <div *ngFor="let worldEntry of worlds | keyvalue" fxLayout="column" class="world-side-content">-->
-<!--      <button mat-button-->
-<!--              routerLink="{{constructPath(RoutePaths.entity, {worldId: worldEntry.key, entityId: worldEntry.key})}}">-->
-<!--        <mat-icon>public</mat-icon>-->
-<!--        {{worldEntry.value.name}}-->
-<!--      </button>-->
-
-<!--      <button mat-button class="indent" routerLink="{{constructPath(RoutePaths.map, {worldId: worldEntry.key})}}">-->
-<!--        <mat-icon>map</mat-icon>-->
-<!--        World Map-->
-<!--      </button>-->
-<!--      <button mat-button class="indent" (click)="view(worldEntry.key, 'Location')">-->
-<!--        <mat-icon>location_city</mat-icon>-->
-<!--        Locations-->
-<!--      </button>-->
-<!--      <button mat-button class="indent" (click)="view(worldEntry.key, 'Traveler')">-->
-<!--        <mat-icon>hiking</mat-icon>-->
-<!--        Travelers-->
-<!--      </button>-->
-<!--      <button mat-button class="indent" (click)="view(worldEntry.key, 'Event')">-->
-<!--        <mat-icon>event</mat-icon>-->
-<!--        Events-->
-<!--      </button>-->
-<!--    </div>-->
 <!--  </div>-->
 
 <!--  <div fxFlex="20px">-->
