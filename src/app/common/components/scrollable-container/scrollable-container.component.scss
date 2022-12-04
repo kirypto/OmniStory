@@ -11,12 +11,6 @@ $default-padding: 1.5%;
   width: 100%;
 }
 
-.container {
-  display: grid;
-  height: 100%;
-  grid-template-rows: $default-padding [content-row-start] auto [content-row-end] $default-padding;
-  grid-template-columns: $default-padding [content-column-start] auto [content-column-end] $default-padding;
-}
 .content {
   grid-row: content-row-start / content-row-end;
   grid-column: content-column-start / content-column-end;

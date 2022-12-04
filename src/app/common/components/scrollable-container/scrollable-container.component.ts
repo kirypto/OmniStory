@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, Input} from "@angular/core";
 
 
 @Component({
@@ -7,47 +7,27 @@ import {Component} from "@angular/core";
     styleUrls: ["./scrollable-container.component.scss"]
 })
 export class ScrollableContainerComponent {
-    // @Input() private _leftFxFlex: number | string = "0%";
-    // @Input() private _rightFxFlex: number | string = "0%";
-    // @Input() private _topFxFlex: number | string = "0%";
-    // @Input() private _bottomFxFlex: number | string = "0%";
-    //
+    @Input() private flexPadAll: string = undefined;
+    @Input() private flexPadTB: string = undefined;
+    @Input() private flexPadLR: string = undefined;
+    @Input() private flexPadTop: string = undefined;
+    @Input() private flexPadBottom: string = undefined;
+    @Input() private flexPadLeft: string = undefined;
+    @Input() private flexPadRight: string = undefined;
     public constructor() {
     }
 
-    // public get LeftFxFlex(): string {
-    //     return convert(this._leftFxFlex);
-    // }
-    //
-    // public get RightFxFlex(): string {
-    //     return convert(this._rightFxFlex);
-    // }
-    //
-    // public get TopFxFlex(): string {
-    //     return convert(this._topFxFlex);
-    // }
-    //
-    // public get BottomFxFlex(): string {
-    //     return convert(this._bottomFxFlex);
-    // }
-    //
+    public get containerStyle(): string {
+        const flexPadTop = this.flexPadTop || this.flexPadTB || this.flexPadAll || "0%";
+        const flexPadBottom = this.flexPadBottom || this.flexPadTB || this.flexPadAll || "0%";
+        const flexPadLeft = this.flexPadLeft || this.flexPadLR || this.flexPadAll || "0%";
+        const flexPadRight = this.flexPadRight || this.flexPadLR || this.flexPadAll || "0%";
+
+        return `
+            display: grid;
+            height: 100%;
+            grid-template-rows: ${flexPadTop} [content-row-start] auto [content-row-end] ${flexPadBottom};
+            grid-template-columns: ${flexPadLeft} [content-column-start] auto [content-column-end] ${flexPadRight};
+        `;
+    }
 }
-//
-// function convert(fxFlexInstruction: number | string): string {
-//     let fxFlexInstructionStr: string;
-//     if (typeof fxFlexInstruction === "string") {
-//         fxFlexInstructionStr = fxFlexInstruction;
-//     } else if (typeof fxFlexInstruction === "number") {
-//         fxFlexInstructionStr = fxFlexInstruction.toString();
-//     } else {
-//         throw new Error(`[${ScrollableContainerComponent}] Failed to convert flex instruction '${fxFlexInstruction}'`);
-//     }
-//     if (isNumeric(fxFlexInstructionStr)) {
-//         fxFlexInstructionStr = `${fxFlexInstructionStr}%`;
-//     }
-//     return fxFlexInstructionStr;
-// }
-//
-// function isNumeric(value: string | number): boolean {
-//     return value !== null && value !== undefined && value !== "" && !isNaN(Number(value.toString()));
-// }

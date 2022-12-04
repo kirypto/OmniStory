@@ -10,8 +10,11 @@
   flex-direction: row;
 }
 .sidebar {
+  flex-grow: 0;
+  width: 50ch;
 }
 .spacer {
+  flex-grow: 0;
   background-color: rgba(156, 39, 176, 0.51);
   width: 0.3ch;
 }
