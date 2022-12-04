@@ -24,7 +24,6 @@ import {RoutePaths} from "./common/types/route-paths";
 import {EntityComponent} from "./omni-story/primary-components/edit-entity/entity.component";
 import {HomeComponent} from "./omni-story/primary-components/home/home.component";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
-import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
 import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
 import {StoryComponent} from "./omni-story/primary-components/story/story.component";
@@ -90,7 +89,6 @@ export const applicationDeclarations = [
     HomeComponent,
     NotFoundComponent,
     NavbarComponent,
-    NavbarOverlayComponent,
     MapComponent,
     MapCanvasComponent,
     EntityComponent,
