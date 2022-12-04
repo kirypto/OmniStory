@@ -3,10 +3,12 @@ $primary: rgb(156, 39, 176);
 $accent: rgb(105, 240, 174);
 $warn: rgb(244, 67, 54);
 
-
+:host {
+    display: block;
+}
 
 mat-toolbar {
-    height: 4ch;
+    height: 100%;
     width: 100vw;
     background: transparent;
 }
