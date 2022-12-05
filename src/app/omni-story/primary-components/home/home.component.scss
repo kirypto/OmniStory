@@ -22,11 +22,11 @@
   flex-grow: 1;
 }
 
-.worlds-header {
+.line-centered-header {
   display: flex;
   align-items: center;
 }
-.worlds-header > span {
+.line-centered-header > span {
   font-size: x-large;
 }
 .worlds-content {
@@ -56,4 +56,9 @@
 }
 .worlds-content > .events {
   grid-area: events;
+}
+
+.entities-row {
+  display: flex;
+  align-items: center;
 }

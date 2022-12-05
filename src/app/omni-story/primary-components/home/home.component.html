@@ -1,6 +1,6 @@
 <div class="sidebar-and-contents-container">
   <app-scrollable-container class="sidebar" flexPadTop="1vh" flexPadLR="1ch">
-    <div *ngIf="worlds.size > 0" class="worlds-header">
+    <div *ngIf="worlds.size > 0" class="line-centered-header">
       <span>Worlds</span>
       <button mat-icon-button color="accent"
               routerLink="{{constructPath(RoutePaths.entity, {worldId: 'new', entityId: 'world'})}}">
@@ -34,65 +34,34 @@
   </app-scrollable-container>
   <div class="spacer"></div>
   <app-scrollable-container class="contents" flexPadTop="1vh" flexPadLeft="1ch">
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
-    <div style="font-size: xxx-large">Foo</div>
+    <div *ngIf="!showEntities">
+      <div *ngIf="user | async; else notLoggedIn">
+        Select a World or any of its Map, Locations, Travelers, or Events.
+      </div>
+      <ng-template #notLoggedIn>
+        <div> Login to begin.</div>
+      </ng-template>
+    </div>
+
+    <div *ngIf="showEntities">
+      <div class="line-centered-header">
+        <span>{{worldName}} - {{selectedType}}s</span>
+        <button mat-icon-button color="accent"
+                routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: 'new' + selectedType})}}">
+          <mat-icon matTooltip="New {{selectedType}}">add_circle</mat-icon>
+        </button>
+      </div>
+      <div *ngFor="let entityEntry of entities | keyvalue: valueAscOrder" class="entities-row">
+        <button mat-button matTooltip="Edit"
+                routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: entityEntry.key})}}">
+          {{entityEntry.value.name}}
+        </button>
+        <button mat-icon-button color="accent" *ngIf="entityEntry.key.startsWith('location') || entityEntry.key.startsWith('traveler')" class="small-icon-button"
+                routerLink="{{constructPath(RoutePaths.story, {worldId: worldId, entityId: entityEntry.key})}}"
+                matTooltip="View Timeline">
+          <mat-icon>route</mat-icon>
+        </button>
+      </div>
+    </div>
   </app-scrollable-container>
 </div>
-
-<!--<div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">-->
-<!--  <div fxFlex="15" fxFlex.lt-md="25" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="1em">-->
-<!--  </div>-->
-
-<!--  <div fxFlex="20px">-->
-<!--    <div fxFlex="1px" class="side-bar-separator"></div>-->
-<!--  </div>-->
-
-<!--  <div fxFlex="83" fxFlex.lt-md="73">-->
-
-<!--    <div *ngIf="!showEntities" fxLayout="column">-->
-<!--      <div class="entities-title"> Welcome to OmniStory</div>-->
-<!--      <div *ngIf="user | async; else notLoggedIn" fxFlexOffset="2em">-->
-<!--        Select a World or any of its Map, Locations, Travelers, or Events.-->
-<!--      </div>-->
-<!--      <ng-template #notLoggedIn>-->
-<!--        <div fxFlexOffset="2em"> Login to begin.</div>-->
-<!--      </ng-template>-->
-<!--    </div>-->
-
-<!--    <div *ngIf="showEntities" fxFlexFill fxLayout="column" fxLayoutAlign="space-around stretch">-->
-<!--      <div fxFlex="5" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1ch">-->
-<!--        <div class="entities-title">{{worldName}} - {{selectedType}}s</div>-->
-<!--        <button mat-icon-button-->
-<!--                routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: 'new' + selectedType})}}">-->
-<!--          <mat-icon matTooltip="New {{selectedType}}">add_circle</mat-icon>-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <div fxFlex="93" fxLayout="column" fxLayoutAlign="start stretch" class="entities-container">-->
-<!--        <div *ngFor="let entityEntry of entities | keyvalue: valueAscOrder">-->
-<!--          <button mat-button routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: entityEntry.key})}}">-->
-<!--            {{entityEntry.value.name}}-->
-<!--          </button>-->
-<!--          <button mat-icon-button *ngIf="entityEntry.key.startsWith('location') || entityEntry.key.startsWith('traveler')"-->
-<!--            routerLink="{{constructPath(RoutePaths.story, {worldId: worldId, entityId: entityEntry.key})}}">-->
-<!--            <mat-icon matTooltip="View Timeline">route</mat-icon>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
