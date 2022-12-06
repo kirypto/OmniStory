@@ -1,8 +1,6 @@
-<div fxLayout="row" fxLayoutAlign="space-around">
-  <div fxFlex="65" fxLayout="row">
-    <h2>{{name}}</h2>
-  </div>
-  <div fxFlex="20" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="1ch">
+<div class="entity-content-container">
+  <div class="title">{{name}}</div>
+  <div class="buttons">
     <button mat-fab color="accent" [disabled]="!readyForSave" (click)="saveEntity()">
       <mat-icon matTooltip="Save">{{readyForSave ? "cloud_upload" : "cloud_done"}}</mat-icon>
     </button>
@@ -10,40 +8,56 @@
       <mat-icon matTooltip="Delete">delete</mat-icon>
     </button>
   </div>
+  <app-scrollable-container class="body" flexPadAll="0.5%">
+    <div style="background-color: rgba(105,240,174,0.36); height: 100%"></div>
+  </app-scrollable-container>
 </div>
-<div *ngIf="isLoaded" fxLayout="row" fxLayoutAlign="space-around">
-  <div fxFlex="97" fxLayout="column" fxLayoutAlign="space-evenly stretch">
-    <mat-form-field color="accent">
-      <mat-label>Name</mat-label>
-      <input matInput placeholder="Name" [(ngModel)]="name" name="name">
-    </mat-form-field>
-    <mat-form-field color="accent">
-      <mat-label>Description</mat-label>
-      <textarea matInput cdkTextareaAutosize placeholder="Description" [(ngModel)]="description" name="description"></textarea>
-    </mat-form-field>
-    <mat-form-field *ngIf="span" color="accent">
-      <mat-label>Span</mat-label>
-      <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="span" name="span"></textarea>
-    </mat-form-field>
-    <mat-form-field *ngIf="journey" color="accent">
-      <mat-label>Journey</mat-label>
-      <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="journey" name="journey"></textarea>
-    </mat-form-field>
-    <mat-form-field *ngIf="affectedLocations" color="accent">
-      <mat-label>Affected Locations</mat-label>
-      <textarea matInput cdkTextareaAutosize placeholder="Affected Locations" [(ngModel)]="affectedLocations" name="affected locations"></textarea>
-    </mat-form-field>
-    <mat-form-field *ngIf="affectedTravelers" color="accent">
-      <mat-label>Affected Travelers</mat-label>
-      <textarea matInput cdkTextareaAutosize placeholder="Affected Travelers" [(ngModel)]="affectedTravelers" name="affected travelers"></textarea>
-    </mat-form-field>
-    <mat-form-field color="accent">
-      <mat-label>Tags</mat-label>
-      <textarea matInput cdkTextareaAutosize placeholder="Tags" [(ngModel)]="tags" name="tags"></textarea>
-    </mat-form-field>
-    <mat-form-field color="accent">
-      <mat-label>Attributes</mat-label>
-      <textarea matInput cdkTextareaAutosize placeholder="Attributes" [(ngModel)]="attributes" name="attributes"></textarea>
-    </mat-form-field>
-  </div>
-</div>
+<!--<div fxLayout="row" fxLayoutAlign="space-around">-->
+<!--  <div fxFlex="65" fxLayout="row">-->
+<!--    <h2>{{name}}</h2>-->
+<!--  </div>-->
+<!--  <div fxFlex="20" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="1ch">-->
+<!--    <button mat-fab color="accent" [disabled]="!readyForSave" (click)="saveEntity()">-->
+<!--      <mat-icon matTooltip="Save">{{readyForSave ? "cloud_upload" : "cloud_done"}}</mat-icon>-->
+<!--    </button>-->
+<!--    <button mat-fab color="warn" [disabled]="!readyForDelete" (click)="deleteEntity()">-->
+<!--      <mat-icon matTooltip="Delete">delete</mat-icon>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<div *ngIf="isLoaded" fxLayout="row" fxLayoutAlign="space-around">-->
+<!--  <div fxFlex="97" fxLayout="column" fxLayoutAlign="space-evenly stretch">-->
+<!--    <mat-form-field color="accent">-->
+<!--      <mat-label>Name</mat-label>-->
+<!--      <input matInput placeholder="Name" [(ngModel)]="name" name="name">-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field color="accent">-->
+<!--      <mat-label>Description</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize placeholder="Description" [(ngModel)]="description" name="description"></textarea>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field *ngIf="span" color="accent">-->
+<!--      <mat-label>Span</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="span" name="span"></textarea>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field *ngIf="journey" color="accent">-->
+<!--      <mat-label>Journey</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize placeholder="Span" [(ngModel)]="journey" name="journey"></textarea>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field *ngIf="affectedLocations" color="accent">-->
+<!--      <mat-label>Affected Locations</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize placeholder="Affected Locations" [(ngModel)]="affectedLocations" name="affected locations"></textarea>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field *ngIf="affectedTravelers" color="accent">-->
+<!--      <mat-label>Affected Travelers</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize placeholder="Affected Travelers" [(ngModel)]="affectedTravelers" name="affected travelers"></textarea>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field color="accent">-->
+<!--      <mat-label>Tags</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize placeholder="Tags" [(ngModel)]="tags" name="tags"></textarea>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field color="accent">-->
+<!--      <mat-label>Attributes</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize placeholder="Attributes" [(ngModel)]="attributes" name="attributes"></textarea>-->
+<!--    </mat-form-field>-->
+<!--  </div>-->
+<!--</div>-->
