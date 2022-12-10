@@ -14,6 +14,10 @@
     " title .    buttons "
     " body  body body ";
 
+  * {
+    overflow: hidden;
+  }
+
   .title {
     grid-area: title;
     align-self: center;
@@ -25,4 +29,9 @@
   .body {
     grid-area: body;
   }
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
 }
