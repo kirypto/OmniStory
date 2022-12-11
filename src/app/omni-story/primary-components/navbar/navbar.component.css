@@ -1,21 +1,15 @@
+:host {
+  display: block;
+}
+
 mat-toolbar {
   height: 100%;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  width: 100vw;
+  background: transparent;
 }
 
-mat-toolbar a {
-  text-decoration: none;
-  color: lightgray;
-}
-
-mat-toolbar a:hover,
-mat-toolbar button:hover {
-  color: #69f0ae;
-}
-
-mat-nav-list {
-  padding: 0;
+.spacer {
+  flex: 1 1 auto;
 }
 
 .profile-image {

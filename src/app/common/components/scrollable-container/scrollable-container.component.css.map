@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["scrollable-container.component.scss"],"names":[],"mappings":"AAMA;EACE;EACA;;;AAOF;EACE;EACA;EACA;EACA;EACA;EACA;;;AAKF;EACE;;;AAEF;EACE,YA7BQ;;;AA+BV;EACE,kBA/BO;EAgCP;EACA","file":"scrollable-container.component.css"}
+{"version":3,"sourceRoot":"","sources":["scrollable-container.component.scss"],"names":[],"mappings":"AAQA;EACE;EACA;;;AAGF;EACE;EACA;EACA","file":"scrollable-container.component.css"}
