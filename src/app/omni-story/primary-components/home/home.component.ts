@@ -3,19 +3,7 @@ import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {mergeMap, Observable, tap} from "rxjs";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
-import {
-    Entity,
-    EntityId,
-    EventId,
-    EventIds,
-    LocationId,
-    LocationIds,
-    TravelerId,
-    TravelerIds,
-    World,
-    WorldId,
-    WorldIds,
-} from "../../../timeline-tracker-api/ttapi-types";
+import {Entity, EntityId, EventIds, World, WorldId, WorldIds} from "../../../timeline-tracker-api/ttapi-types";
 import {Router} from "@angular/router";
 import {filter} from "rxjs/operators";
 import {KeyValue} from "@angular/common";
@@ -89,47 +77,48 @@ export class HomeComponent extends RoutingComponent implements OnInit {
         this._worldId = worldId;
         this._selectedType = selection;
         this._entities.clear();
-        let entityRetrievalObservable: Observable<Entity>;
+        let entityIdsRetrievalObservable: Observable<EntityId[]>;
+        let entityRetrievalFunction: (EntityId) => Observable<Entity>;
 
         switch (selection) {
             case "Location":
-                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
-                entityRetrievalObservable = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
-                    worldId,
-                }).pipe(
-                    tap(this.buildAlertIfEmptyFunction("Location")),
-                    mergeMap((locationIds: LocationIds) => locationIds),
-                    mergeMap((locationId: LocationId) => this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
-                        worldId, locationId,
-                    })),
+                // noinspection TypeScriptValidateTypes
+                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
+                    "/api/world/{worldId}/locations", "get", {worldId}
+                );
+                // noinspection TypeScriptValidateTypes
+                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
+                    "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}
                 );
                 break;
             case "Traveler":
-                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
-                entityRetrievalObservable = this._ttapiGateway.fetch("/api/world/{worldId}/travelers", "get", {
-                    worldId,
-                }).pipe(
-                    tap(this.buildAlertIfEmptyFunction("Traveler")),
-                    mergeMap((travelerIds: TravelerIds) => travelerIds),
-                    mergeMap((travelerId: TravelerId) => this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}", "get", {
-                        worldId, travelerId,
-                    })),
+                // noinspection TypeScriptValidateTypes
+                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
+                    "/api/world/{worldId}/travelers", "get", {worldId}
+                );
+                // noinspection TypeScriptValidateTypes
+                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
+                    "/api/world/{worldId}/traveler/{travelerId}", "get", {worldId, travelerId: entityId}
                 );
                 break;
             case "Event":
-                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
-                entityRetrievalObservable = this._ttapiGateway.fetch("/api/world/{worldId}/events", "get", {
-                    worldId,
-                }).pipe(
-                    tap(this.buildAlertIfEmptyFunction("Event")),
-                    mergeMap((eventIds: EventIds) => eventIds),
-                    mergeMap((eventId: EventId) => this._ttapiGateway.fetch("/api/world/{worldId}/event/{eventId}", "get", {
-                        worldId, eventId,
-                    })),
+                // noinspection TypeScriptValidateTypes
+                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
+                    "/api/world/{worldId}/events", "get", {worldId}
+                );
+                // noinspection TypeScriptValidateTypes
+                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
+                    "/api/world/{worldId}/event/{eventId}", "get", {worldId, eventId: entityId}
                 );
                 break;
         }
-        this.newSubscription = entityRetrievalObservable.subscribe((entity: Entity) => this._entities.set(entity.id, entity));
+        this.newSubscription = entityIdsRetrievalObservable
+            .pipe(
+                tap(this.buildAlertIfEmptyFunction(selection)),
+                mergeMap((eventIds: EventIds) => eventIds),
+                mergeMap(entityRetrievalFunction),
+            )
+            .subscribe((entity: Entity) => this._entities.set(entity.id, entity));
     }
 
     private buildAlertIfEmptyFunction(entityType: "Location" | "Traveler" | "Event"): (array: any[]) => void {
