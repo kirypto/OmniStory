@@ -69,6 +69,23 @@ export class TtapiGatewayService {
         );
     }
 
+    public fetch2<
+        TPath extends keyof paths,
+        TMethod extends keyof paths[TPath],
+        TPathParams extends FetchPathParamsType<TPath, TMethod>,
+        TQueryParams extends FetchQueryParamsType<TPath, TMethod>,
+        TBody extends FetchBodyType<TPath, TMethod>,
+        TReturn extends FetchResponseType<TPath, TMethod>,
+    >(
+        path: TPath,
+        method: TMethod,
+        pathParams: TPathParams,
+        queryParams: TQueryParams,
+        body: TBody,
+    ): TReturn {
+        return ("" as unknown as TReturn);
+    }
+
     private getAuthToken(): Observable<string> {
         return this._authService.getIdTokenClaims().pipe(
             map(value => {
@@ -80,3 +97,31 @@ export class TtapiGatewayService {
         );
     }
 }
+
+type FetchPathParamsType<TPath extends keyof paths, TMethod extends keyof paths[TPath]> = paths[TPath][TMethod] extends {
+        parameters: { path: infer TPathParams }
+    }
+    ? TPathParams
+    : {};
+
+type FetchQueryParamsType<TPath extends keyof paths, TMethod extends keyof paths[TPath]> = paths[TPath][TMethod] extends {
+        parameters: { query: infer TQueryParams }
+    }
+    ? TQueryParams
+    : {};
+
+type FetchBodyType<TPath extends keyof paths, TMethod extends keyof paths[TPath]> = paths[TPath][TMethod] extends {
+        requestBody: { content: { "application/json": infer TBody } }
+    }
+    ? TBody
+    : void;
+
+type FetchResponseType<TPath extends keyof paths, TMethod extends keyof paths[TPath]> = paths[TPath][TMethod] extends {
+        responses: infer TResponses
+    }
+    ? TResponses extends { 201: { content: { "application/json": infer TCreatedResponse } } }
+        ? TCreatedResponse
+        : TResponses extends { 200: { content: { "application/json": infer TOkResponse } } }
+            ? TOkResponse
+            : {}
+    : never;
