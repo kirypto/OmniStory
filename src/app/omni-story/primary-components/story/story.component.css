@@ -3,16 +3,52 @@
   height: 100%;
 }
 
-.story-title {
+.story-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: fit-content(10%) auto;
+  grid-template-areas: " title   " " body ";
+}
+.story-container > * {
+  overflow: hidden;
+}
+.story-container > .title {
+  grid-area: title;
   font-size: xx-large;
+  justify-self: center;
+}
+.story-container > .body {
+  grid-area: body;
+}
+
+.story-item-container {
+  display: grid;
+  grid-template-rows: 3em auto 2ch;
+  grid-template-columns: 7ch auto;
+  grid-template-areas: " icon title   " " .    details " " .    .       ";
+  align-items: center;
+}
+.story-item-container > .icon {
+  grid-area: icon;
+  justify-self: center;
+}
+.story-item-container > .title {
+  grid-area: title;
+  justify-self: flex-start;
+}
+.story-item-container > .title * {
+  font-size: x-large;
+}
+.story-item-container > .title > button {
+  padding: 0.1ch 0;
+}
+.story-item-container > .details {
+  grid-area: details;
 }
 
 .item-title > * {
   font-size: x-large;
-}
-
-.item-title > div {
-  padding: 0.1ch 1.2ch;
 }
 
 /*# sourceMappingURL=story.component.css.map */

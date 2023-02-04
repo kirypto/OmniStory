@@ -2,9 +2,15 @@
   width: 100%;
   height: 100%;
 }
+.map-canvas {
+  width: 100%;
+  height: 100%;
+}
 .map-context-menu {
   background-color: #00000044;
   border-radius: 0.5ch;
+  display: flex;
+  flex-direction: column;
 }
 .map-context-menu > button {
   padding: 0.5ch 1ch;

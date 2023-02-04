@@ -1,18 +1,18 @@
-<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between stretch">
-  <div fxFlex="40" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1ch">
-    <button *ngIf="isLoggedIn" mat-icon-button routerLink="{{RoutePaths.home}}">
-      <mat-icon matTooltip="Home">home</mat-icon>
-    </button>
-  </div>
-  <div fxFlex="40" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1ch">
-    <button *ngIf="!isLoggedIn" mat-icon-button (click)="doLogin()">
-      <mat-icon matTooltip="Login">login</mat-icon>
-    </button>
-    <button *ngIf="isLoggedIn" mat-icon-button (click)="doLogout()">
-      <mat-icon matTooltip="Logout">logout</mat-icon>
-    </button>
-    <ng-container *ngIf="user | async as user">
-      <img src="{{user.picture}}" alt="Profile Image" class="profile-image"/>
-    </ng-container>
-  </div>
+<mat-toolbar color="primary">
+  <button matTooltip="Home" *ngIf="isLoggedIn" mat-icon-button routerLink="{{RoutePaths.home}}">
+    <mat-icon>home</mat-icon>
+  </button>
+  <span>OmniStory</span>
+
+  <span class="spacer"></span>
+
+  <button *ngIf="!isLoggedIn" mat-icon-button (click)="doLogin()">
+    <mat-icon matTooltip="Login">login</mat-icon>
+  </button>
+  <ng-container *ngIf="user | async as user">
+    <img src="{{user.picture}}" alt="Profile Image" class="profile-image"/>
+  </ng-container>
+  <button matTooltip="Logout" *ngIf="isLoggedIn" mat-icon-button (click)="doLogout()">
+    <mat-icon>logout</mat-icon>
+  </button>
 </mat-toolbar>

@@ -3,23 +3,18 @@ $primary: rgb(156, 39, 176);
 $accent: rgb(105, 240, 174);
 $warn: rgb(244, 67, 54);
 
+:host {
+    display: block;
+}
 
 mat-toolbar {
     height: 100%;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-mat-toolbar a {
-    text-decoration: none;
-    color: lightgray;
-}
-mat-toolbar a:hover,
-mat-toolbar button:hover {
-    color: $accent;
+    width: 100vw;
+    background: transparent;
 }
 
-mat-nav-list {
-    padding: 0;
+.spacer {
+    flex: 1 1 auto;
 }
 
 .profile-image {

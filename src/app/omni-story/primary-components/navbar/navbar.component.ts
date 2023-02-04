@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Output} from "@angular/core";
-import {RoutingComponent} from "../../../common/components/RoutingComponent";
+import {Component} from "@angular/core";
+import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
@@ -10,7 +10,6 @@ import {Observable} from "rxjs";
     styleUrls: ["./navbar.component.scss"],
 })
 export class NavbarComponent extends RoutingComponent {
-    @Output() public sidenavToggle = new EventEmitter();
     private _isLoggedIn = false;
 
     public constructor(private _authService: AuthService, private _router: Router) {
@@ -24,10 +23,6 @@ export class NavbarComponent extends RoutingComponent {
 
     public get user(): Observable<User | null | undefined> {
         return this._authService.user$;
-    }
-
-    public onToggleSidenav = () => {
-        this.sidenavToggle.emit();
     }
 
     public doLogin(): void {

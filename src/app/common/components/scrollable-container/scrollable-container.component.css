@@ -3,27 +3,10 @@
   width: 100%;
 }
 
-.scrollable-content {
-  scrollbar-width: thin;
-  scrollbar-color: #69f0ae #9c27b0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-}
-
-.scrollable-content::-webkit-scrollbar {
-  width: 10px;
-}
-
-.scrollable-content::-webkit-scrollbar-track {
-  background: #9c27b0;
-}
-
-.scrollable-content::-webkit-scrollbar-thumb {
-  background-color: #69f0ae;
-  border-radius: 20px;
-  border: 3px solid #9c27b0;
+.content {
+  grid-row: content-row-start/content-row-end;
+  grid-column: content-column-start/content-column-end;
+  overflow: auto;
 }
 
 /*# sourceMappingURL=scrollable-container.component.css.map */

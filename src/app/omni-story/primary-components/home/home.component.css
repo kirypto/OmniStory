@@ -1,30 +1,72 @@
 :host {
+  display: block;
   width: 100%;
   height: 100%;
 }
 
-.world-side-header {
+.sidebar-and-contents-container {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+}
+
+.sidebar {
+  flex-grow: 0;
+  width: 30ch;
+}
+
+.spacer {
+  flex-grow: 0;
+  background-color: rgba(156, 39, 176, 0.51);
+  width: 0.3ch;
+}
+
+.contents {
+  flex-grow: 1;
+}
+
+.line-centered-header {
+  display: flex;
+  align-items: center;
+}
+
+.line-centered-header > span {
   font-size: x-large;
 }
 
-.world-side-content button {
-  text-align: left;
+.worlds-content {
+  display: grid;
+  grid-template-columns: 15% 85%;
+  grid-template-areas: "world world" ".      map" ".      locations" ".      travelers" ".      events";
 }
 
-.world-side-content button.indent {
-  padding-left: 5ch;
+.worlds-content > * {
+  justify-content: flex-start;
 }
 
-.side-bar-separator {
-  background-color: #9c27b0;
+.worlds-content > .world {
+  grid-area: world;
 }
 
-.entities-title {
-  font-size: x-large;
+.worlds-content > .map {
+  grid-area: map;
 }
 
-.entities-container {
-  overflow-y: auto;
+.worlds-content > .locations {
+  grid-area: locations;
+}
+
+.worlds-content > .travelers {
+  grid-area: travelers;
+}
+
+.worlds-content > .events {
+  grid-area: events;
+}
+
+.entities-row {
+  display: flex;
+  align-items: center;
 }
 
 /*# sourceMappingURL=home.component.css.map */

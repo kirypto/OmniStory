@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {RoutingComponent} from "../../../common/components/RoutingComponent";
+import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {mergeMap, Observable, tap} from "rxjs";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
@@ -28,7 +28,7 @@ import {KeyValue} from "@angular/common";
 export class HomeComponent extends RoutingComponent implements OnInit {
     private _worlds: Map<WorldId, World> = new Map<WorldId, World>();
     private _entities: Map<EntityId, Entity> = new Map<EntityId, Entity>();
-    private _worldId: WorldId | undefined;
+    private _worldId: WorldId;
     private _selectedType: "Location" | "Traveler" | "Event";
 
     public constructor(
@@ -72,9 +72,12 @@ export class HomeComponent extends RoutingComponent implements OnInit {
             filter((user: User | null | undefined) => user !== null && user !== undefined),
             mergeMap(() => this._ttapiGateway.fetch("/api/worlds", "get", {})),
             mergeMap((worldIds: WorldIds) => worldIds),
-            mergeMap((worldId: WorldId) => this._ttapiGateway.fetch("/api/world/{worldId}", "get", {
-                worldId,
-            })),
+            mergeMap((worldId: WorldId) => {
+                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
+                return this._ttapiGateway.fetch("/api/world/{worldId}", "get", {
+                    worldId,
+                });
+            }),
         ).subscribe((world: World) => this._worlds.set(world.id, world));
     }
 
@@ -90,6 +93,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
 
         switch (selection) {
             case "Location":
+                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
                 entityRetrievalObservable = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
                     worldId,
                 }).pipe(
@@ -101,6 +105,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
                 );
                 break;
             case "Traveler":
+                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
                 entityRetrievalObservable = this._ttapiGateway.fetch("/api/world/{worldId}/travelers", "get", {
                     worldId,
                 }).pipe(
@@ -112,6 +117,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
                 );
                 break;
             case "Event":
+                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
                 entityRetrievalObservable = this._ttapiGateway.fetch("/api/world/{worldId}/events", "get", {
                     worldId,
                 }).pipe(

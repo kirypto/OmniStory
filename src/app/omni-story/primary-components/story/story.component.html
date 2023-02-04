@@ -1,23 +1,22 @@
-<div *ngIf="name" fxLayout="row" fxLayoutAlign="center center">
-  <div class="story-title">The Story of {{name}}</div>
-</div>
-<div fxLayout="column" fxLayoutGap="2ch">
-  <div *ngFor="let timelineItem of timeline" fxLayout="column" fxLayoutAlign="start stretch">
-    <div fxLayout="row" fxLayoutAlign="space-evenly center">
-      <div fxFlex="2">
-        <mat-icon>{{timelineItem.type === "event" ? "event" : "directions_run"}}</mat-icon>
+<div *ngIf="name" class="story-container">
+  <div class="title">The Story of {{name}}</div>
+  <app-scrollable-container flexPadAll="1%">
+    <div *ngFor="let timelineItem of timeline" class="story-item-container">
+      <div class="icon">
+        <mat-icon color="primary">{{timelineItem.type === "event" ? "event" : "directions_run"}}</mat-icon>
       </div>
-      <div fxFlex="93" class="item-title">
+      <div class="title">
         <button *ngIf="timelineItem.type === 'event'; else movementTitle" mat-button
-            routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: timelineItem.eventId})}}">
+                routerLink="{{constructPath(RoutePaths.entity, {worldId: worldId, entityId: timelineItem.eventId})}}">
           {{timelineItem.title}}</button>
-        <ng-template #movementTitle><div>{{timelineItem.title}}</div></ng-template>
+        <ng-template #movementTitle>
+          <div>{{timelineItem.title}}</div>
+        </ng-template>
       </div>
-    </div>
-    <div *ngIf="timelineItem.details" fxLayout="row" fxLayoutAlign="center center">
-      <div fxFlex="85" fxLayout="row">
+      <div *ngIf="timelineItem.details" class="details">
         {{timelineItem.details}}
       </div>
     </div>
-  </div>
+
+  </app-scrollable-container>
 </div>

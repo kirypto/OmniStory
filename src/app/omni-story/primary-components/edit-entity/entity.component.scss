@@ -3,3 +3,35 @@
   height: 100%;
   overflow-y: auto;
 }
+
+.entity-content-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: fit-content(25%) auto fit-content(15%);
+  grid-template-rows: fit-content(10%) auto;
+  grid-template-areas:
+    " title .    buttons "
+    " body  body body ";
+
+  * {
+    overflow: hidden;
+  }
+
+  .title {
+    grid-area: title;
+    align-self: center;
+    font-size: xx-large;
+  }
+  .buttons {
+    grid-area: buttons;
+  }
+  .body {
+    grid-area: body;
+  }
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}

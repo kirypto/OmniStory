@@ -1,6 +1,5 @@
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {Provider} from "@angular/core";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatNativeDateModule} from "@angular/material/core";
@@ -21,13 +20,11 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 
 import {AppComponent} from "./app.component";
 import {MapCanvasComponent} from "./common/components/map-canvas/map-canvas.component";
-import {RangeScrollbarComponent} from "./common/components/range-scrollbar/range-scrollbar.component";
 import {ScrollableContainerComponent} from "./common/components/scrollable-container/scrollable-container.component";
-import {RoutePaths} from "./common/types/route-paths";
+import {RoutePaths} from "./omni-story/route-paths";
 import {EntityComponent} from "./omni-story/primary-components/edit-entity/entity.component";
 import {HomeComponent} from "./omni-story/primary-components/home/home.component";
 import {MapComponent} from "./omni-story/primary-components/map/map.component";
-import {NavbarOverlayComponent} from "./omni-story/primary-components/navbar-overlay/navbar-overlay.component";
 import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.component";
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
 import {StoryComponent} from "./omni-story/primary-components/story/story.component";
@@ -69,7 +66,6 @@ export const applicationImports = [
     FormsModule,
     MatButtonModule,
     MatSlideToggleModule,
-    FlexLayoutModule,
     MatInputModule,
     BrowserAnimationsModule,
     MatIconModule,
@@ -94,10 +90,8 @@ export const applicationDeclarations = [
     HomeComponent,
     NotFoundComponent,
     NavbarComponent,
-    NavbarOverlayComponent,
     ScrollableContainerComponent,
     MapComponent,
-    RangeScrollbarComponent,
     MapCanvasComponent,
     EntityComponent,
     StoryComponent
