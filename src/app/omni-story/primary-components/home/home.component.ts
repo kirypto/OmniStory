@@ -83,12 +83,18 @@ export class HomeComponent extends RoutingComponent implements OnInit {
         switch (selection) {
             case "Location":
                 // noinspection TypeScriptValidateTypes
-                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
-                    "/api/world/{worldId}/locations", "get", {worldId}
+                // entityIdsRetrievalObservable = this._ttapiGateway.fetch(
+                //     "/api/world/{worldId}/locations", "get", {worldId}
+                // );
+                entityIdsRetrievalObservable = this._ttapiGateway.fetch2(
+                    "/api/world/{worldId}/locations", "get", {worldId}, {}, null
                 );
                 // noinspection TypeScriptValidateTypes
-                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
-                    "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}
+                // entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
+                //     "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}
+                // );
+                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch2(
+                    "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}, {}, null
                 );
                 break;
             case "Traveler":
