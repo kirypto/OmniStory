@@ -178,10 +178,11 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
 
         let fetchObservable: Observable<Entity>;
         if (this._worldId === "new" && this._entityId === "world") {
-            const args = {
-                ...(this._entity as World),
-            };
-            fetchObservable = this._ttapiGateway.fetch("/api/world", "post", args);
+            fetchObservable = this._ttapiGateway.fetch2("/api/world", "post", {}, {}, this._entity);
+            // const args = {
+            //     ...(this._entity as World),
+            // };
+            // fetchObservable = this._ttapiGateway.fetch("/api/world", "post", args);
         } else if (this._entityId === "newLocation") {
             const args = {
                 worldId: this.worldId, ...(this._entity as Location),
