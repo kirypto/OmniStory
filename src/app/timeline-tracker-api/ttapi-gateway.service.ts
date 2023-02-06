@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {AuthService} from "@auth0/auth0-angular";
 import {Router} from "@angular/router";
-import {Fetcher, Middleware, OpArgType, OpReturnType} from "openapi-typescript-fetch";
+import {arrayRequestBody, Fetcher, Middleware, OpArgType, OpReturnType} from "openapi-typescript-fetch";
 import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types";
 import {catchError, EMPTY, firstValueFrom, from, Observable} from "rxjs";
 import {map} from "rxjs/operators";
@@ -82,8 +82,31 @@ export class TtapiGatewayService {
         pathParams: TPathParams,
         queryParams: TQueryParams,
         body: TBody,
-    ): TReturn {
-        return ("" as unknown as TReturn);
+        redirectToAuth: boolean = true,
+    ): Observable<TReturn> {
+        return from((async () => {
+            const mergedParams = {...(pathParams as object), ...(queryParams as object)};
+            const fetcher = this._fetcher.path(path).method(method).create();
+            let response;
+            if (Array.isArray(body)) {
+                response = await fetcher(arrayRequestBody(body, mergedParams));
+            } else {
+                response = await fetcher({...mergedParams, ...(body as object)});
+            }
+            const {data} = response;
+            return data as TReturn;
+        })()).pipe(
+            catchError((err) => {
+                if (err instanceof NotLoggedInError && redirectToAuth) {
+                    console.log("Not logged in, redirecting to auth");
+                    this._authService.loginWithRedirect({
+                        appState: {target: this._router.url},
+                    });
+                    return EMPTY;
+                }
+                throw err;
+            }),
+        );
     }
 
     private getAuthToken(): Observable<string> {
