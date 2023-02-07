@@ -1,19 +1,20 @@
-import {Injectable} from "@angular/core";
 import {AuthService} from "@auth0/auth0-angular";
 import {Router} from "@angular/router";
 import {arrayRequestBody, Fetcher, Middleware, OpArgType, OpReturnType} from "openapi-typescript-fetch";
 import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types";
 import {catchError, EMPTY, firstValueFrom, from, Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {paths} from "./ttapi-schema";
-import {WorldIds} from "./ttapi-types";
+import {paths} from "@ttapi/ttapi-schema";
+import {WorldIds} from "@ttapi/ttapi-types";
 import {ttapiConfig} from "../../environments/environment";
+import {Injectable} from "@angular/core";
+import {TimelineTrackerApiModule} from "@ttapi/timeline-tracker-api.module";
 
 class NotLoggedInError extends Error {
 }
 
 @Injectable({
-    providedIn: "root",
+    providedIn: TimelineTrackerApiModule,
 })
 export class TtapiGatewayService {
     private _fetcher;
