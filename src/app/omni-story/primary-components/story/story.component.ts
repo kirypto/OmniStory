@@ -69,12 +69,12 @@ export class StoryComponent extends RoutingComponent implements OnInit {
         let fetchEntityObservable: Observable<Entity>;
         if (this._name.startsWith("location")) {
             const args = {worldId: this._worldId, locationId: this._name};
-            fetchTimelineObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}/timeline", "get", args);
-            fetchEntityObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", args);
+            fetchTimelineObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}/timeline", "get", args);
+            fetchEntityObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "get", args);
         } else if (this._name.startsWith("traveler")) {
             const args = {worldId: this._worldId, travelerId: this._name};
-            fetchTimelineObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}/timeline", "get", args);
-            fetchEntityObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}", "get", args);
+            fetchTimelineObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}/timeline", "get", args);
+            fetchEntityObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}", "get", args);
         } else {
             throw new Error(`Cannot edit entity '${this._name}', unsupported entity type`);
         }
@@ -84,7 +84,7 @@ export class StoryComponent extends RoutingComponent implements OnInit {
             this._eventDetails.clear();
             this.newSubscription = from(timeline).pipe(
                 filter(timelineItem => !isPositionalMove(timelineItem)),
-                mergeMap((eventId: EventId) => this._ttapiGateway.fetch("/api/world/{worldId}/event/{eventId}", "get", {
+                mergeMap((eventId: EventId) => this._ttapiGateway.fetchOld("/api/world/{worldId}/event/{eventId}", "get", {
                     worldId: this._worldId, eventId,
                 })),
             ).subscribe((event: Event) => {

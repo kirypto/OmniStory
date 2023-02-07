@@ -58,11 +58,11 @@ export class HomeComponent extends RoutingComponent implements OnInit {
     public ngOnInit(): void {
         this.newSubscription = this.user.pipe(
             filter((user: User | null | undefined) => user !== null && user !== undefined),
-            mergeMap(() => this._ttapiGateway.fetch("/api/worlds", "get", {})),
+            mergeMap(() => this._ttapiGateway.fetchOld("/api/worlds", "get", {})),
             mergeMap((worldIds: WorldIds) => worldIds),
             mergeMap((worldId: WorldId) => {
                 // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
-                return this._ttapiGateway.fetch("/api/world/{worldId}", "get", {
+                return this._ttapiGateway.fetchOld("/api/world/{worldId}", "get", {
                     worldId,
                 });
             }),
@@ -86,34 +86,34 @@ export class HomeComponent extends RoutingComponent implements OnInit {
                 // entityIdsRetrievalObservable = this._ttapiGateway.fetch(
                 //     "/api/world/{worldId}/locations", "get", {worldId}
                 // );
-                entityIdsRetrievalObservable = this._ttapiGateway.fetch2(
+                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
                     "/api/world/{worldId}/locations", "get", {worldId}, {}, null
                 );
                 // noinspection TypeScriptValidateTypes
                 // entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
                 //     "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}
                 // );
-                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch2(
+                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
                     "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}, {}, null
                 );
                 break;
             case "Traveler":
                 // noinspection TypeScriptValidateTypes
-                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
+                entityIdsRetrievalObservable = this._ttapiGateway.fetchOld(
                     "/api/world/{worldId}/travelers", "get", {worldId}
                 );
                 // noinspection TypeScriptValidateTypes
-                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
+                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetchOld(
                     "/api/world/{worldId}/traveler/{travelerId}", "get", {worldId, travelerId: entityId}
                 );
                 break;
             case "Event":
                 // noinspection TypeScriptValidateTypes
-                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
+                entityIdsRetrievalObservable = this._ttapiGateway.fetchOld(
                     "/api/world/{worldId}/events", "get", {worldId}
                 );
                 // noinspection TypeScriptValidateTypes
-                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
+                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetchOld(
                     "/api/world/{worldId}/event/{eventId}", "get", {worldId, eventId: entityId}
                 );
                 break;
