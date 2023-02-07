@@ -43,7 +43,7 @@ export class TtapiGatewayService {
         this._getWorlds = this._fetcher.path("/api/worlds").method("get").create();
     }
 
-    public fetch<TPath extends keyof paths,
+    public fetchOld<TPath extends keyof paths,
         TMethod extends keyof paths[TPath],
         TArgs extends OpArgType<paths[TPath][TMethod]>,
         TReturn extends OpReturnType<paths[TPath][TMethod]>>(
@@ -70,7 +70,7 @@ export class TtapiGatewayService {
         );
     }
 
-    public fetch2<
+    public fetch<
         TPath extends keyof paths,
         TMethod extends keyof paths[TPath],
         TPathParams extends FetchPathParamsType<TPath, TMethod>,

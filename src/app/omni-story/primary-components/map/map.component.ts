@@ -145,11 +145,11 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
             this.updateQueryParams({reality: 0});
         }
         console.log(`Rendering map for reality ${reality}`);
-        this.newSubscription = this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {
+        this.newSubscription = this._ttapiGateway.fetchOld("/api/world/{worldId}/locations", "get", {
             worldId: this._worldId,
         }).pipe(
             mergeMap((locationIds: LocationIds) => locationIds),
-            mergeMap((locationId: LocationId) => this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
+            mergeMap((locationId: LocationId) => this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "get", {
                 worldId: this._worldId,
                 locationId,
             })),

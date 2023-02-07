@@ -178,7 +178,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
 
         let fetchObservable: Observable<Entity>;
         if (this._worldId === "new" && this._entityId === "world") {
-            fetchObservable = this._ttapiGateway.fetch2("/api/world", "post", {}, {}, this._entity);
+            fetchObservable = this._ttapiGateway.fetch("/api/world", "post", {}, {}, this._entity);
             // const args = {
             //     ...(this._entity as World),
             // };
@@ -187,21 +187,21 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             const args = {
                 worldId: this.worldId, ...(this._entity as Location),
             };
-            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location", "post", args);
+            fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location", "post", args);
         } else if (this._entityId === "newTraveler") {
             const args = {
                 worldId: this.worldId, ...(this._entity as Traveler),
             };
-            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler", "post", args);
+            fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler", "post", args);
         } else if (this._entityId === "newEvent") {
             const args = {
                 worldId: this.worldId, ...(this._entity as Event),
             };
-            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/event", "post", args);
+            fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/event", "post", args);
         } else if (this._entityId.startsWith("world")) {
             // TODO: Currently the routing does not support only providing a world id, ex '.../entity/world-123'. It would be nice to
             //  support this.
-            fetchObservable = this._ttapiGateway.fetch2(
+            fetchObservable = this._ttapiGateway.fetch(
                 "/api/world/{worldId}", "patch", {worldId: this._worldId}, {}, entityPatch
             );
 
@@ -211,21 +211,21 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             //         worldId: this._worldId,
             //     }));
         } else if (this._entityId.startsWith("location")) {
-            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "patch", arrayRequestBody(
+            fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "patch", arrayRequestBody(
                 entityPatch,
                 {
                     worldId: this._worldId,
                     locationId: this._entityId,
                 }));
         } else if (this._entityId.startsWith("traveler")) {
-            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}", "patch", arrayRequestBody(
+            fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}", "patch", arrayRequestBody(
                 entityPatch,
                 {
                     worldId: this._worldId,
                     travelerId: this._entityId,
                 }));
         } else if (this._entityId.startsWith("event")) {
-            fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/event/{eventId}", "patch", arrayRequestBody(
+            fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/event/{eventId}", "patch", arrayRequestBody(
                 entityPatch,
                 {
                     worldId: this._worldId,
@@ -252,21 +252,21 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         }
         let deleteObservable: Observable<unknown>;
         if (this._entityId.startsWith("world")) {
-            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}", "delete", {
+            deleteObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}", "delete", {
                 worldId: this._worldId,
             });
         } else if (this._entityId.startsWith("location")) {
-            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "delete", {
+            deleteObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "delete", {
                 worldId: this._worldId,
                 locationId: this._entityId,
             });
         } else if (this._entityId.startsWith("traveler")) {
-            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}", "delete", {
+            deleteObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}", "delete", {
                 worldId: this._worldId,
                 travelerId: this._entityId,
             });
         } else if (this._entityId.startsWith("event")) {
-            deleteObservable = this._ttapiGateway.fetch("/api/world/{worldId}/event/{eventId}", "delete", {
+            deleteObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/event/{eventId}", "delete", {
                 worldId: this._worldId,
                 eventId: this._entityId,
             });
@@ -324,21 +324,21 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             if (this._entityId.startsWith("world")) {
                 // TODO: Currently the routing does not support only providing a world id, ex '.../entity/world-123'. It would be nice
                 //  to support this.
-                fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}", "get", {
+                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}", "get", {
                     worldId: this._worldId,
                 });
             } else if (this._entityId.startsWith("location")) {
-                fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/location/{locationId}", "get", {
+                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "get", {
                     worldId: this._worldId,
                     locationId: this._entityId,
                 });
             } else if (this._entityId.startsWith("traveler")) {
-                fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/traveler/{travelerId}", "get", {
+                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}", "get", {
                     worldId: this._worldId,
                     travelerId: this._entityId,
                 });
             } else if (this._entityId.startsWith("event")) {
-                fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}/event/{eventId}", "get", {
+                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/event/{eventId}", "get", {
                     worldId: this._worldId,
                     eventId: this._entityId,
                 });
