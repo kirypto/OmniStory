@@ -13,9 +13,9 @@ import {
 import {ImageFetcherService} from "../../../common/services/image-fetcher.service";
 import {deepCopy} from "../../../common/util";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Location, LocationId, LocationIds, WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {Location, LocationId, LocationIds, WorldId} from "@ttapi/domain/types.model";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
-import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {TtapiGatewayService} from "@ttapi/ttapi-gateway.service";
 import {filter, mergeMap, take} from "rxjs/operators";
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {TemplatePortal} from "@angular/cdk/portal";

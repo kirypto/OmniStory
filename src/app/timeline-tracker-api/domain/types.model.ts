@@ -1,4 +1,4 @@
-import {components} from "./ttapi-schema";
+import {components} from "@ttapi/domain/schema.model";
 /*
 The following command will generate the ttapi-schema.ts file according to the Timeline Tracker API Specification:
     npx openapi-typescript .\src\assets\ttapi-specification\apiSpecification.json --output .\src\app\timeline-tracker-api\ttapi-schema.ts
