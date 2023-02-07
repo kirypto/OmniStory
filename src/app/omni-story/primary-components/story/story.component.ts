@@ -3,7 +3,7 @@ import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {filter, mergeMap} from "rxjs/operators";
 import {from, Observable} from "rxjs";
 
-import {Entity, EntityId, Event, EventId, PositionalMove, Timeline, TimelineItem, WorldId} from "../../../timeline-tracker-api/ttapi-types";
+import {Entity, EntityId, Event, EventId, PositionalMove, Timeline, TimelineItem, WorldId} from "@ttapi/domain/types.model";
 import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
 import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 

@@ -12,8 +12,8 @@ import {
     Traveler,
     World,
     WorldId,
-} from "../../../timeline-tracker-api/ttapi-types";
-import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+} from "@ttapi/domain/types.model";
+import {TtapiGatewayService} from "@ttapi/ttapi-gateway.service";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
 import {filter} from "rxjs/operators";

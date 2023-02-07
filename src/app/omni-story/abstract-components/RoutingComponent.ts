@@ -1,6 +1,6 @@
 import {RoutePaths} from "../route-paths";
 import {SubscribingComponent} from "../../common/components/SubscribingComponent";
-import {EntityId, WorldId} from "../../timeline-tracker-api/ttapi-types";
+import {EntityId, WorldId} from "@ttapi/domain/types.model";
 
 export abstract class RoutingComponent extends SubscribingComponent {
     public get RoutePaths(): typeof RoutePaths {

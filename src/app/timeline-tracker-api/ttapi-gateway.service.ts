@@ -4,8 +4,8 @@ import {arrayRequestBody, Fetcher, Middleware, OpArgType, OpReturnType} from "op
 import {CustomRequestInit, Fetch} from "openapi-typescript-fetch/dist/cjs/types";
 import {catchError, EMPTY, firstValueFrom, from, Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {paths} from "@ttapi/ttapi-schema";
-import {WorldIds} from "@ttapi/ttapi-types";
+import {paths} from "@ttapi/domain/schema.model";
+import {WorldIds} from "@ttapi/domain/types.model";
 import {ttapiConfig} from "../../environments/environment";
 import {Injectable} from "@angular/core";
 import {TimelineTrackerApiModule} from "@ttapi/timeline-tracker-api.module";
