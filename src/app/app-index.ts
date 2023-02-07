@@ -29,6 +29,7 @@ import {NavbarComponent} from "./omni-story/primary-components/navbar/navbar.com
 import {NotFoundComponent} from "./omni-story/primary-components/not-found/not-found.component";
 import {StoryComponent} from "./omni-story/primary-components/story/story.component";
 import {auth0Config} from "../environments/environment";
+import {TimelineTrackerApiModule} from "./timeline-tracker-api/timeline-tracker-api.module";
 
 /**
  * All http interceptor providers in outside-in order
@@ -80,6 +81,7 @@ export const applicationImports = [
     RouterModule.forRoot(routes),
     HttpClientModule,
     AuthModule.forRoot(auth0Config),
+    TimelineTrackerApiModule,
 ];
 
 /**
