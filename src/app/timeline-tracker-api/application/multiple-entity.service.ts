@@ -15,14 +15,15 @@ export class MultipleEntityService {
   }
 
   public getWorldEntities(worldId: WorldId, entityType: "Location" | "Traveler" | "Event"): Observable<LocationIds | TravelerIds | EventIds> {
-    if (entityType === "Location") {
-      return this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {worldId}, {}, null);
-    } else if (entityType === "Traveler") {
-      return this._ttapiGateway.fetch("/api/world/{worldId}/travelers", "get", {worldId}, {}, null);
-    } else if (entityType === "Event") {
-      return this._ttapiGateway.fetch("/api/world/{worldId}/events", "get", {worldId}, {}, null);
-    } else {
-      throw new Error(`Unsupported entity type '${entityType}'`);
+    switch (entityType) {
+      case "Location":
+        return this._ttapiGateway.fetch("/api/world/{worldId}/locations", "get", {worldId}, {}, null);
+      case "Traveler":
+        return this._ttapiGateway.fetch("/api/world/{worldId}/travelers", "get", {worldId}, {}, null);
+      case "Event":
+        return this._ttapiGateway.fetch("/api/world/{worldId}/events", "get", {worldId}, {}, null);
+      default:
+        throw new Error(`Unsupported entity type '${entityType}'`);
     }
   }
 }
