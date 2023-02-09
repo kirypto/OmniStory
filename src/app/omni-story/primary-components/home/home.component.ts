@@ -2,12 +2,12 @@ import {Component, OnInit} from "@angular/core";
 import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {mergeMap, Observable, tap} from "rxjs";
-import {TtapiGatewayService} from "@ttapi/ttapi-gateway.service";
-import {Entity, EntityId, EntityIds, EventIds, World, WorldId, WorldIds} from "@ttapi/domain/types.model";
+import {Entity, EntityId, EntityIds, World, WorldId, WorldIds} from "@ttapi/domain/types.model";
 import {Router} from "@angular/router";
 import {filter} from "rxjs/operators";
 import {KeyValue} from "@angular/common";
 import {SingleEntityService} from "@ttapi/application/single-entity.service";
+import {MultipleEntityService} from "@ttapi/application/multiple-entity.service";
 
 @Component({
     selector: "app-home-page",
@@ -22,9 +22,9 @@ export class HomeComponent extends RoutingComponent implements OnInit {
 
     public constructor(
         private _authService: AuthService,
-        private _ttapiGateway: TtapiGatewayService,
         private _router: Router,
         private _singleEntityService: SingleEntityService,
+        private _multipleEntityService: MultipleEntityService,
     ) {
         super();
     }
@@ -60,7 +60,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
     public ngOnInit(): void {
         this.newSubscription = this.user.pipe(
             filter((user: User | null | undefined) => user !== null && user !== undefined),
-            mergeMap(() => this._ttapiGateway.fetchOld("/api/worlds", "get", {})),
+            mergeMap(() => this._multipleEntityService.getWorlds()),
             mergeMap((worldIds: WorldIds) => worldIds),
             mergeMap((worldId: WorldId) => this._singleEntityService.getEntity(worldId)),
         ).subscribe((world: World) => this._worlds.set(world.id, world));
@@ -74,32 +74,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
         this._worldId = worldId;
         this._selectedType = selection;
         this._entities.clear();
-        let entityIdsRetrievalObservable: Observable<EntityId[]>;
-
-        switch (selection) {
-            case "Location":
-                // noinspection TypeScriptValidateTypes
-                // entityIdsRetrievalObservable = this._ttapiGateway.fetch(
-                //     "/api/world/{worldId}/locations", "get", {worldId}
-                // );
-                entityIdsRetrievalObservable = this._ttapiGateway.fetch(
-                    "/api/world/{worldId}/locations", "get", {worldId}, {}, null
-                );
-                break;
-            case "Traveler":
-                // noinspection TypeScriptValidateTypes
-                entityIdsRetrievalObservable = this._ttapiGateway.fetchOld(
-                    "/api/world/{worldId}/travelers", "get", {worldId}
-                );
-                break;
-            case "Event":
-                // noinspection TypeScriptValidateTypes
-                entityIdsRetrievalObservable = this._ttapiGateway.fetchOld(
-                    "/api/world/{worldId}/events", "get", {worldId}
-                );
-                break;
-        }
-        this.newSubscription = entityIdsRetrievalObservable
+        this.newSubscription = this._multipleEntityService.getWorldEntities(this.worldId, selection)
             .pipe(
                 tap(this.buildAlertIfEmptyFunction(selection)),
                 mergeMap((entityIds: EntityIds) => entityIds),
