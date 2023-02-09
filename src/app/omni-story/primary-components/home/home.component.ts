@@ -3,10 +3,11 @@ import {RoutingComponent} from "../../abstract-components/RoutingComponent";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {mergeMap, Observable, tap} from "rxjs";
 import {TtapiGatewayService} from "@ttapi/ttapi-gateway.service";
-import {Entity, EntityId, EventIds, World, WorldId, WorldIds} from "@ttapi/domain/types.model";
+import {Entity, EntityId, EntityIds, EventIds, World, WorldId, WorldIds} from "@ttapi/domain/types.model";
 import {Router} from "@angular/router";
 import {filter} from "rxjs/operators";
 import {KeyValue} from "@angular/common";
+import {SingleEntityService} from "@ttapi/application/single-entity.service";
 
 @Component({
     selector: "app-home-page",
@@ -23,6 +24,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
         private _authService: AuthService,
         private _ttapiGateway: TtapiGatewayService,
         private _router: Router,
+        private _singleEntityService: SingleEntityService,
     ) {
         super();
     }
@@ -60,12 +62,7 @@ export class HomeComponent extends RoutingComponent implements OnInit {
             filter((user: User | null | undefined) => user !== null && user !== undefined),
             mergeMap(() => this._ttapiGateway.fetchOld("/api/worlds", "get", {})),
             mergeMap((worldIds: WorldIds) => worldIds),
-            mergeMap((worldId: WorldId) => {
-                // noinspection TypeScriptValidateTypes TODO TtapiGateway.fetch works, but argument type resolution is not working
-                return this._ttapiGateway.fetchOld("/api/world/{worldId}", "get", {
-                    worldId,
-                });
-            }),
+            mergeMap((worldId: WorldId) => this._singleEntityService.getEntity(worldId)),
         ).subscribe((world: World) => this._worlds.set(world.id, world));
     }
 
@@ -78,7 +75,6 @@ export class HomeComponent extends RoutingComponent implements OnInit {
         this._selectedType = selection;
         this._entities.clear();
         let entityIdsRetrievalObservable: Observable<EntityId[]>;
-        let entityRetrievalFunction: (EntityId) => Observable<Entity>;
 
         switch (selection) {
             case "Location":
@@ -89,22 +85,11 @@ export class HomeComponent extends RoutingComponent implements OnInit {
                 entityIdsRetrievalObservable = this._ttapiGateway.fetch(
                     "/api/world/{worldId}/locations", "get", {worldId}, {}, null
                 );
-                // noinspection TypeScriptValidateTypes
-                // entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
-                //     "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}
-                // );
-                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetch(
-                    "/api/world/{worldId}/location/{locationId}", "get", {worldId, locationId: entityId}, {}, null
-                );
                 break;
             case "Traveler":
                 // noinspection TypeScriptValidateTypes
                 entityIdsRetrievalObservable = this._ttapiGateway.fetchOld(
                     "/api/world/{worldId}/travelers", "get", {worldId}
-                );
-                // noinspection TypeScriptValidateTypes
-                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetchOld(
-                    "/api/world/{worldId}/traveler/{travelerId}", "get", {worldId, travelerId: entityId}
                 );
                 break;
             case "Event":
@@ -112,17 +97,13 @@ export class HomeComponent extends RoutingComponent implements OnInit {
                 entityIdsRetrievalObservable = this._ttapiGateway.fetchOld(
                     "/api/world/{worldId}/events", "get", {worldId}
                 );
-                // noinspection TypeScriptValidateTypes
-                entityRetrievalFunction = (entityId: EntityId) => this._ttapiGateway.fetchOld(
-                    "/api/world/{worldId}/event/{eventId}", "get", {worldId, eventId: entityId}
-                );
                 break;
         }
         this.newSubscription = entityIdsRetrievalObservable
             .pipe(
                 tap(this.buildAlertIfEmptyFunction(selection)),
-                mergeMap((eventIds: EventIds) => eventIds),
-                mergeMap(entityRetrievalFunction),
+                mergeMap((entityIds: EntityIds) => entityIds),
+                mergeMap((entityId: EntityId) => this._singleEntityService.getEntity(this.worldId, entityId)),
             )
             .subscribe((entity: Entity) => this._entities.set(entity.id, entity));
     }

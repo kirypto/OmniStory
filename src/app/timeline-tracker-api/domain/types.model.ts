@@ -22,6 +22,7 @@ export type EventIds = components["schemas"]["EventIds"];
 export type EventId = components["schemas"]["EventId"];
 export type Event = components["schemas"]["ExistingEvent"];
 
+export type EntityIds = WorldIds | LocationIds | TravelerIds | EventIds;
 export type EntityId = WorldId | LocationId | TravelerId | EventId;
 export type Entity = World | Location | Traveler | Event;
 
