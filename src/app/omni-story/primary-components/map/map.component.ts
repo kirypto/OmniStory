@@ -21,6 +21,8 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {TemplatePortal} from "@angular/cdk/portal";
 import {fromEvent, Subscription} from "rxjs";
 import {Clipboard} from "@angular/cdk/clipboard";
+import {SingleEntityService} from "@ttapi/application/single-entity.service";
+import {MultipleEntityService} from "@ttapi/application/multiple-entity.service";
 
 
 interface MapItem extends MapImage {
@@ -115,10 +117,11 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
         private _imageFetcher: ImageFetcherService,
         private _route: ActivatedRoute,
         private _router: Router,
-        private _ttapiGateway: TtapiGatewayService,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
         private _clipboard: Clipboard,
+        private _singleEntityService: SingleEntityService,
+        private _multipleEntityService: MultipleEntityService,
     ) {
         super();
     }
@@ -145,14 +148,9 @@ export class MapComponent extends SubscribingComponent implements AfterViewInit,
             this.updateQueryParams({reality: 0});
         }
         console.log(`Rendering map for reality ${reality}`);
-        this.newSubscription = this._ttapiGateway.fetchOld("/api/world/{worldId}/locations", "get", {
-            worldId: this._worldId,
-        }).pipe(
+        this.newSubscription = this._multipleEntityService.getWorldEntities(this._worldId, "Location").pipe(
             mergeMap((locationIds: LocationIds) => locationIds),
-            mergeMap((locationId: LocationId) => this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "get", {
-                worldId: this._worldId,
-                locationId,
-            })),
+            mergeMap((locationId: LocationId) => this._singleEntityService.getEntity(this._worldId, locationId)),
             filter((location: Location) => location.span.reality.some(lReality => lReality === reality)),
             // TODO kirypto 2022-Sep-09: Handle displaying locations that don't have an associated image.
             filter((location: Location) => !!location.attributes.sourceImageHD),
