@@ -12,7 +12,7 @@ export class SingleEntityService {
     }
 
     public getEntity(worldId: WorldId, entityId?: EntityId): Observable<World | Location | Traveler | Event> {
-        if (!entityId) {
+        if (!entityId || entityId === worldId) {
             return this._ttapiGateway.fetch(
                 "/api/world/{worldId}", "get", {worldId}, {}, null);
         } else if (entityId.startsWith("location")) {
