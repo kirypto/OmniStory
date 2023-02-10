@@ -1,7 +1,19 @@
 import {Component, OnInit} from "@angular/core";
 import {Location as AngularLocation} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {Entity, EntityId, Event, Journey, Location, PatchRequest, Span, Traveler, World, WorldId} from "@ttapi/domain/types.model";
+import {
+    Entity,
+    EntityId,
+    EntityType,
+    Event,
+    Journey,
+    Location,
+    PatchRequest,
+    Span,
+    Traveler,
+    World,
+    WorldId,
+} from "@ttapi/domain/types.model";
 import {TtapiGatewayService} from "@ttapi/ttapi-gateway.service";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
@@ -11,6 +23,7 @@ import {deepCopy} from "../../../common/util";
 import {arrayRequestBody} from "openapi-typescript-fetch";
 import {RoutePaths} from "../../route-paths";
 import {SingleEntityService} from "@ttapi/application/single-entity.service";
+import {newEntity} from "@ttapi/domain/types.util";
 
 @Component({
     selector: "app-entity",
@@ -278,38 +291,26 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         this._worldId = paramMap.get("worldId");
         this._entityId = paramMap.get("entityId");
 
-        if (this._worldId === "new" && this._entityId === "world") {
-            const world: World = {
-                id: "", name: "", description: "", tags: [], attributes: {},
-            };
-            this._entity = world;
-            this._entityOrig = deepCopy(world);
-        } else if (this._entityId === "newLocation") {
-            const location: Location = {
-                id: "", name: "", description: "", span: {
-                    latitude: {low: 0, high: 0}, longitude: {low: 0, high: 0}, altitude: {low: 0, high: 0},
-                    continuum: {low: 0, high: 0}, reality: [0],
-                }, tags: [], attributes: {},
-            };
-            this._entity = location;
-            this._entityOrig = deepCopy(location);
-        } else if (this._entityId === "newTraveler") {
-            const traveler: Traveler = {
-                id: "", name: "", description: "", journey: [
-                    {position: {latitude: 0, longitude: 0, altitude: 0, continuum: 0, reality: 0}, movement_type: "immediate"},
-                ], tags: [], attributes: {},
-            };
-            this._entity = traveler;
-            this._entityOrig = deepCopy(traveler);
-        } else if (this._entityId === "newEvent") {
-            const event: Event = {
-                id: "", name: "", description: "", span: {
-                    latitude: {low: 0, high: 0}, longitude: {low: 0, high: 0}, altitude: {low: 0, high: 0},
-                    continuum: {low: 0, high: 0}, reality: [0],
-                }, affected_locations: [], affected_travelers: [], tags: [], attributes: {},
-            };
-            this._entity = event;
-            this._entityOrig = deepCopy(event);
+        if (this._worldId === "new" || this._entityId.startsWith("new")) {
+            let entityType: EntityType;
+            switch (this._entityId) {
+                case "world":
+                    entityType = "World";
+                    break;
+                case "newLocation":
+                    entityType = "Location";
+                    break;
+                case "newTraveler":
+                    entityType = "Traveler";
+                    break;
+                case "newEvent":
+                    entityType = "Event";
+                    break;
+                default:
+                    throw new Error(`Cannot load entity template, unsupported worldId param ${this._worldId}`);
+            }
+            this._entity = newEntity(entityType);
+            this._entityOrig = deepCopy(this._entity);
         } else {
             this.newSubscription = this._singleEntityService.getEntity(this._worldId, this._entityId)
                 .subscribe((value: Entity) => {

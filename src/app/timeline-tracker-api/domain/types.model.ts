@@ -37,3 +37,5 @@ export type LocationTimeline = components["schemas"]["LocationTimeline"];
 export type TravelerTimeline = components["schemas"]["TravelerTimeline"];
 export type Timeline = LocationTimeline | TravelerTimeline;
 export type TimelineItem = PositionalMove | EventId;
+
+export type EntityType = "World" | "Location" | "Traveler" | "Event";
