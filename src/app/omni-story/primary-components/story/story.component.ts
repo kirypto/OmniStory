@@ -36,7 +36,6 @@ export class StoryComponent extends RoutingComponent implements OnInit {
 
     public constructor(
         private _route: ActivatedRoute,
-        private _ttapiGateway: TtapiGatewayService,
         private _router: Router,
         private _singleEntityService: SingleEntityService,
     ) {
@@ -67,32 +66,24 @@ export class StoryComponent extends RoutingComponent implements OnInit {
         this._worldId = paramMap.get("worldId");
         this._entityId = paramMap.get("entityId");
 
-        let fetchTimelineObservable: Observable<Timeline>;
-        let fetchEntityObservable: Observable<Entity>;
-        if (this._entityId.startsWith("location")) {
-            const args = {worldId: this._worldId, locationId: this._entityId};
-            fetchTimelineObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}/timeline", "get", args);
-            fetchEntityObservable = this._singleEntityService.getEntity(this._worldId, this._entityId);
-        } else if (this._entityId.startsWith("traveler")) {
-            const args = {worldId: this._worldId, travelerId: this._entityId};
-            fetchTimelineObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}/timeline", "get", args);
-            fetchEntityObservable = this._singleEntityService.getEntity(this._worldId, this._entityId);
-        } else {
-            throw new Error(`Cannot edit entity '${this._entityId}', unsupported entity type`);
+        if (!this._entityId.startsWith("location") && !this._entityId.startsWith("traveler")) {
+            throw new Error(`Cannot display story for entity '${this._entityId}', only locations and travelers have timelines.`);
         }
 
-        this.newSubscription = fetchTimelineObservable.subscribe((timeline: Timeline) => {
-            this._timeline = timeline;
-            this._eventDetails.clear();
-            this.newSubscription = from(timeline).pipe(
-                filter(timelineItem => !isPositionalMove(timelineItem)),
-                mergeMap((eventId: EventId) => this._singleEntityService.getEntity(this._worldId, eventId)),
-            ).subscribe((event: Event) => {
-                this._eventDetails.set(event.id, event);
-                this.updateTimeline();
+        this.newSubscription = this._singleEntityService.getTimeline(this._worldId, this._entityId)
+            .subscribe((timeline: Timeline) => {
+                this._timeline = timeline;
+                this._eventDetails.clear();
+                this.newSubscription = from(timeline).pipe(
+                    filter(timelineItem => !isPositionalMove(timelineItem)),
+                    mergeMap((eventId: EventId) => this._singleEntityService.getEntity(this._worldId, eventId)),
+                ).subscribe((event: Event) => {
+                    this._eventDetails.set(event.id, event);
+                    this.updateTimeline();
+                });
             });
-        });
-        this.newSubscription = fetchEntityObservable.subscribe((entity: Entity) => this._entity = entity);
+        this.newSubscription = this._singleEntityService.getEntity(this._worldId, this._entityId)
+            .subscribe((entity: Entity) => this._entity = entity);
     }
 
     private updateTimeline(): void {
