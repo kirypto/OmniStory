@@ -4,8 +4,9 @@ import {filter, mergeMap} from "rxjs/operators";
 import {from, Observable} from "rxjs";
 
 import {Entity, EntityId, Event, EventId, PositionalMove, Timeline, TimelineItem, WorldId} from "@ttapi/domain/types.model";
-import {TtapiGatewayService} from "../../../timeline-tracker-api/ttapi-gateway.service";
+import {TtapiGatewayService} from "@ttapi/ttapi-gateway.service";
 import {RoutingComponent} from "../../abstract-components/RoutingComponent";
+import {SingleEntityService} from "@ttapi/application/single-entity.service";
 
 function isPositionalMove(timelineItem: TimelineItem): boolean {
     const itemAsPositionalMove = timelineItem as PositionalMove;
@@ -26,7 +27,7 @@ interface DetailedTimelineItem {
 })
 export class StoryComponent extends RoutingComponent implements OnInit {
     private _worldId: WorldId;
-    private _name: EntityId;
+    private _entityId: EntityId;
     private _entity: Entity;
     private _timeline: Timeline;
     private readonly _eventDetails = new Map<EventId, Event>();
@@ -37,6 +38,7 @@ export class StoryComponent extends RoutingComponent implements OnInit {
         private _route: ActivatedRoute,
         private _ttapiGateway: TtapiGatewayService,
         private _router: Router,
+        private _singleEntityService: SingleEntityService,
     ) {
         super();
     }
@@ -63,20 +65,20 @@ export class StoryComponent extends RoutingComponent implements OnInit {
     private loadEntity(): void {
         const paramMap = this._route.snapshot.paramMap;
         this._worldId = paramMap.get("worldId");
-        this._name = paramMap.get("entityId");
+        this._entityId = paramMap.get("entityId");
 
         let fetchTimelineObservable: Observable<Timeline>;
         let fetchEntityObservable: Observable<Entity>;
-        if (this._name.startsWith("location")) {
-            const args = {worldId: this._worldId, locationId: this._name};
+        if (this._entityId.startsWith("location")) {
+            const args = {worldId: this._worldId, locationId: this._entityId};
             fetchTimelineObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}/timeline", "get", args);
-            fetchEntityObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "get", args);
-        } else if (this._name.startsWith("traveler")) {
-            const args = {worldId: this._worldId, travelerId: this._name};
+            fetchEntityObservable = this._singleEntityService.getEntity(this._worldId, this._entityId);
+        } else if (this._entityId.startsWith("traveler")) {
+            const args = {worldId: this._worldId, travelerId: this._entityId};
             fetchTimelineObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}/timeline", "get", args);
-            fetchEntityObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}", "get", args);
+            fetchEntityObservable = this._singleEntityService.getEntity(this._worldId, this._entityId);
         } else {
-            throw new Error(`Cannot edit entity '${this._name}', unsupported entity type`);
+            throw new Error(`Cannot edit entity '${this._entityId}', unsupported entity type`);
         }
 
         this.newSubscription = fetchTimelineObservable.subscribe((timeline: Timeline) => {
@@ -84,9 +86,7 @@ export class StoryComponent extends RoutingComponent implements OnInit {
             this._eventDetails.clear();
             this.newSubscription = from(timeline).pipe(
                 filter(timelineItem => !isPositionalMove(timelineItem)),
-                mergeMap((eventId: EventId) => this._ttapiGateway.fetchOld("/api/world/{worldId}/event/{eventId}", "get", {
-                    worldId: this._worldId, eventId,
-                })),
+                mergeMap((eventId: EventId) => this._singleEntityService.getEntity(this._worldId, eventId)),
             ).subscribe((event: Event) => {
                 this._eventDetails.set(event.id, event);
                 this.updateTimeline();
