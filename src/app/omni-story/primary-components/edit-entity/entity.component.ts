@@ -1,18 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Location as AngularLocation} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {
-    Entity,
-    EntityId,
-    Event,
-    Journey,
-    Location,
-    PatchRequest,
-    Span,
-    Traveler,
-    World,
-    WorldId,
-} from "@ttapi/domain/types.model";
+import {Entity, EntityId, Event, Journey, Location, PatchRequest, Span, Traveler, World, WorldId} from "@ttapi/domain/types.model";
 import {TtapiGatewayService} from "@ttapi/ttapi-gateway.service";
 import {SubscribingComponent} from "../../../common/components/SubscribingComponent";
 import {Observable} from "rxjs";
@@ -21,6 +10,7 @@ import {deepEqual} from "json-joy/esm/json-equal/deepEqual";
 import {deepCopy} from "../../../common/util";
 import {arrayRequestBody} from "openapi-typescript-fetch";
 import {RoutePaths} from "../../route-paths";
+import {SingleEntityService} from "@ttapi/application/single-entity.service";
 
 @Component({
     selector: "app-entity",
@@ -38,6 +28,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
         private _ttapiGateway: TtapiGatewayService,
         private _router: Router,
         private _location: AngularLocation,
+        private _singleEntityService: SingleEntityService,
     ) {
         super();
     }
@@ -202,7 +193,7 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             // TODO: Currently the routing does not support only providing a world id, ex '.../entity/world-123'. It would be nice to
             //  support this.
             fetchObservable = this._ttapiGateway.fetch(
-                "/api/world/{worldId}", "patch", {worldId: this._worldId}, {}, entityPatch
+                "/api/world/{worldId}", "patch", {worldId: this._worldId}, {}, entityPatch,
             );
 
             // fetchObservable = this._ttapiGateway.fetch("/api/world/{worldId}", "patch", arrayRequestBody(
@@ -320,37 +311,13 @@ export class EntityComponent extends SubscribingComponent implements OnInit {
             this._entity = event;
             this._entityOrig = deepCopy(event);
         } else {
-            let fetchObservable: Observable<Entity>;
-            if (this._entityId.startsWith("world")) {
-                // TODO: Currently the routing does not support only providing a world id, ex '.../entity/world-123'. It would be nice
-                //  to support this.
-                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}", "get", {
-                    worldId: this._worldId,
+            this.newSubscription = this._singleEntityService.getEntity(this._worldId, this._entityId)
+                .subscribe((value: Entity) => {
+                    this._entityId = value.id;
+                    this._entity = value;
+                    this._entityOrig = deepCopy(value);
+                    this._location.replaceState(`/entity/${this._worldId}/${this._entityId}`);
                 });
-            } else if (this._entityId.startsWith("location")) {
-                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/location/{locationId}", "get", {
-                    worldId: this._worldId,
-                    locationId: this._entityId,
-                });
-            } else if (this._entityId.startsWith("traveler")) {
-                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/traveler/{travelerId}", "get", {
-                    worldId: this._worldId,
-                    travelerId: this._entityId,
-                });
-            } else if (this._entityId.startsWith("event")) {
-                fetchObservable = this._ttapiGateway.fetchOld("/api/world/{worldId}/event/{eventId}", "get", {
-                    worldId: this._worldId,
-                    eventId: this._entityId,
-                });
-            } else {
-                throw new Error(`Cannot edit entity '${this._entityId}', unknown entity type`);
-            }
-            this.newSubscription = fetchObservable.subscribe((value: Entity) => {
-                this._entityId = value.id;
-                this._entity = value;
-                this._entityOrig = deepCopy(value);
-                this._location.replaceState(`/entity/${this._worldId}/${this._entityId}`);
-            });
         }
     }
 
