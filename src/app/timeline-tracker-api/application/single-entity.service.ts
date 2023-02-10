@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {TtapiGateway} from "@ttapi/domain/ttapi-gateway.model";
-import {EntityId, Traveler, World, WorldId} from "@ttapi/domain/types.model";
+import {EntityId, Timeline, Traveler, World, WorldId} from "@ttapi/domain/types.model";
 import {Observable} from "rxjs";
 
 
@@ -24,6 +24,18 @@ export class SingleEntityService {
         } else if (entityId.startsWith("event")) {
             return this._ttapiGateway.fetch(
                 "/api/world/{worldId}/event/{eventId}", "get", {worldId, eventId: entityId}, {}, null);
+        } else {
+            throw new Error(`Unsupported entity type '${entityId}'`);
+        }
+    }
+
+    public getTimeline(worldId: WorldId, entityId: EntityId): Observable<Timeline> {
+        if (entityId.startsWith("location")) {
+            return this._ttapiGateway.fetch(
+                "/api/world/{worldId}/location/{locationId}/timeline", "get", {worldId, locationId: entityId}, {}, null);
+        } else if (entityId.startsWith("traveler")) {
+            return this._ttapiGateway.fetch(
+                "/api/world/{worldId}/traveler/{travelerId}/timeline", "get", {worldId, travelerId: entityId}, {}, null);
         } else {
             throw new Error(`Unsupported entity type '${entityId}'`);
         }
